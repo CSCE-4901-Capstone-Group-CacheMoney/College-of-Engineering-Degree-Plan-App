@@ -18,6 +18,7 @@ from .utils import timelineGenerator, processTimeline, courseDescriptionStructur
 
 # Tate Test....
 from pprint import pprint
+from django.http import HttpResponse, HttpResponseNotFound
 
 # Create your views here.
 # Description: This function generates a dropdown form so that he users
@@ -185,3 +186,63 @@ def editDegree(request):
       "choice": ''}
 
     return render(request, 'degree/editDegree.html', { "context": context })
+
+
+
+
+def tateTestFunction(request):
+
+  data = "";
+
+  # grab all degree object data
+  # -------------------------------------------
+  # for degree in Degree.objects.all():
+  #   data += str(degree)+"<br>"
+  #   pprint(degree.year)
+
+  # create new row entry
+  # --------------------------------------------
+  #Degree.objects.create(name='Information Technology', degreeInfo={},year='2020')
+  
+  # grab specific row by attribute search
+  # ------------------------------------------
+  #degree = Degree.objects.get(name='Information Technology')
+  #pprint(degree) # test debug
+
+  # grab every entry in the table
+  # -------------------------------------------
+  for degree in Degree.objects.all():
+    # example how to grab specific row by attribute and change values
+    # if degree.name == 'I.T.':
+    #   degree.name = 'Information Technology'
+    #   degree.save()
+
+    # part of the for loop to concatenate model attributes to string
+    data += str(degree.name)+" -"+str(degree.year)+"</br>"
+  
+  # create or edit session variable
+  # ------------------------------------------
+  #request.session['selectedDegree'] = 'Information Technology'
+
+  # check if session variable exists
+  # ------------------------------------------
+  if request.session.get('selectedDegree'):
+    print("it exists!")
+  else:
+    print("it does not exists...")
+
+  # delete session variable
+  # ------------------------------------------
+  #del request.session['selectedDegree']
+
+  #pprint(request.session['selectedDegree']);
+  #data += "<br> Session Data: "+request.session['selectedDegree']+"<br>"
+
+  # check for admin user
+  # here we can check if admin options
+  # should show up on page
+  # ----------------------------------------------
+  if request.user.is_authenticated:
+    data += "<br><br>You are authenticated as the admin!"
+
+  return HttpResponse('<h1>'+data+'</h1>')

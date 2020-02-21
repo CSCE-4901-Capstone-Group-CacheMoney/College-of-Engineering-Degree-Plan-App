@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 #here is where we import the urls that we have created
-from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree
+from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree, tateTestFunction
 from transferCredits.views import transferCreditView, addTransferCredit
 from home.views import homeView
 
@@ -36,6 +36,7 @@ urlpatterns = [
     path('editDegree/', editDegree, name="editDegree"),
     #path('degrees/', allDegreesView, name='transferCreditList')
     path('addTransferCredit/', addTransferCredit, name="addTransferCredit"),
+    path('tate/', tateTestFunction, name="tateTestFunction"),
 
 ]
 
