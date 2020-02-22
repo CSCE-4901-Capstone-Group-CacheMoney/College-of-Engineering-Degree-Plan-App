@@ -114,7 +114,8 @@ DATABASES = {
         'NAME': 'pttmbbqs',
         'USER': 'pttmbbqs',
         'PASSWORD': 'pttmbbqs',
-        'HOST': 'degreeplans.unt.ad.unt.edu',
+        #'HOST': 'degreeplans.unt.ad.unt.edu',
+        'HOST': 'localhost',
         'PORT': '5432',
         }
 }
