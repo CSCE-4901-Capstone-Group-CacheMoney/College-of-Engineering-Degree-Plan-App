@@ -160,6 +160,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = ''
 STATICFILES_DIRS = (os.path.join('static'), )
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/administration'
 LOGOUT_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'users.Student'

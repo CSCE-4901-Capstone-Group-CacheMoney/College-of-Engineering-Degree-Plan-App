@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('degreeInfo', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('year', models.CharField(default='2020', max_length=100)),
             ],
         ),
     ]

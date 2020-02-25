@@ -24,6 +24,11 @@
             We can still put stuff here
             {% endblock %}
         </div>
-        
+
+        <div class="container"> <!-- test using emy function to pull content to templae -->
+            {% block emyData %}
+            <p>{{number}}</p>
+            {% endblock %}
+        </div>
     </body>
 </html>
