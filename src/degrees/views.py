@@ -190,7 +190,7 @@ def editDegree(request):
 
 
 
-def tateTestFunction(request):
+def administrationView(request):
 
   data = "";
 
@@ -218,7 +218,7 @@ def tateTestFunction(request):
     #   degree.save()
 
     # part of the for loop to concatenate model attributes to string
-    data += str(degree.name)+" -"+str(degree.year)+"</br>"
+    data += str(degree.name)+"</br>"
   
   # create or edit session variable
   # ------------------------------------------
@@ -245,4 +245,6 @@ def tateTestFunction(request):
   if request.user.is_authenticated:
     data += "<br><br>You are authenticated as the admin!"
 
-  return HttpResponse('<h1>'+data+'</h1>')
+  #return HttpResponse('<h1>'+data+'</h1>')
+  content = {}
+  return render(request, 'administration/home.html', content)

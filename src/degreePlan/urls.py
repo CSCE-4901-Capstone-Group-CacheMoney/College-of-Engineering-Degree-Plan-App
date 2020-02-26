@@ -17,9 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 #here is where we import the urls that we have created
-from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree, tateTestFunction
+from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree
 from transferCredits.views import transferCreditView, addTransferCredit
 from home.views import homeView
+from administration.views import administrationHomeView
 
 #make sure to add the path to the to the url patters below
 #**** don't forget the comma !!!
@@ -36,7 +37,7 @@ urlpatterns = [
     path('editDegree/', editDegree, name="editDegree"),
     #path('degrees/', allDegreesView, name='transferCreditList')
     path('addTransferCredit/', addTransferCredit, name="addTransferCredit"),
-    path('tate/', tateTestFunction, name="tateTestFunction"),
+    path('administration/', administrationHomeView, name="administrationHomeView"),
 
 ]
 
