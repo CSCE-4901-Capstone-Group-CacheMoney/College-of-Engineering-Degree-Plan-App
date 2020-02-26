@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'tecmCore',
     'mathCore',
+    'administration',
 
     # any third party apps we use
 ]
@@ -160,6 +161,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = ''
 STATICFILES_DIRS = (os.path.join('static'), )
-LOGIN_REDIRECT_URL = '/administration'
+LOGIN_REDIRECT_URL = '/administration/'
 LOGOUT_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'users.Student'

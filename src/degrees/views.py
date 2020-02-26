@@ -190,7 +190,7 @@ def editDegree(request):
 
 
 
-def administrationView(request):
+def tateTestFunction(request):
 
   data = "";
 

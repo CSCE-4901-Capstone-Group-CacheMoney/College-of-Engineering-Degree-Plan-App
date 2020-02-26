@@ -7,3 +7,8 @@ from django.http import HttpResponse, HttpResponseNotFound
 # just directs admin to home page after login
 def administrationHomeView(request):
 	return render(request, 'administration/home.html', {})
+
+# TODO back-end code for adding a degree
+def administrationAddDegree(request):
+	content = {} # when ready to send to front-end add db values to this dictionary
+	return render(request, 'administration/add_degree.html', content)
