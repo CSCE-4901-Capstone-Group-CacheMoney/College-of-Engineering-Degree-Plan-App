@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 
 # not need for code in this function, it just directs admin to home page after login
 def administrationHomeView(request):
-	return render(request, 'administration/home.html', {})
+	return render(request, 'administration/base.html', {})
 
 
 # TODO back-end code for degree plans

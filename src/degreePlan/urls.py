@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 #here is where we import the urls that we have created
-from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree, AddDegree
+from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree
 from transferCredits.views import transferCreditView, addTransferCredit
 from home.views import homeView
 from administration.views import administrationHomeView
@@ -39,7 +39,5 @@ urlpatterns = [
     path('addTransferCredit/', addTransferCredit, name="addTransferCredit"),
     path('administration/', administrationHomeView, name="administrationHomeView"),
     path('administration/', include('administration.urls')),
-    path('tate/', AddDegree, name="AddDegree"),
-
 ]
 
