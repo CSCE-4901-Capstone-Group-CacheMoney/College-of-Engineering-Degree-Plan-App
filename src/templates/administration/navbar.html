@@ -19,9 +19,11 @@
 
  	<ul class="navbar-nav ml-auto">
  	{% if request.user.is_authenticated %}
- 		 <li class="menu-item"><button type="button" class= "btn btn-link"><a href="{{ url('logout') }} ">Logout</a></button></li>
+ 		 <!-- <li class="menu-item"><button type="button" class= "btn btn-link"><a href="{{ url('logout') }} ">Logout</a></button></li> -->
+ 		 <li class="menu-item"><a class="btn btn-outline-success" href="{{ url('logout') }} " role="button">Logout</a></li>
  	{%else%}
- 		<li class="menu-item"><button type="button" class= "btn btn-link"><a href="{{ url('login') }} ">Login</a></button></li>
+ 		<!-- <li class="menu-item"><button type="button" class= "btn btn-link"><a href="{{ url('login') }} ">Login</a></button></li> -->
+ 		<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('login') }} " role="button">Login</a></li>
  		<!-- <li class="menu-item"><button type="button" class= "btn btn-link"><a href="{{ url('signup') }} ">Sign Up</a></button></li> -->
  	{%endif%}
  	</ul>
@@ -42,10 +44,10 @@
 		    <li class="menu-item dropdown">
 		      <a class="btn btn-outline-success dropdown-toggle" href="#" data-toggle="dropdown" role="button">Degree Plans</a>
 		      <div class="dropdown-menu">
-		        <a class="dropdown-item" href="#">View</a>
-		        <a class="dropdown-item" href="#">Edit</a>
-		        <a class="dropdown-item" href="#">Add</a>
-		        <a class="dropdown-item" href="#">Remove</a>
+		        <a class="dropdown-item" href="/administration/view-degree/">View</a>
+		        <a class="dropdown-item" href="/administration/edit-degree/">Edit</a>
+		        <a class="dropdown-item" href="/administration/add-degree/">Add</a>
+		        <a class="dropdown-item" href="/administration/remove-degree/">Remove</a>
 		      </div>
 		    </li>
 
@@ -53,10 +55,10 @@
 		    <li class="menu-item dropdown">
 		      <a class="btn btn-outline-success dropdown-toggle" href="#" data-toggle="dropdown" role="button">Courses</a>
 		      <div class="dropdown-menu">
-		        <a class="dropdown-item" href="#">View</a>
-		        <a class="dropdown-item" href="#">Edit</a>
-		        <a class="dropdown-item" href="#">Add</a>
-		        <a class="dropdown-item" href="#">Remove</a>
+		        <a class="dropdown-item" href="/administration/view-course/">View</a>
+		        <a class="dropdown-item" href="/administration/edit-course/">Edit</a>
+		        <a class="dropdown-item" href="/administration/add-course/">Add</a>
+		        <a class="dropdown-item" href="/administration/remove-course/">Remove</a>
 		      </div>
 		    </li>
 
@@ -64,10 +66,10 @@
 		    <li class="menu-item dropdown">
 		      <a class="btn btn-outline-success dropdown-toggle" href="#" data-toggle="dropdown" role="button">Resources</a>
 		      <div class="dropdown-menu">
-		        <a class="dropdown-item" href="#">View</a>
-		        <a class="dropdown-item" href="#">Edit</a>
-		        <a class="dropdown-item" href="#">Add</a>
-		        <a class="dropdown-item" href="#">Remove</a>
+		        <a class="dropdown-item" href="/administration/view-resource/">View</a>
+		        <a class="dropdown-item" href="/administration/edit-resource/">Edit</a>
+		        <a class="dropdown-item" href="/administration/add-resource/">Add</a>
+		        <a class="dropdown-item" href="/administration/remove-resource/">Remove</a>
 		      </div>
 		    </li>
 

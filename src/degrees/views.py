@@ -18,7 +18,7 @@ from .utils import timelineGenerator, processTimeline, courseDescriptionStructur
 
 # Tate Test....
 from pprint import pprint
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 
 # Create your views here.
 # Description: This function generates a dropdown form so that he users
@@ -248,3 +248,38 @@ def tateTestFunction(request):
   #return HttpResponse('<h1>'+data+'</h1>')
   content = {}
   return render(request, 'administration/home.html', content)
+
+
+
+# JavaSript will call this fuction, not lets grab it's post data for the request
+def AddDegree(request):
+
+	catalogYear = request.POST.get('catalogYear', '')
+	degreeName = request.POST.get('degreeName', '')
+	degreeHours = request.POST.get('degreeHours', '')
+
+	# not take these and send them to the database.... check if successfull or not
+
+	# now send back response to JavaScript so they can let the user know if the
+	# degree was added successfully or not..
+
+	#all good!
+	jsResponse = {
+		'success': 'true',
+		'message': 'none'
+	}
+
+
+	#uh-oh issues!
+	errorMessage = 'something failed in PostgreSQL blah.. blah... blah...'
+
+	jsResponse = {
+		'success': 'true',
+		'message': errorMessage
+	}
+
+	return JsonResponse(jsResponse)
+
+	# and that's it! Only other thing is will extend out the dictionary variables
+	# once you start fetching a lot of data to send back to JavaScript
+	# probably just an extended to dictionary variable to act as the jsResponse

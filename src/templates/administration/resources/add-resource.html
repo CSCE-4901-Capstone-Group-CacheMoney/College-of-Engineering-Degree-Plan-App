@@ -1,0 +1,57 @@
+<!-- page used for selecting a resource to add -->
+
+{% extends 'administration/home.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="page-header text-center">
+    <h4>Add Resource</h4>
+  </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <form class="mb-3">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect01">Resource Type</label>
+                    </div>
+                    <select id="selected-resource-type" class="custom-select" id="inputGroupSelect-1">
+                      <option selected>Person</option>
+                      <option>Department</option>
+                    </select>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" style="padding-right: 4.5em;" id="inputGroup-sizing-default-1">Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+                  </div>
+                   <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" style="padding-right: 4.7em;" id="inputGroup-sizing-default-2">Email</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" style="padding-right: .4em;" id="inputGroup-sizing-default-4">Phone Number</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" style="padding-right: 3.5em;" id="inputGroup-sizing-default-5">Website</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-5">
+                  </div>
+                  <button type="button" class="btn btn-outline-success btn-block">Add Resource</button>
+                </form>
+            </div>
+    </div>
+    <div class="row">
+      <!-- where results can go -->
+    </div>
+</div>
+
+{% endblock %}

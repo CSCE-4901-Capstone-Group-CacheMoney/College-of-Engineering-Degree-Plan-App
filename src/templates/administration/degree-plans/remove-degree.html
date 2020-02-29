@@ -1,0 +1,59 @@
+<!-- page used for selecting a degree plan to remove -->
+
+{% extends 'administration/home.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="page-header text-center">
+    <h4>Remove Degree</h4>
+  </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <form>
+                    <div class="mb-3">
+                        <label class="h5 bold">Select College</label>
+                        <select class="form-control select2">
+                           <option disabled selected value> -- select an option -- </option>
+                           <option>College of Engineering</option>
+                           <option>College of Education</option> 
+                           <option>College of Health and Public Service</option> 
+                           <option>College of Information</option> 
+                           <option>College of Liberal Arts and Social Sciences</option> 
+                        </select>
+                    </div>
+
+                     <div class="mb-3">
+                        <label class="h5 bold">Select Degree</label>
+                        <select class="form-control select2">
+                           <option disabled selected value> -- select an option -- </option>
+                           <option>Computer Science</option>
+                           <option>Computer Engineering</option> 
+                           <option>Information Technology</option> 
+                           <option>Mechanical Engineering</option> 
+                           <option>Material Science</option> 
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="h5 bold">Select Catalog Year</label>
+                        <select class="form-control select2">
+                           <option disabled selected value> -- select an option -- </option>
+                           <option>2020</option>
+                           <option>2019</option> 
+                           <option>2018</option> 
+                           <option>2017</option> 
+                           <option>2016</option> 
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-outline-success btn-block">View Degree</button>
+                </form>
+            </div>
+    </div>
+    <div class="row">
+      <!-- where results can go -->
+    </div>
+</div>
+
+{% endblock %}
