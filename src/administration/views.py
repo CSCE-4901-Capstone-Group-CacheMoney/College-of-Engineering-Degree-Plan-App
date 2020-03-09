@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
+from django.contrib.auth.decorators import user_passes_test
 
 # Create your views here.
 
 # not need for code in this function, it just directs admin to home page after login
+@user_passes_test(lambda u: u.is_superuser, login_url='/users/login/')
 def administrationHomeView(request):
 	return render(request, 'administration/base.html', {})
 
