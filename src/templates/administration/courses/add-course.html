@@ -9,71 +9,69 @@
     <h4>Add Course</h4>
   </div>
     <div class="row">
-        <div class="col-md-3"></div>
-            <div class="col-md-6">
-                <form class="mb-3">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">Department ID</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div id="add-course-form" class="mb-3">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">Department ID</span>
+                </div>
+                <input id="add-course-deparment-id" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">Course Number</span>
+                </div>
+                <input id="add-course-number" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right:2.9em;" id="inputGroup-sizing-default-2">Course Name</span>
+                </div>
+                <input id="add-course-name" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+              
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="courseinputGroupSelect01">Course Availability</label>
+                </div>
+                 <div class=" form-control">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input ml-2" type="radio" name="inlineRadioOptions" id="radio-spring" value="Spring">
+                    <label class="form-check-label" style="color: #495057;" for="inlineRadio1">Spring</label>
                   </div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">Course Number</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radio-fall" value="Fall">
+                    <label class="form-check-label" style="color: #495057;" for="inlineRadio2">Fall</label>
                   </div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" style="padding-right:2.9em;" id="inputGroup-sizing-default-2">Course Name</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radio-both" value="Both">
+                    <label class="form-check-label" style="color: #495057;" for="inlineRadio3">Both</label>
                   </div>
-                  
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="courseinputGroupSelect01">Course Availability</label>
-                    </div>
-                    <div class="form-control">
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input ml-2" type="radio" name="inlineRadioOptions" id="radio-spring" value="Spring">
-                        <label class="form-check-label " for="inlineRadio1">Spring</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radio-fall" value="Fall">
-                        <label class="form-check-label" for="inlineRadio2">Fall</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radio-both" value="Both">
-                        <label class="form-check-label" for="inlineRadio3">Both</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisites</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
-                  </div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" style="padding-right: 3.5em;" id="inputGroup-sizing-default-5">Corequisites</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-5">
-                  </div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" style="padding-right: 6.4em;" id="inputGroup-sizing-default-6">Hours</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-6">
-                  </div>
-                  <button type="button" readonly class="btn btn-outline-success btn-block">Add Course</button>
-                </form>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisites</span>
+                </div>
+                <input id="add-course-prerequisites" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 3.5em;" id="inputGroup-sizing-default-5">Corequisites</span>
+                </div>
+                <input id="add-course-corequisites" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-5">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 6.4em;" id="inputGroup-sizing-default-6">Hours</span>
+                </div>
+                <input id="add-course-hours" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-6">
+              </div>
+              <button id="add-course-submit-btn" type="button" class="btn btn-outline-success btn-block">Add Course</button>
+              <div id="add-course-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
             </div>
-    </div>
-    <div class="row">
-      <!-- where results can go -->
+        </div>
     </div>
 </div>
 
