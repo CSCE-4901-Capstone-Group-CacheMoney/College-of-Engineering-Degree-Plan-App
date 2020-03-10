@@ -16,14 +16,75 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="inputGroup-sizing-default">Course Name</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                    <input id="view-course-search-input" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                   </div>
-                  <button type="button" class="btn btn-outline-success btn-block">Search Course</button>
+                  <button id="view-course-search-btn" type="button" class="btn btn-outline-success btn-block">View Course</button>
                 </form>
             </div>
     </div>
     <div class="row">
-      <!-- where results can go -->
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <div id="view-course-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+            <div id="view-course-form" class="mb-3 d-none">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">Department ID</span>
+                </div>
+                <input id="view-course-deparment-id" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">Course Number</span>
+                </div>
+                <input id="view-course-number" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right:2.9em;" id="inputGroup-sizing-default-2">Course Name</span>
+                </div>
+                <input id="view-course-name" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+              
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="courseinputGroupSelect01">Course Availability</label>
+                </div>
+                 <div class=" form-control input-group-text">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input ml-2" type="radio" name="inlineRadioOptions" id="radio-spring" value="Spring" disabled>
+                    <label class="form-check-label" style="color: #495057;" for="inlineRadio1">Spring</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radio-fall" value="Fall" disabled>
+                    <label class="form-check-label" style="color: #495057;" for="inlineRadio2">Fall</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radio-both" value="Both" disabled>
+                    <label class="form-check-label" style="color: #495057;" for="inlineRadio3">Both</label>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisites</span>
+                </div>
+                <input id="view-course-prerequisites" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 3.5em;" id="inputGroup-sizing-default-5">Corequisites</span>
+                </div>
+                <input id="view-course-corequisites" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-5">
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 6.4em;" id="inputGroup-sizing-default-6">Hours</span>
+                </div>
+                <input id="view-course-hours" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-6">
+              </div>
+            </div>
+        </div>
     </div>
 </div>
 
