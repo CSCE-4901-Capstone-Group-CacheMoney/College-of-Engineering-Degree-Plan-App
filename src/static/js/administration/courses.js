@@ -3,48 +3,51 @@ $(document).ready(function(){
 	/*-----------------------view course js----------------------------------------- */
 	// function for capturing view text search info
 	$(document).on("click", "#view-course-search-btn", function(e) {
-		// uncomment function below once we are ready to get 
-		// data from the back-end
+		// send request to the back-end...
+  		$.post("/administration/view-course/js/",
+	    {
+	      courseSearchText: $("#view-course-search-input").val().trim()
+	    },
+	    function(data,status) { console.log(data);
+	    	if(!$.isEmptyObject(data)) {
+	    		// add data to fields below...
+		    	$("#view-course-deparment-id").val(data.DepartmentID);
+				$("#view-course-number").val(data.CourseCode);
+				$("#view-course-name").val(data.CourseName);
 
-  		// $.post("/js/administration/search-course/",
-	   //  {
-	   //    course: $("#view-course-search-input").val().trim()
-	   //  },
-	   //  function(data,status){
-	   //    // grab data from back-end to use for conditional statement...
-	   //  });
+				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
+					$("#radio-spring").attr('checked', true);
+				else if (data.CourseAvailability.toLowerCase().trim().indexOf("fall") != -1)
+					$("#radio-fall").attr('checked', true);
+				else
+					$("#radio-both").attr('checked', true);
 
-		var srch_ext = $("#view-course-search-input").val().trim();
-		if(srch_ext.toLowerCase().indexOf("capstone") != -1) {
-			$("#view-course-alert").removeClass("alert-danger");
-			$("#view-course-alert").addClass("alert-success");
-			$("#view-course-alert").text("Course Found!");
-			$("#view-course-alert").removeClass("d-none");
-			// add data to fields below...
-			$("#view-course-deparment-id").val("0785");
-			$("#view-course-deparment-id").val("0781");
-			$("#view-course-number").val("CSCE 4901");
-			$("#view-course-name").val("Computer Science Capstone");
-			$("#radio-spring").attr('checked', true);
-			$("#view-course-prerequisites").val("CSCE 3110, CSCE 4444");
-			$("#view-course-corequisites").val("CSCE 4110");
-			$("#view-course-hours").val("3");
+				$("#view-course-prerequisites").val(data.PrereqCount);
+				$("#view-course-corequisites").val(data.CoreqCount);
+				$("#view-course-hours").val(data.Hours);
 
+				// now show the input fields to the user
+				$("#view-course-alert").removeClass("alert-danger");
+				$("#view-course-alert").addClass("alert-success");
+				$("#view-course-alert").text("Course Found!");
+				$("#view-course-alert").removeClass("d-none");
 
-			// show form and scroll course fields into view
-			$("#view-course-form").removeClass("d-none");
-			$('html, body').animate({
-			    scrollTop: $("#view-course-search-btn").offset().top -20,
-			    scrollLeft: $("#view-course-search-btn").offset().left -20
-			});
-		} else {
-			// something went wrong, display error here
-			$("#view-course-form").addClass("d-none");
-			$("#view-course-alert").removeClass("alert-success");
-			$("#view-course-alert").addClass("alert-danger");
-			$("#view-course-alert").text("Unable to Find Course");
-			$("#view-course-alert").removeClass("d-none");
-		}
+				// show form and scroll course fields into view
+				$("#view-course-form").removeClass("d-none");
+				$('html, body').animate({
+			    	scrollTop: $("#view-course-search-btn").offset().top -20,
+			    	scrollLeft: $("#view-course-search-btn").offset().left -20
+				});
+				
+			} else {
+				// something went wrong, display error here
+				$("#view-course-form").addClass("d-none");
+				$("#view-course-alert").removeClass("alert-success");
+				$("#view-course-alert").addClass("alert-danger");
+				$("#view-course-alert").text(success+"<br>"+data);
+				$("#view-course-alert").removeClass("d-none");
+			}
+	    });
 	});
 
 	// also capture enter key to trigger above function
@@ -56,48 +59,51 @@ $(document).ready(function(){
     /*-----------------------edit course js----------------------------------------- */
 	// function for capturing view text search info
 	$(document).on("click", "#edit-course-search-btn", function(e) {
-		// uncomment function below once we are ready to get 
-		// data from the back-end
+		// send request to the back-end...
+  		$.post("/administration/view-course/js/",
+	    {
+	      courseSearchText: $("#edit-course-search-input").val().trim()
+	    },
+	    function(data,status) {
+	    	if(!$.isEmptyObject(data)) {
+	    		// add data to fields below...
+		    	$("#edit-course-deparment-id").val(data.DepartmentID);
+				$("#edit-course-number").val(data.CourseCode);
+				$("#edit-course-name").val(data.CourseName);
 
-  		// $.post("/js/administration/search-course/",
-	   //  {
-	   //    course: $("#edit-course-search-input").val().trim()
-	   //  },
-	   //  function(data,status){
-	   //    // grab data from back-end to use for conditional statement...
-	   //  });
+				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
+					$("#radio-spring").attr('checked', true);
+				else if (data.CourseAvailability.toLowerCase().trim().indexOf("fall") != -1)
+					$("#radio-fall").attr('checked', true);
+				else
+					$("#radio-both").attr('checked', true);
 
-		var srch_ext = $("#edit-course-search-input").val().trim();
-		if(srch_ext.toLowerCase().indexOf("capstone") != -1) {
-			$("#edit-course-alert").removeClass("alert-danger");
-			$("#edit-course-alert").addClass("alert-success");
-			$("#edit-course-alert").text("Course Found!");
-			$("#edit-course-alert").removeClass("d-none");
-			// add data to fields below...
-			$("#edit-course-deparment-id").val("0785");
-			$("#edit-course-deparment-id").val("0781");
-			$("#edit-course-number").val("CSCE 4901");
-			$("#edit-course-name").val("Computer Science Capstone");
-			$("#radio-spring").attr('checked', true);
-			$("#edit-course-prerequisites").val("CSCE 3110, CSCE 4444");
-			$("#edit-course-corequisites").val("CSCE 4110");
-			$("#edit-course-hours").val("3");
+				$("#edit-course-prerequisites").val(data.PrereqCount);
+				$("#edit-course-corequisites").val(data.CoreqCount);
+				$("#edit-course-hours").val(data.Hours);
 
+				// now show the input fields to the user
+				$("#edit-course-alert").removeClass("alert-danger");
+				$("#edit-course-alert").addClass("alert-success");
+				$("#edit-course-alert").text("Course Found!");
+				$("#edit-course-alert").removeClass("d-none");
 
-			// show form and scroll course fields into view
-			$("#edit-course-form").removeClass("d-none");
-			$('html, body').animate({
-			    scrollTop: $("#edit-course-search-btn").offset().top -20,
-			    scrollLeft: $("#edit-course-search-btn").offset().left -20
-			});
-		} else {
-			// something went wrong, display error here
-			$("#edit-course-form").addClass("d-none");
-			$("#edit-course-alert").removeClass("alert-success");
-			$("#edit-course-alert").addClass("alert-danger");
-			$("#edit-course-alert").text("Unable to Find Course");
-			$("#edit-course-alert").removeClass("d-none");
-		}
+				// show form and scroll course fields into view
+				$("#edit-course-form").removeClass("d-none");
+				$('html, body').animate({
+			    	scrollTop: $("#edit-course-search-btn").offset().top -20,
+			    	scrollLeft: $("#edit-course-search-btn").offset().left -20
+				});
+				
+			} else {
+				// something went wrong, display error here
+				$("#edit-course-form").addClass("d-none");
+				$("#edit-course-alert").removeClass("alert-success");
+				$("#edit-course-alert").addClass("alert-danger");
+				$("#edit-course-alert").text("Unable to find Course!");
+				$("#edit-course-alert").removeClass("d-none");
+			}
+	    });
 	});
 
 	// also capture enter key to trigger above function
@@ -167,48 +173,51 @@ $(document).ready(function(){
     /*-----------------------remove course js----------------------------------------- */
 	// function for capturing view text search info
 	$(document).on("click", "#remove-course-search-btn", function(e) {
-		// uncomment function below once we are ready to get 
-		// data from the back-end
+		// send request to the back-end...
+  		$.post("/administration/view-course/js/",
+	    {
+	      courseSearchText: $("#remove-course-search-input").val().trim()
+	    },
+	    function(data,status) {
+	    	if(!$.isEmptyObject(data)) {
+	    		// add data to fields below...
+		    	$("#remove-course-deparment-id").val(data.DepartmentID);
+				$("#remove-course-number").val(data.CourseCode);
+				$("#remove-course-name").val(data.CourseName);
 
-  		// $.post("/js/administration/search-course/",
-	   //  {
-	   //    course: $("#remove-course-search-input").val().trim()
-	   //  },
-	   //  function(data,status){
-	   //    // grab data from back-end to use for conditional statement...
-	   //  });
+				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
+					$("#radio-spring").attr('checked', true);
+				else if (data.CourseAvailability.toLowerCase().trim().indexOf("fall") != -1)
+					$("#radio-fall").attr('checked', true);
+				else
+					$("#radio-both").attr('checked', true);
 
-		var srch_ext = $("#remove-course-search-input").val().trim();
-		if(srch_ext.toLowerCase().indexOf("capstone") != -1) {
-			$("#remove-course-alert").removeClass("alert-danger");
-			$("#remove-course-alert").addClass("alert-success");
-			$("#remove-course-alert").text("Course Found!");
-			$("#remove-course-alert").removeClass("d-none");
-			// add data to fields below...
-			$("#remove-course-deparment-id").val("0785");
-			$("#remove-course-deparment-id").val("0781");
-			$("#remove-course-number").val("CSCE 4901");
-			$("#remove-course-name").val("Computer Science Capstone");
-			$("#radio-spring").attr('checked', true);
-			$("#remove-course-prerequisites").val("CSCE 3110, CSCE 4444");
-			$("#remove-course-corequisites").val("CSCE 4110");
-			$("#remove-course-hours").val("3");
+				$("#remove-course-prerequisites").val(data.PrereqCount);
+				$("#remove-course-corequisites").val(data.CoreqCount);
+				$("#remove-course-hours").val(data.Hours);
 
+				// now show the input fields to the user
+				$("#remove-course-alert").removeClass("alert-danger");
+				$("#remove-course-alert").addClass("alert-success");
+				$("#remove-course-alert").text("Course Found!");
+				$("#remove-course-alert").removeClass("d-none");
 
-			// show form and scroll course fields into view
-			$("#remove-course-form").removeClass("d-none");
-			$('html, body').animate({
-			    scrollTop: $("#remove-course-search-btn").offset().top -20,
-			    scrollLeft: $("#remove-course-search-btn").offset().left -20
-			});
-		} else {
-			// something went wrong, display error here
-			$("#remove-course-form").addClass("d-none");
-			$("#remove-course-alert").removeClass("alert-success");
-			$("#remove-course-alert").addClass("alert-danger");
-			$("#remove-course-alert").text("Unable to Find Course");
-			$("#remove-course-alert").removeClass("d-none");
-		}
+				// show form and scroll course fields into view
+				$("#remove-course-form").removeClass("d-none");
+				$('html, body').animate({
+			    	scrollTop: $("#remove-course-search-btn").offset().top -20,
+			    	scrollLeft: $("#remove-course-search-btn").offset().left -20
+				});
+				
+			} else {
+				// something went wrong, display error here
+				$("#remove-course-form").addClass("d-none");
+				$("#remove-course-alert").removeClass("alert-success");
+				$("#remove-course-alert").addClass("alert-danger");
+				$("#remove-course-alert").text("Unable to find Course!");
+				$("#remove-course-alert").removeClass("d-none");
+			}
+	    });
 	});
 
 	// also capture enter key to trigger above function
