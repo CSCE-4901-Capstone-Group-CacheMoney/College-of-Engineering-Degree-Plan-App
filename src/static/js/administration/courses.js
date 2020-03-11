@@ -11,8 +11,8 @@ $(document).ready(function(){
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
-		    	$("#view-course-deparment-id").val(data.DepartmentID);
-				$("#view-course-number").val(data.CourseCode);
+		    	$("#view-course-deparment-id").val(data.CourseCode.split(" ")[0].trim());
+				$("#view-course-number").val(data.CourseCode.split(" ")[1].trim());
 				$("#view-course-name").val(data.CourseName);
 
 				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
@@ -67,8 +67,8 @@ $(document).ready(function(){
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
-		    	$("#edit-course-deparment-id").val(data.DepartmentID);
-				$("#edit-course-number").val(data.CourseCode);
+		    	$("#edit-course-deparment-id").val(data.CourseCode.split(" ")[0].trim());
+				$("#edit-course-number").val(data.CourseCode.split(" ")[1].trim());
 				$("#edit-course-name").val(data.CourseName);
 
 				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
@@ -181,8 +181,8 @@ $(document).ready(function(){
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
-		    	$("#remove-course-deparment-id").val(data.DepartmentID);
-				$("#remove-course-number").val(data.CourseCode);
+		    	$("#remove-course-deparment-id").val(data.CourseCode.split(" ")[0].trim());
+				$("#remove-course-number").val(data.CourseCode.split(" ")[1].trim());
 				$("#remove-course-name").val(data.CourseName);
 
 				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
