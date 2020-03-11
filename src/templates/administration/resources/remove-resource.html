@@ -1,0 +1,30 @@
+<!-- page used for selecting a resource to remove -->
+
+{% extends 'administration/base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="page-header text-center">
+    <h4>Remove Resource</h4>
+  </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <form>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-default">Resource Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                  </div>
+                  <button type="button" class="btn btn-outline-success btn-block">Search Resource</button>
+                </form>
+            </div>
+    </div>
+    <div class="row">
+      <!-- where results can go -->
+    </div>
+</div>
+
+{% endblock %}

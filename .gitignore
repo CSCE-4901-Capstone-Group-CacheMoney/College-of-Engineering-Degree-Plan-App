@@ -1,0 +1,4 @@
+src/environmentName/
+__pycache__/
+*.py[cod]
+*.pyc
