@@ -8,7 +8,7 @@ $(document).ready(function(){
 	    {
 	      courseSearchText: $("#view-course-search-input").val().trim()
 	    },
-	    function(data,status) { console.log(data);
+	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
 		    	$("#view-course-deparment-id").val(data.DepartmentID);
