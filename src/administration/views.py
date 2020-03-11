@@ -1,7 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpRequest, JsonResponse
 from django.contrib.auth.decorators import user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 
+from courses.models import Course
+
+import re 			#for spliting string and number in courseSearchText
 # Create your views here.
 
 # not need for code in this function, it just directs admin to home page after login
@@ -27,13 +31,14 @@ def administrationRemoveDegree(request):
 	content = {} # when ready to send to front-end add db values to this dictionary
 	return render(request, 'administration/degree-plans/remove-degree.html', content)
 
-# TODO back-end code for js requsts to degree plans
-
+# TODO back-end code for js requests to degree plans
 
 
 # TODO back-end code for courses
-def administrationViewCourse(request):
-	content = {} # when ready to send to front-end add db values to this dictionary
+def administrationViewCourse(request:HttpResponse):
+	# content = request.GET['content'] # when ready to send to front-end add db values to this dictionary
+	# content = Course.objects.filter(courseDept='CSCE')
+	content = {'course_list': Course.objects.all()}
 	return render(request, 'administration/courses/view-course.html', content)
 
 def administrationEditCourse(request):
@@ -49,7 +54,42 @@ def administrationRemoveCourse(request):
 	return render(request, 'administration/courses/remove-course.html', content)
 
 # TODO back-end code for js requsts to courses
+@csrf_exempt
+def administrationViewCourseJS(request):
+	courseSearchText = request.POST.get('courseSearchText', '')
+	content={}
+	contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
+	
+	if contains_digit:
+		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
+		res = temp.match(courseSearchText).groups() 
+		for c in Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]):
+			content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
+			content["CourseName"] = str(c.name)
+			break
+	else:
+		for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):
+			content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
+			content["CourseName"] = str(c.name)
+			break
+	
+	return JsonResponse(content)
+	
+@csrf_exempt
+def administrationRemoveCourseJS(request):
+	if content != '':
+		jsResponse = {
+		'success':'true',
+		'message': content
+		}
+	else:
+		errorMessage = 'something failed in PostgreSQL blah.. blah... blah...'
 
+		jsResponse = {
+	 	'success': 'false',
+	 	'message': errorMessage
+	 }
+	return JsonResponse(jsResponse)
 
 # TODO back-end code for resources
 def administrationViewResource(request):

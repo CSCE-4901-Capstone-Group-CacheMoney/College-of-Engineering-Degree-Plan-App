@@ -13,6 +13,9 @@ urlpatterns = [
 	path('add-course/', views.administrationAddCourse, name='administrationAddCourse'),
 	path('remove-course/', views.administrationRemoveCourse, name='administrationRemoveCourse'),
 	# add courses js requests urls at a later time....
+	path('view-course/js/', views.administrationViewCourseJS, name='administrationViewCourseJS'),
+	path('remove-course/js/', views.administrationRemoveCourseJS, name='administrationRemoveCourseJS'),
+
 
 	path('view-resource/', views.administrationViewResource, name='administrationViewResource'),
 	path('edit-resource/', views.administrationEditResource, name='administrationEditResource'),

@@ -13,6 +13,7 @@ class Course(models.Model):
     courseDept = models.CharField(max_length=4)
     name = models.CharField(max_length=100)
     prereqCount = models.PositiveSmallIntegerField()
+    coreqCount = models.PositiveSmallIntegerField(default=0)
     category = models.CharField(max_length=50)
     hours = models.PositiveSmallIntegerField()
     semester = models.CharField(max_length=10, choices=SEMESTER_CHOICES, default=BOTH)
@@ -28,3 +29,6 @@ class Prereq(models.Model):
 
         def __str__(self):
             return self.courseDept + ' ' + str(self.courseID) 
+
+            ## delete migrations table
+            ## make the models according to the attributes of the course table
