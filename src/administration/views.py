@@ -35,15 +35,8 @@ def administrationRemoveDegree(request):
 
 
 # TODO back-end code for courses
-<<<<<<< HEAD
 def administrationViewCourse(request):
 	content = {}	# when ready to send to front-end add db values to this dictionary
-=======
-def administrationViewCourse(request:HttpResponse):
-	# content = request.GET['content'] # when ready to send to front-end add db values to this dictionary
-	# content = Course.objects.filter(courseDept='CSCE')
-	content = {'course_list': Course.objects.all()}
->>>>>>> f70e8022238a9468f8d43c84455081ba3d0ad2a9
 	return render(request, 'administration/courses/view-course.html', content)
 
 def administrationEditCourse(request):
