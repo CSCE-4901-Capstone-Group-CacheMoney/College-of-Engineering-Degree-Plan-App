@@ -7,6 +7,7 @@ urlpatterns = [
 	path('add-degree/', views.administrationAddDegree, name='administrationAddDegree'),
 	path('remove-degree/', views.administrationRemoveDegree, name='administrationRemoveDegree'),
 	# add degree plans js requests urls at a later time....
+	path('view-degree/js/', views.administrationViewDegreeJS, name='administrationViewDegreeJS'),
 
 	path('view-course/', views.administrationViewCourse, name='administrationViewCourse'),
 	path('edit-course/', views.administrationEditCourse, name='administrationEditCourse'),
@@ -14,8 +15,8 @@ urlpatterns = [
 	path('remove-course/', views.administrationRemoveCourse, name='administrationRemoveCourse'),
 	# add courses js requests urls at a later time....
 	path('view-course/js/', views.administrationViewCourseJS, name='administrationViewCourseJS'),
-	
-
+	path('add-course/js/', views.administrationAddCourseJS, name='administrationAddCourseJS'),
+	path('remove-course/js/', views.administrationRemoveCourseJS, name='administrationRemoveCourseJS'),
 
 	path('view-resource/', views.administrationViewResource, name='administrationViewResource'),
 	path('edit-resource/', views.administrationEditResource, name='administrationEditResource'),
