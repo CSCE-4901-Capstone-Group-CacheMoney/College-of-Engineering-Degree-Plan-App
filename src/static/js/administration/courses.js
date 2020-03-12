@@ -1,6 +1,29 @@
 $(document).ready(function() {
 
 	/*-----------------------view course js----------------------------------------- */
+	// auto complete search for view course
+	$('#view-course-search-input').autocomplete({
+	    lookup: function (query, done) {
+	        var result;
+	        $.post("/administration/view-course/js/",
+		    {
+		      courseSearchText: $("#view-course-search-input").val().trim()
+		    },
+		    function(data,status) {
+		    	result = {
+		            suggestions: [
+		                { "value": data.CourseCode+" - "+data.Description }
+		            ]
+	        	};
+	        	done(result);
+			});
+	    },
+	    onSelect: function (suggestion) {
+	        $("#view-course-search-input").val(suggestion.value.split(" ")[0].trim());
+	        $("#view-course-search-btn").click();
+	    }
+	});
+
 	// function for capturing view text search info
 	$(document).on("click", "#view-course-search-btn", function(e) {
 		// send request to the back-end...
@@ -57,6 +80,29 @@ $(document).ready(function() {
 
 
     /*-----------------------edit course js----------------------------------------- */
+    // auto complete search for edit course
+	$('#edit-course-search-input').autocomplete({
+	    lookup: function (query, done) {
+	        var result;
+	        $.post("/administration/view-course/js/",
+		    {
+		      courseSearchText: $("#edit-course-search-input").val().trim()
+		    },
+		    function(data,status) {
+		    	result = {
+		            suggestions: [
+		                { "value": data.CourseCode+" - "+data.Description }
+		            ]
+	        	};
+	        	done(result);
+			});
+	    },
+	    onSelect: function (suggestion) {
+	        $("#edit-course-search-input").val(suggestion.value.split(" ")[0].trim());
+	        $("#edit-course-search-btn").click();
+	    }
+	});
+
 	// function for capturing view text search info
 	$(document).on("click", "#edit-course-search-btn", function(e) {
 		// send request to the back-end...
@@ -184,6 +230,29 @@ $(document).ready(function() {
 
 
     /*-----------------------remove course js----------------------------------------- */
+    // auto complete search for remove course
+	$('#remove-course-search-input').autocomplete({
+	    lookup: function (query, done) {
+	        var result;
+	        $.post("/administration/view-course/js/",
+		    {
+		      courseSearchText: $("#remove-course-search-input").val().trim()
+		    },
+		    function(data,status) {
+		    	result = {
+		            suggestions: [
+		                { "value": data.CourseCode+" - "+data.Description }
+		            ]
+	        	};
+	        	done(result);
+			});
+	    },
+	    onSelect: function (suggestion) {
+	        $("#remove-course-search-input").val(suggestion.value.split(" ")[0].trim());
+	        $("#remove-course-search-btn").click();
+	    }
+	});
+
 	// function for capturing view text search info
 	$(document).on("click", "#remove-course-search-btn", function(e) {
 		// send request to the back-end...
