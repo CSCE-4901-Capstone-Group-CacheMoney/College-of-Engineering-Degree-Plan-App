@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
 
 	/*-----------------------view course js----------------------------------------- */
 	// function for capturing view text search info
@@ -44,14 +44,14 @@ $(document).ready(function(){
 				$("#view-course-form").addClass("d-none");
 				$("#view-course-alert").removeClass("alert-success");
 				$("#view-course-alert").addClass("alert-danger");
-				$("#view-course-alert").text(success+"<br>"+data);
+				$("#view-course-alert").text("Unable to Find Course!");
 				$("#view-course-alert").removeClass("d-none");
 			}
 	    });
 	});
 
 	// also capture enter key to trigger above function
-	$("#view-course-search-input").keypress(function(e){
+	$("#view-course-search-input").keypress(function(e) {
         if(e.which == 13) { $("#view-course-search-btn").click(); }
     });
 
@@ -107,65 +107,78 @@ $(document).ready(function(){
 	});
 
 	// also capture enter key to trigger above function
-	$("#edit-course-search-input").keypress(function(e){
+	$("#edit-course-search-input").keypress(function(e) {
         if(e.which == 13) { $("#edit-course-search-btn").click(); }
     });
 
     $(document).on("click", "#edit-course-update-btn", function(e) {
-    	// uncomment function below once we are ready to get 
-		// data from the back-end
-
-		// $.post("/js/administration/update-course/",
-  //  		{
-  //  			CourseID: $("#edit-course-deparment-id").val().trim(),
-		// 	DepartmentID: $("#edit-course-deparment-id").val().trim(),
-		// 	CourseNumber: $("#edit-course-number").val().trim()
-  //  		},
-  //  		function(data,status){
-  //  			// grab data from back-end to use for conditional statement...
-  //  		});
-
-  		$("#edit-course-update-alert").removeClass("alert-danger");
-		$("#edit-course-update-alert").addClass("alert-success");
-		$("#edit-course-update-alert").text("Course Updated Successfully!");
-		$("#edit-course-update-alert").removeClass("d-none");
-		// show form and scroll course fields into view
-		$('html, body').animate({
-		    scrollTop: $("#edit-course-update-btn").offset().top -20,
-		    scrollLeft: $("#edit-course-update-btn").offset().left -20
-		});
+    	// send request to the back-end...
+		$.post("/administration/edit-course/js/",
+   		{
+   			DepartmentID: $("#edit-course-deparment-id").val().trim(),
+			CourseNumber: $("#edit-course-number").val().trim(),
+			CourseName: $("#edit-course-name").val().trim(),
+			CourseAvailability: parseInt($("input[name='inlineRadioOptions']:checked").val()),
+			CoursePrerequisites: $("#edit-course-prerequisites").val().trim(),
+			CourseCorequisites: $("#edit-course-corequisites").val().trim(),
+			CourseHours: $("#edit-course-hours").val().trim()
+   		},
+   		function(data,status) {
+   			if(data.success.toLowerCase().indexOf("success") != -1) {
+   				$("#edit-course-update-alert").removeClass("alert-danger");
+				$("#edit-course-update-alert").addClass("alert-success");
+				$("#edit-course-update-alert").text("Course Updated Successfully!");
+				$("#edit-course-update-alert").removeClass("d-none");
+				// show form and scroll course fields into view
+				$('html, body').animate({
+				    scrollTop: $("#edit-course-update-btn").offset().top -20,
+				    scrollLeft: $("#edit-course-update-btn").offset().left -20
+				});
+   			} else {
+   				$("#edit-course-update-alert").removeClass("alert-success");
+				$("#edit-course-update-alert").addClass("alert-danger");
+				$("#edit-course-update-alert").text("Unable to Update Course!");
+				$("#edit-course-update-alert").removeClass("d-none");
+   			}
+   		});
     });
-
 
     /*-----------------------add course js----------------------------------------- */
 	// also capture enter key to trigger above function
     $(document).on("click", "#add-course-submit-btn", function(e) {
-    	// uncomment function below once we are ready to get 
-		// data from the back-end
-
-		// $.post("/js/administration/add-course/",
-  //  		{
-  //  			CourseID: $("#add-course-deparment-id").val().trim(),
-		// 	DepartmentID: $("#add-course-deparment-id").val().trim(),
-		// 	CourseNumber: $("#add-course-number").val().trim()
-  //  		},
-  //  		function(data,status){
-  //  			// grab data from back-end to use for conditional statement...
-  //  		});
-
-  		$("#add-course-submit-alert").removeClass("alert-danger");
-		$("#add-course-submit-alert").addClass("alert-success");
-		$("#add-course-submit-alert").text("Course Created Successfully!");
-		$("#add-course-submit-alert").removeClass("d-none");
-		// show form and scroll course fields into view
-		$('html, body').animate({
-		    scrollTop: $("#add-course-submit-btn").offset().top -20,
-		    scrollLeft: $("#add-course-submit-btn").offset().left -20
-		});
+    	// send request to the back-end...
+		$.post("/administration/add-course/js/",
+   		{
+   			DepartmentID: $("#add-course-deparment-id").val().trim(),
+			CourseNumber: $("#add-course-number").val().trim(),
+			CourseName: $("#add-course-name").val().trim(),
+			CourseAvailability: parseInt($("input[name='inlineRadioOptions']:checked").val()),
+			CoursePrerequisites: $("#add-course-prerequisites").val().trim(),
+			CourseCorequisites: $("#add-course-corequisites").val().trim(),
+			CourseHours: $("#add-course-hours").val().trim()
+   		},
+   		function(data,status) {
+   			if(data.success.toLowerCase().indexOf("success") != -1) {
+   				$("#add-course-submit-alert").removeClass("alert-danger");
+				$("#add-course-submit-alert").addClass("alert-success");
+				$("#add-course-submit-alert").text("Course Created Successfully!");
+				$("#add-course-submit-alert").removeClass("d-none");
+				// show form and scroll course fields into view
+				$('html, body').animate({
+				    scrollTop: $("#add-course-submit-btn").offset().top -20,
+				    scrollLeft: $("#add-course-submit-btn").offset().left -20
+				});
+   			} else {
+   				$("#add-course-submit-alert").removeClass("alert-success");
+				$("#add-course-submit-alert").addClass("alert-danger");
+				$("#add-course-submit-alert").text("Unable to Create Course!");
+				$("#add-course-submit-alert").removeClass("d-none");
+   			}
+   		});
     });
 
     // also capture enter key to trigger above function
-    $("#add-course-submit-btn").keypress(function(e){
+    $("#add-course-submit-btn").keypress(function(e) {
         if(e.which == 13) { $("#add-course-submit-btn").click(); }
     });
 
@@ -221,32 +234,35 @@ $(document).ready(function(){
 	});
 
 	// also capture enter key to trigger above function
-	$("#remove-course-search-input").keypress(function(e){
+	$("#remove-course-search-input").keypress(function(e) {
         if(e.which == 13) { $("#remove-course-search-btn").click(); }
     });
 
 
     $(document).on("click", "#remove-course-submit-btn", function(e) {
-    	// uncomment function below once we are ready to get 
-		// data from the back-end
-
-		// $.post("/js/administration/remove-course/",
-  //  		{
-  //  			course: $("#remove-course-search-input").val().trim()
-  //  		},
-  //  		function(data,status){
-  //  			// grab data from back-end to use for conditional statement...
-  //  		});
-
-  		$("#remove-course-submit-alert").removeClass("alert-danger");
-		$("#remove-course-submit-alert").addClass("alert-success");
-		$("#remove-course-submit-alert").text("Course Removed Successfully!");
-		$("#remove-course-submit-alert").removeClass("d-none");
-		// show form and scroll course fields into view
-		$('html, body').animate({
-		    scrollTop: $("#remove-course-submit-btn").offset().top -20,
-		    scrollLeft: $("#remove-course-submit-btn").offset().left -20
-		});
+    	// send request to the back-end...
+		$.post("/administration/remove-course/js/",
+   		{
+   			courseSearchText: $("#remove-course-search-input").val().trim()
+   		},
+   		function(data,status) {
+   			if(data.success.toLowerCase().indexOf("success") != -1) {
+   				$("#remove-course-submit-alert").removeClass("alert-danger");
+				$("#remove-course-submit-alert").addClass("alert-success");
+				$("#remove-course-submit-alert").text("Course Removed Successfully!");
+				$("#remove-course-submit-alert").removeClass("d-none");
+				// show form and scroll course fields into view
+				$('html, body').animate({
+				    scrollTop: $("#remove-course-submit-btn").offset().top -20,
+				    scrollLeft: $("#remove-course-submit-btn").offset().left -20
+				});
+   			} else {
+   				$("#remove-course-submit-alert").removeClass("alert-success");
+				$("#remove-course-submit-alert").addClass("alert-danger");
+				$("#remove-course-submit-alert").text("Unable to Remove Class!");
+				$("#remove-course-submit-alert").removeClass("d-none");
+   			}
+   		});
     });
 
 });

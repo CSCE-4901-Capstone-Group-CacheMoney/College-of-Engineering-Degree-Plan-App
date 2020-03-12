@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
 
 	// code for changing field attributes
 	$(document).on("change", "#selected-resource-type", function(e) {
