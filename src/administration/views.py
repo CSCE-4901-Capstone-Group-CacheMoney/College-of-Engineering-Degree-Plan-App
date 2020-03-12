@@ -4,8 +4,9 @@ from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 
 from courses.models import Course
-
-import re 			#for spliting string and number in courseSearchText
+from degrees.models import Degree
+import re 										#for spliting string and number in courseSearchText
+import copy 
 # Create your views here.
 
 # not need for code in this function, it just directs admin to home page after login
@@ -32,7 +33,15 @@ def administrationRemoveDegree(request):
 	return render(request, 'administration/degree-plans/remove-degree.html', content)
 
 # TODO back-end code for js requests to degree plans
+@csrf_exempt
+def administrationViewDegreeJS(request):
+	degreeSearchText = request.POST.get('degreeSearchText', '')
+	content={}
+	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
+		content["DegreeName"] = str(d.name)
+		content["DegreeInfo"] = str(d.degreeInfo)
 
+	return JsonResponse(content)
 
 # TODO back-end code for courses
 def administrationViewCourse(request):
@@ -51,7 +60,7 @@ def administrationRemoveCourse(request):
 	content = {} # when ready to send to front-end add db values to this dictionary
 	return render(request, 'administration/courses/remove-course.html', content)
 
-# TODO back-end code for js requsts to courses
+# TODO back-end code for js requests to courses
 @csrf_exempt
 def administrationViewCourseJS(request):
 	courseSearchText = request.POST.get('courseSearchText', '')
@@ -84,6 +93,71 @@ def administrationViewCourseJS(request):
 			break
 	
 	return JsonResponse(content)
+
+@csrf_exempt
+def administrationAddCourseJS(request):	
+	nCourseName = request.POST.get('nCourseName', '')
+	nCourseDept = request.POST.get('nCourseDept', '')
+	nCourseID = request.POST.get('nCourseID', '')
+	nCoursePrereqCount = request.POST.get('nCoursePrereqCount', '')
+	nCourseCoreqCount = request.POST.get('nCourseCoreqCount', '')
+	nCourseHours = request.POST.get('nCourseHours', '')
+	#nCourseAvail = request.POST.get('nCourseAvail', '')
+	c = Course.objects.filter(courseDept__istartswith=str(nCourseDept), courseID__startswith=nCourseID)
+	#print(c)			
+	if not c:
+		Course.objects.create(
+		name = str(nCourseName),
+		courseDept = str(nCourseDept),
+		courseID = nCourseID,
+		prereqCount = nCoursePrereqCount,
+		coreqCount = nCourseCoreqCount,
+		hours = nCourseHours,
+		#semester = str(nCourseAvail)	
+		)
+		jsResponse = {
+			'success': 'True',
+			'message': 'Successfully added ' + str(nCourseName) + ' to course list!'
+		}
+	else:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error adding course. ' + str(nCourseName) + ' already exists!'
+		}
+	return JsonResponse(jsResponse)
+	
+@csrf_exempt
+def administrationRemoveCourseJS(request):
+	# courseSearchText = request.POST.get('courseSearchText', '')
+	# contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
+	
+	# if contains_digit:
+	# 	temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
+	# 	res = temp.match(courseSearchText).groups() 
+	# 	status = Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]).delete()
+	# 	if status[0] == 1:
+	# 		jsResponse = {
+	# 			'success': 'True',
+	# 			'message': 'Successful removing course '+  str(res[0]) + '!'
+	# 			}
+	# 	else: 	
+	# 		jsResponse = {
+	# 		'success': 'False',
+	# 		'message': 'Error removing course '+  str(res[0]) + '!'
+	# 		}
+	# else:
+	# 	status = Course.objects.filter(courseDept__istartswith=str(res[0])).delete()
+	# 	if status[0] == 1:
+	# 		jsResponse = {
+	# 			'success': 'True',
+	# 			'message': 'Successful removing course '+  str(res[0]) + '!'
+	# 			}
+	# 	else: 	
+	# 		jsResponse = {
+	# 			'success': 'False',
+	# 			'message': 'Error removing course '+  str(res[0]) + '!'
+	# 			}
+	return JsonResponse(jsResponse)
 
 # TODO back-end code for resources
 def administrationViewResource(request):
