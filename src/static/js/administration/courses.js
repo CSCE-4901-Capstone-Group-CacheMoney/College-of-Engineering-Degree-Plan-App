@@ -201,7 +201,7 @@ $(document).ready(function() {
    			nCourseDept: $("#add-course-deparment-id").val().trim(),
 			nCourseID: $("#add-course-number").val().trim(),
 			nCourseName: $("#add-course-name").val().trim(),
-			CourseAvailability: parseInt($("input[name='inlineRadioOptions']:checked").val()),
+			nCourseAvail: parseInt($("input[name='inlineRadioOptions']:checked").val()),
 			nCoursePrereqCount: $("#add-course-prerequisites").val().trim(),
 			nCourseCoreqCount: $("#add-course-corequisites").val().trim(),
 			nCourseHours: $("#add-course-hours").val().trim()
