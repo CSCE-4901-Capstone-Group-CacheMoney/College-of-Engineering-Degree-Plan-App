@@ -195,19 +195,19 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/add-course/js/",
    		{
-   			DepartmentID: $("#add-course-deparment-id").val().trim(),
-			CourseNumber: $("#add-course-number").val().trim(),
-			CourseName: $("#add-course-name").val().trim(),
+   			nCourseDept: $("#add-course-deparment-id").val().trim(),
+			nCourseID: $("#add-course-number").val().trim(),
+			nCourseName: $("#add-course-name").val().trim(),
 			CourseAvailability: parseInt($("input[name='inlineRadioOptions']:checked").val()),
-			CoursePrerequisites: $("#add-course-prerequisites").val().trim(),
-			CourseCorequisites: $("#add-course-corequisites").val().trim(),
-			CourseHours: $("#add-course-hours").val().trim()
+			nCoursePrereqCount: $("#add-course-prerequisites").val().trim(),
+			nCourseCoreqCount: $("#add-course-corequisites").val().trim(),
+			nCourseHours: $("#add-course-hours").val().trim()
    		},
    		function(data,status) {
-   			if(data.success.toLowerCase().indexOf("success") != -1) {
+   			if(data.success.toLowerCase().indexOf("true") != -1) {
    				$("#add-course-submit-alert").removeClass("alert-danger");
 				$("#add-course-submit-alert").addClass("alert-success");
-				$("#add-course-submit-alert").text("Course Created Successfully!");
+				$("#add-course-submit-alert").text(data.message);
 				$("#add-course-submit-alert").removeClass("d-none");
 				// show form and scroll course fields into view
 				$('html, body').animate({
@@ -217,14 +217,14 @@ $(document).ready(function() {
    			} else {
    				$("#add-course-submit-alert").removeClass("alert-success");
 				$("#add-course-submit-alert").addClass("alert-danger");
-				$("#add-course-submit-alert").text("Unable to Create Course!");
+				$("#add-course-submit-alert").text(data.message);
 				$("#add-course-submit-alert").removeClass("d-none");
    			}
    		});
     });
 
     // also capture enter key to trigger above function
-    $("#add-course-submit-btn").keypress(function(e) {
+    $("#add-course-hours").keypress(function(e) {
         if(e.which == 13) { $("#add-course-submit-btn").click(); }
     });
 
