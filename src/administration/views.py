@@ -146,19 +146,19 @@ def administrationAddCourseJS(request):
 	
 @csrf_exempt
 def administrationRemoveCourseJS(request):
-	courseSearchText = request.POST.get('courseSearchText', '')
-	courseSearchText = courseSearchText.replace(' ','')
-	temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
+	courseSearchText = request.POST.get('courseSearchText', '')		#get message from front end
+	courseSearchText = courseSearchText.replace(' ','')				#trim spaces
+	temp = re.compile("([a-zA-Z]+)([0-9]+)") 						#splitting courseDept and courseID
 	res = temp.match(courseSearchText).groups()
 
-	if(len(res[0]) == 4 and len(res[1]) == 4):
+	if(len(res[0]) == 4 and len(res[1]) == 4):						#check if dept and id are 4 chars
 
 		#Get result from a search of above
 		#save the ID
 		status = Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]).delete()
 		#Delete from degree plans
 
-		if status[0] == 1:
+		if status[0] == 1:											#if successful
 			jsResponse = {
 				'success': 'True',
 				'message': 'Successful removing course '+  str(res[0]) + '!'
@@ -174,45 +174,7 @@ def administrationRemoveCourseJS(request):
 			'success': 'False',
 			'message': 'Error removing course, format as "DepartmentName CourseNumber"'
 		}
-	
-	#courseSearchText = request.POST.get('courseSearchText', '')
-	# contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
-	#courseSearchText = courseSearchText.replace(' ','')
-
-	#if(len(courseSearchText) == 8):
-
-
-	#else:
-
-
-
-	# if contains_digit:
-	# 	temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
-	# 	res = temp.match(courseSearchText).groups() 
-	# 	status = Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]).delete()
-	# 	if status[0] == 1:
-	# 		jsResponse = {
-	# 			'success': 'True',
-	# 			'message': 'Successful removing course '+  str(res[0]) + '!'
-	# 			}
-	# 	else: 	
-	# 		jsResponse = {
-	# 		'success': 'False',
-	# 		'message': 'Error removing course '+  str(res[0]) + '!'
-	# 		}
-	# else:
-	# 	status = Course.objects.filter(courseDept__istartswith=str(res[0])).delete()
-	# 	if status[0] == 1:
-	# 		jsResponse = {
-	# 			'success': 'True',
-	# 			'message': 'Successful removing course '+  str(res[0]) + '!'
-	# 			}
-	# 	else: 	
-	# 		jsResponse = {
-	# 			'success': 'False',
-	# 			'message': 'Error removing course '+  str(res[0]) + '!'
-	# 			}
-	
+		
 	return JsonResponse(jsResponse)
 
 # TODO back-end code for resources
