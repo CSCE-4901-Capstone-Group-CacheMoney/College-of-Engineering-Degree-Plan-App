@@ -4,6 +4,15 @@ navbar-brand {
 navbar-nav {
 	display:inline-block;
 }
+.footer-custom{
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: red;
+	color: white;
+	text-align: center;
+}
 h1 {
 
 }
@@ -134,7 +143,6 @@ background-color: rgba(85,198,87,.6);
 	height: 75%;
 	width: 75%;
 }
-
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
 .autocomplete-selected { background: #F0F0F0; }

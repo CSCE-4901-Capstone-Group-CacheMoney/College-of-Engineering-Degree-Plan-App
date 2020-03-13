@@ -26,13 +26,12 @@
     <body style="background-image: url({{static('img/background.png')}});">
 
         {% include 'administration/navbar.html' %}
-
         <div class="container">
 
             {% block content %}
             <!-- We can still put stuff here -->
             {% endblock %}
         </div>
-        
     </body>
+    {% include 'administration/footer.html' %}
 </html>

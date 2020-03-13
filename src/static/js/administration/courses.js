@@ -4,18 +4,21 @@ $(document).ready(function() {
 	// auto complete search for view course
 	$('#view-course-search-input').autocomplete({
 	    lookup: function (query, done) {
-	        var result;
+			var result;
+			var str1 = "undefined";
 	        $.post("/administration/view-course/js/",
 		    {
 		      courseSearchText: $("#view-course-search-input").val().trim()
-		    },
+			},
 		    function(data,status) {
-		    	result = {
-		            suggestions: [
-		                { "value": data.CourseCode+" - "+data.Description }
-		            ]
-	        	};
-	        	done(result);
+				{
+					result = {
+		            	suggestions: [
+							{"value": data.CourseCode + " - "+ data.Description}
+		            	]
+					};
+					done(result);
+				}
 			});
 	    },
 	    onSelect: function (suggestion) {
