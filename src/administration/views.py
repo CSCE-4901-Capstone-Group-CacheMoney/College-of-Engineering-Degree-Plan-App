@@ -64,6 +64,8 @@ def administrationRemoveCourse(request):
 @csrf_exempt
 def administrationViewCourseJS(request):
 	courseSearchText = request.POST.get('courseSearchText', '')
+	courseSearchText = courseSearchText.replace(' ','')
+	print (courseSearchText)
 	content={}
 	contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
 	
@@ -80,6 +82,10 @@ def administrationViewCourseJS(request):
 			content["PrereqCount"] = str(c.prereqCount)
 			content["CoreqCount"] = str(c.coreqCount)
 			break
+			#result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
+					#   "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
+					#   "CoreqCount": str(c.coreqCount)}
+			# content.append(dict(result)) 
 	else:
 		for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):
 			content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
@@ -91,7 +97,11 @@ def administrationViewCourseJS(request):
 			content["PrereqCount"] = str(c.prereqCount)
 			content["CoreqCount"] = str(c.coreqCount)
 			break
-	
+			# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
+			# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
+			# 		  "CoreqCount": str(c.coreqCount)}
+			# content.append(dict(result)) 
+	#print (content)
 	return JsonResponse(content)
 
 @csrf_exempt
@@ -102,10 +112,18 @@ def administrationAddCourseJS(request):
 	nCoursePrereqCount = request.POST.get('nCoursePrereqCount', '')
 	nCourseCoreqCount = request.POST.get('nCourseCoreqCount', '')
 	nCourseHours = request.POST.get('nCourseHours', '')
-	#nCourseAvail = request.POST.get('nCourseAvail', '')
+	nCourseAvail = request.POST.get('nCourseAvail', '')
+	print (nCourseAvail)
 	c = Course.objects.filter(courseDept__istartswith=str(nCourseDept), courseID__startswith=nCourseID)
 	#print(c)			
 	if not c:
+		if nCourseAvail == "0":
+			nCourseAvail = "Spring"
+		elif nCourseAvail == "1":
+			nCourseAvail = "Fall"
+		else:
+			nCourseAvail = "Both"
+		print (nCourseAvail)
 		Course.objects.create(
 		name = str(nCourseName),
 		courseDept = str(nCourseDept),
@@ -113,7 +131,7 @@ def administrationAddCourseJS(request):
 		prereqCount = nCoursePrereqCount,
 		coreqCount = nCourseCoreqCount,
 		hours = nCourseHours,
-		#semester = str(nCourseAvail)	
+		semester = str(nCourseAvail)	
 		)
 		jsResponse = {
 			'success': 'True',
@@ -157,6 +175,7 @@ def administrationRemoveCourseJS(request):
 	# 			'success': 'False',
 	# 			'message': 'Error removing course '+  str(res[0]) + '!'
 	# 			}
+	
 	return JsonResponse(jsResponse)
 
 # TODO back-end code for resources
