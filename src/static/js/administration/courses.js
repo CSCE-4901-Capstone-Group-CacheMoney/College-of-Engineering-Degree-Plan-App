@@ -1,4 +1,14 @@
 $(document).ready(function() {
+	
+	// grab the csrf cookie token and setup ajax request header
+	var csrftoken = getCookie('csrftoken');
+	$.ajaxSetup({
+	    beforeSend: function(xhr, settings) {
+	        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+	            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	        }
+	    }
+	});
 
 	/*-----------------------view course js----------------------------------------- */
 	// auto complete search for view course
@@ -14,7 +24,7 @@ $(document).ready(function() {
 				{
 					result = {
 		            	suggestions: [
-							{"value": data.CourseCode + " - "+ data.Description}
+							{"value": data.CourseCode + "-"+ data.CourseName}
 		            	]
 					};
 					done(result);
@@ -22,7 +32,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#view-course-search-input").val(suggestion.value.split(" ")[0].trim());
+	        $("#view-course-search-input").val(suggestion.value.split("-")[0].trim());
 	        $("#view-course-search-btn").click();
 	    }
 	});
@@ -94,14 +104,14 @@ $(document).ready(function() {
 		    function(data,status) {
 		    	result = {
 		            suggestions: [
-		                { "value": data.CourseCode+" - "+data.Description }
+		                { "value": data.CourseCode+"-"+data.CourseName }
 		            ]
 	        	};
 	        	done(result);
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#edit-course-search-input").val(suggestion.value.split(" ")[0].trim());
+	        $("#edit-course-search-input").val(suggestion.value.split("-")[0].trim());
 	        $("#edit-course-search-btn").click();
 	    }
 	});
@@ -167,7 +177,7 @@ $(document).ready(function() {
    			DepartmentID: $("#edit-course-deparment-id").val().trim(),
 			CourseNumber: $("#edit-course-number").val().trim(),
 			CourseName: $("#edit-course-name").val().trim(),
-			CourseAvailability: parseInt($("input[name='inlineRadioOptions']:checked").val()),
+			CourseAvailability: $("input[name='inlineRadioOptions']:checked").val(),
 			CoursePrerequisites: $("#edit-course-prerequisites").val().trim(),
 			CourseCorequisites: $("#edit-course-corequisites").val().trim(),
 			CourseHours: $("#edit-course-hours").val().trim()
@@ -201,7 +211,7 @@ $(document).ready(function() {
    			nCourseDept: $("#add-course-deparment-id").val().trim(),
 			nCourseID: $("#add-course-number").val().trim(),
 			nCourseName: $("#add-course-name").val().trim(),
-			nCourseAvail: parseInt($("input[name='inlineRadioOptions']:checked").val()),
+			nCourseAvail: $("input[name='inlineRadioOptions']:checked").val(),
 			nCoursePrereqCount: $("#add-course-prerequisites").val().trim(),
 			nCourseCoreqCount: $("#add-course-corequisites").val().trim(),
 			nCourseHours: $("#add-course-hours").val().trim()
@@ -244,14 +254,14 @@ $(document).ready(function() {
 		    function(data,status) {
 		    	result = {
 		            suggestions: [
-		                { "value": data.CourseCode+" - "+data.Description }
+		                { "value": data.CourseCode+"-"+data.CourseName }
 		            ]
 	        	};
 	        	done(result);
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#remove-course-search-input").val(suggestion.value.split(" ")[0].trim());
+	        $("#remove-course-search-input").val(suggestion.value.split("-")[0].trim());
 	        $("#remove-course-search-btn").click();
 	    }
 	});
@@ -321,7 +331,7 @@ $(document).ready(function() {
    			if(data.success.toLowerCase().indexOf("success") != -1) {
    				$("#remove-course-submit-alert").removeClass("alert-danger");
 				$("#remove-course-submit-alert").addClass("alert-success");
-				$("#remove-course-submit-alert").text("Course Removed Successfully!");
+				$("#remove-course-submit-alert").text(data.message);
 				$("#remove-course-submit-alert").removeClass("d-none");
 				// show form and scroll course fields into view
 				$('html, body').animate({
@@ -331,7 +341,7 @@ $(document).ready(function() {
    			} else {
    				$("#remove-course-submit-alert").removeClass("alert-success");
 				$("#remove-course-submit-alert").addClass("alert-danger");
-				$("#remove-course-submit-alert").text("Unable to Remove Class!");
+				$("#remove-course-submit-alert").text(data.message);
 				$("#remove-course-submit-alert").removeClass("d-none");
    			}
    		});
