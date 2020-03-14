@@ -21,12 +21,15 @@ $(document).ready(function() {
 		      courseSearchText: $("#view-course-search-input").val().trim()
 			},
 		    function(data,status) {
-				{
+				if(!$.isEmptyObject(data)) {
 					result = {
 		            	suggestions: [
 							{"value": data.CourseCode + "-"+ data.CourseName}
 		            	]
 					};
+					done(result);
+				} else {
+					result = { suggestions: [] };
 					done(result);
 				}
 			});
@@ -102,12 +105,17 @@ $(document).ready(function() {
 		      courseSearchText: $("#edit-course-search-input").val().trim()
 		    },
 		    function(data,status) {
-		    	result = {
-		            suggestions: [
-		                { "value": data.CourseCode+"-"+data.CourseName }
-		            ]
-	        	};
-	        	done(result);
+		    	if(!$.isEmptyObject(data)) {
+					result = {
+		            	suggestions: [
+							{"value": data.CourseCode + "-"+ data.CourseName}
+		            	]
+					};
+					done(result);
+				} else {
+					result = { suggestions: [] };
+					done(result);
+				}
 			});
 	    },
 	    onSelect: function (suggestion) {
@@ -252,12 +260,17 @@ $(document).ready(function() {
 		      courseSearchText: $("#remove-course-search-input").val().trim()
 		    },
 		    function(data,status) {
-		    	result = {
-		            suggestions: [
-		                { "value": data.CourseCode+"-"+data.CourseName }
-		            ]
-	        	};
-	        	done(result);
+		    	if(!$.isEmptyObject(data)) {
+					result = {
+		            	suggestions: [
+							{"value": data.CourseCode + "-"+ data.CourseName}
+		            	]
+					};
+					done(result);
+				} else {
+					result = { suggestions: [] };
+					done(result);
+				}
 			});
 	    },
 	    onSelect: function (suggestion) {
