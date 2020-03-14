@@ -6,13 +6,13 @@ navbar-nav {
 }
 .footer-custom{
 	/*fix this so that the footer is not sticky, but *actually* at the bottom*/
-	position: fixed;
+	/*position: fixed;
 	left: 0;
 	bottom: 0;
 	width: 100%;
 	background-color: red;
 	color: white;
-	text-align: center;
+	text-align: center;*/
 }
 h1 {
 
@@ -150,3 +150,23 @@ background-color: rgba(85,198,87,.6);
 .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+
+/*Credit: https://getbootstrap.com/docs/4.0/examples/sticky-footer/ */
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px; /* Margin bottom by footer height */
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px; /* Set the fixed height of the footer here */
+  line-height: 60px; /* Vertically center the text there */
+  background-color: green;
+  text-align: center;
+}

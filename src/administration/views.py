@@ -135,7 +135,7 @@ def administrationAddCourseJS(request):
 		)
 		jsResponse = {
 			'success': 'True',
-			'message': 'Successfully added ' + str(nCourseName) + ' to degree plan list!'
+		    'message': 'Successfully added ' + str(nCourseName) + ' to course list!'
 		}
 	else:
 		jsResponse = {
