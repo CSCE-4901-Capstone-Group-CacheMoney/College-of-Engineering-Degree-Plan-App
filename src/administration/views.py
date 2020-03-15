@@ -221,7 +221,7 @@ def administrationRemoveDegreeJS(request):
 		#)
 		jsResponse = {
 			'success': 'True',
-			'message': 'Successfully deleted ' + str(nDregreeName) + ' for degree plan ' + str(ncatalogYear) + ' !'
+			'message': 'Successfully deleted ' + str(nDegreeName) + ' for degree plan ' + str(ncatalogYear) + ' !'
 		}
 	else:
 		jsResponse = {
