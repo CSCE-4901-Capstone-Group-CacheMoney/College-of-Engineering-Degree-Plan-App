@@ -146,27 +146,27 @@ def administrationAddCourseJS(request):
 
 @csrf_exempt	
 def administrationAddDegreeJS(request):
-	nDregreeName = request.POST.get('nDregreeName', '')
+	nDegreeName = request.POST.get('nDegreeName', '')
 	#ncourseList = request.POST.get('ncourseList', '')
 	ncatalogYear = request.POST.get('ncatalogYear', '')
 	ndegreeInfo = request.POST.get('ndegreeInfo','')
-	value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear)
+	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear)
 	#print(c)			
 	if not value:
 		Degree.objects.create(
-		name = str(nDregreeName),
+		name = str(nDegreeName),
 		#courseList = str(ncourseList),
 		catalogYear = str(ncatalogYear),
 		degreeInfo = str(ndegreeInfo)
 		)
 		jsResponse = {
 			'success': 'True',
-			'message': 'Successfully added ' + str(nDregreeName) + ' to degree plan ' + str(ncatalogYear) + ' !'
+			'message': 'Successfully added ' + str(nDegreeName) + ' to degree plan ' + str(ncatalogYear) + ' !'
 		}
 	else:
 		jsResponse = {
 			'success': 'False',
-			'message': 'Error adding degree plan. ' + str(nDregreeName) + ' already exists!'
+			'message': 'Error adding degree plan. ' + str(nDegreeName) + ' already exists!'
 		}
 	return JsonResponse(jsResponse)
 
@@ -206,11 +206,11 @@ def administrationRemoveCourseJS(request):
 
 @csrf_exempt	
 def administrationRemoveDegreeJS(request):
-	nDregreeName = request.POST.get('nDregreeName', '')
+	nDegreeName = request.POST.get('nDegreeName', '')
 	#ncourseList = request.POST.get('ncourseList', '')
 	ncatalogYear = request.POST.get('ncatalogYear', '')
 	#ndegreeInfo = request.POST.get('ndegreeInfo','')
-	value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear).delete()
+	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear).delete()
 	#print(c)			
 	if (value[0]==1):
 		#Degree.objects.create(
@@ -227,6 +227,30 @@ def administrationRemoveDegreeJS(request):
 		jsResponse = {
 			'success': 'False',
 			'message': 'Error removing degree plan ' + str(value[0]) + ' !'
+		}
+	return JsonResponse(jsResponse)
+
+
+
+@csrf_exempt	
+def administrationEditDegreeJS(request):
+	nDegreeName = request.POST.get('nDegreeName', '')
+	#ncourseList = request.POST.get('ncourseList', '')
+	ncatalogYear = request.POST.get('ncatalogYear', '')
+	ndegreeInfo = request.POST.get('ndegreeInfo','')
+	#value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear)
+	# Update all the headlines with pub_date in 2007.
+	NbrOfRow = Degree.objects.filter(name=str(nDegreeName), catalogYear__startswith=ncatalogYear).update(degreeInfo=ndegreeInfo)
+	#print(c)			
+	if NbrOfRow==1:
+		jsResponse = {
+			'success': 'True',
+			'message': 'Successfully updated ' + str(nDegreeName) + '  degree plan for  year ' + str(ncatalogYear) + ' !'
+		}
+	else:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error unable to update ' + str(nDegreeName) + ' degree plan for year ' + str(ncatalogYear) +' !'
 		}
 	return JsonResponse(jsResponse)
 
