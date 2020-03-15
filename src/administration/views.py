@@ -135,7 +135,7 @@ def administrationAddCourseJS(request):
 		)
 		jsResponse = {
 			'success': 'True',
-			'message': 'Successfully added ' + str(nCourseName) + ' to course list!'
+		    'message': 'Successfully added ' + str(nCourseName) + ' to course list!'
 		}
 	else:
 		jsResponse = {
@@ -143,7 +143,33 @@ def administrationAddCourseJS(request):
 			'message': 'Error adding course. ' + str(nCourseName) + ' already exists!'
 		}
 	return JsonResponse(jsResponse)
-	
+
+@csrf_exempt	
+def administrationAddDegreeJS(request):
+	nDregreeName = request.POST.get('nDregreeName', '')
+	#ncourseList = request.POST.get('ncourseList', '')
+	ncatalogYear = request.POST.get('ncatalogYear', '')
+	ndegreeInfo = request.POST.get('ndegreeInfo','')
+	value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear)
+	#print(c)			
+	if not value:
+		Degree.objects.create(
+		name = str(nDregreeName),
+		#courseList = str(ncourseList),
+		catalogYear = str(ncatalogYear),
+		degreeInfo = str(ndegreeInfo)
+		)
+		jsResponse = {
+			'success': 'True',
+			'message': 'Successfully added ' + str(nDregreeName) + ' to degree plan ' + str(ncatalogYear) + ' !'
+		}
+	else:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error adding degree plan. ' + str(nDregreeName) + ' already exists!'
+		}
+	return JsonResponse(jsResponse)
+
 @csrf_exempt
 def administrationRemoveCourseJS(request):
 	courseSearchText = request.POST.get('courseSearchText', '')		#get message from front end
@@ -176,6 +202,35 @@ def administrationRemoveCourseJS(request):
 		}
 		
 	return JsonResponse(jsResponse)
+
+
+@csrf_exempt	
+def administrationRemoveDegreeJS(request):
+	nDregreeName = request.POST.get('nDregreeName', '')
+	#ncourseList = request.POST.get('ncourseList', '')
+	ncatalogYear = request.POST.get('ncatalogYear', '')
+	#ndegreeInfo = request.POST.get('ndegreeInfo','')
+	value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear).delete()
+	#print(c)			
+	if (value[0]==1):
+		#Degree.objects.create(
+		#name = str(nDregreeName),
+		#courseList = str(ncourseList),
+		#catalogYear = str(ncatalogYear),
+		#degreeInfo = str(ndegreeInfo)
+		#)
+		jsResponse = {
+			'success': 'True',
+			'message': 'Successfully deleted ' + str(nDregreeName) + ' for degree plan ' + str(ncatalogYear) + ' !'
+		}
+	else:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error removing degree plan ' + str(value[0]) + ' !'
+		}
+	return JsonResponse(jsResponse)
+
+
 
 # TODO back-end code for resources
 def administrationViewResource(request):
