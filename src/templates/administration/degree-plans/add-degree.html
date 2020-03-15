@@ -1,9 +1,6 @@
-<!-- page used for selecting a degree plan to add -->
-
 {% extends 'administration/base.html' %}
 
 {% block content %}
-
 <style>
   /*some custom css for padding the search dropdown*/
   .select2-container--default .select2-selection--single {
@@ -13,54 +10,46 @@
 
 <div class="container">
   <div class="page-header text-center">
-    <h4>Add Degree</h4>
+    <h4>Add Course</h4>
   </div>
     <div class="row">
-        <div class="col-lg-3"></div>
-            <div class="col-lg-6">
-                <form>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" style="padding-right: 3em;" for="degreeaddinputGroupSelect01">Select College</label>
-                      </div>
-                      <select class="custom-select select2" id="degreeaddinputGroupSelect-1">
-                        <option disabled selected value> -- select an option -- </option>
-                        <option>College of Engineering</option>
-                        <option>College of Education</option> 
-                        <option>College of Health and Public Service</option> 
-                        <option>College of Information</option> 
-                        <option>College of Liberal Arts and Social Sciences</option> 
-                      </select>
-                    </div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" style="padding-right: 3em;" for="degreeaddinputGroupSelect02">Select Degree</label>
-                      </div>
-                      <select class="custom-select select2" id="degreeaddinputGroupSelect-2">
-                        <option disabled selected value> -- select an option -- </option>
-                        <option>Computer Science</option>
-                        <option>Computer Engineering</option> 
-                        <option>Information Technology</option> 
-                        <option>Mechanical Engineering</option> 
-                        <option>Material Science</option>
-                      </select>
-                    </div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" for="degreeaddinputGroupSelect03">Select Catalog Year</label>
-                      </div>
-                      <select class="custom-select select2" id="degreeaddinputGroupSelect-3">
-                        <option disabled selected value> -- select an option -- </option>
-                             <option>2020</option>
-                             <option>2019</option> 
-                             <option>2018</option> 
-                             <option>2017</option> 
-                             <option>2016</option>
-                      </select>
-                    </div>
-                    <button type="button" class="btn btn-outline-success btn-block">Add Degree</button>
-                </form>
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div id="add-course-form" class="mb-3">
+              
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">College Name</span>
+                </div>
+                <input id="degreeaddinputGroupSelect-1" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">Degree Name</span>
+                </div>
+                <input id="degreeaddinputGroupSelect-2" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.9em;" id="inputGroup-sizing-default-2">Catalog Year</span>
+                </div>
+                <input id="add-course-name" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+
+              <!-- Example input(?): Core, University, Electrical Engineering, Free Electives -->
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Groupings</span>
+                </div>
+                <input id="add-course-prerequisites" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
+              </div>
+
+              <button id="add-course-submit-btn" type="button" class="btn btn-outline-success btn-block">Add Base Degree</button>
+              <div id="add-course-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
             </div>
+        </div>
     </div>
     <div class="row">
       <!-- where results can go -->
