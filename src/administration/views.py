@@ -144,29 +144,45 @@ def administrationAddCourseJS(request):
 		}
 	return JsonResponse(jsResponse)
 
+def pkLookUpJS(request):
+	pk = request.POST.get('pk', '')
+	content={}
+	c = Degree.objects.get(id = pk)
+	content["CourseDept"] 	= str(c.courseDept)
+	content["CourseID"] 	= str(c.courseID) 
+	content["CourseName"] 	= str(c.name)
+	content["Description"] 	= str(c.description)
+	content["Category"] 	= str(c.category)
+	content["Hours"] 		= str(c.hours)
+	content["CourseAvailability"] = str(c.semester)
+	content["PrereqCount"] 	= str(c.prereqCount)
+	content["CoreqCount"] 	= str(c.coreqCount)
+	
+	return JsonResponse(content)
+
 @csrf_exempt	
 def administrationAddDegreeJS(request):
-	nDregreeName = request.POST.get('nDregreeName', '')
+	nDegreeName = request.POST.get('nDegreeName', '')
 	#ncourseList = request.POST.get('ncourseList', '')
 	ncatalogYear = request.POST.get('ncatalogYear', '')
 	ndegreeInfo = request.POST.get('ndegreeInfo','')
-	value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear)
+	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear)
 	#print(c)			
 	if not value:
 		Degree.objects.create(
-		name = str(nDregreeName),
+		name = str(nDegreeName),
 		#courseList = str(ncourseList),
 		catalogYear = str(ncatalogYear),
 		degreeInfo = str(ndegreeInfo)
 		)
 		jsResponse = {
 			'success': 'True',
-			'message': 'Successfully added ' + str(nDregreeName) + ' to degree plan ' + str(ncatalogYear) + ' !'
+			'message': 'Successfully added ' + str(nDegreeName) + ' to degree plan ' + str(ncatalogYear) + ' !'
 		}
 	else:
 		jsResponse = {
 			'success': 'False',
-			'message': 'Error adding degree plan. ' + str(nDregreeName) + ' already exists!'
+			'message': 'Error adding degree plan. ' + str(nDegreeName) + ' already exists!'
 		}
 	return JsonResponse(jsResponse)
 
