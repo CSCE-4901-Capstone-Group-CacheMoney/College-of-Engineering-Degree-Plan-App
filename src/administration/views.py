@@ -119,6 +119,62 @@ def administrationViewCourseJS(request):
 	return JsonResponse(content)
 
 @csrf_exempt
+def administrationEditCourseJS(request):
+
+	nCourseName = request.POST.get('CourseName', '')
+	nCourseDept = request.POST.get('DepartmentID', '')
+	nCourseID = request.POST.get('CourseNumber', '')
+	nCoursePrereqCount = request.POST.get('CoursePrerequisites', '')
+	nCourseCoreqCount = request.POST.get('CourseCorequisites', '')
+	nCourseHours = request.POST.get('CourseHours', '')
+	nCourseAvail = request.POST.get('CourseAvailability', '')
+	print (nCourseAvail)
+
+	if len(str(nCourseDept)) != 4 or len(str(nCourseID)) != 4:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error adding course. Course Department and Number must be 4 characters!'
+		}
+
+	else:
+		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
+		#if nCourseAvail == "0":
+		#	nCourseAvail = "Spring"
+		#elif nCourseAvail == "1":
+		#	nCourseAvail = "Fall"
+		#else:
+		#	nCourseAvail = "Both"
+
+		c.update(
+			name = str(nCourseName),
+			courseDept = str(nCourseDept).upper(),
+			courseID = nCourseID,
+			prereqCount = nCoursePrereqCount,
+			coreqCount = nCourseCoreqCount,
+			hours = nCourseHours,
+			semester = str(nCourseAvail)	
+			)
+		print(c)			
+
+		if c==1:
+			jsResponse = {
+				'success': 'True',
+				'message': 'Successfully added ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' to course list!'
+			}
+		elif c>1:
+			jsResponse = {
+				'success': 'False',
+				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' contains too many courses!'
+			}
+		elif c<1:
+			jsResponse = {
+				'success': 'False',
+				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + " isn't a course!"
+			}
+
+	return JsonResponse(jsResponse)
+
+@csrf_exempt
 def administrationAddCourseJS(request):	
 	nCourseName = request.POST.get('nCourseName', '')
 	nCourseDept = request.POST.get('nCourseDept', '')
