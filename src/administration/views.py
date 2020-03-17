@@ -81,28 +81,104 @@ def administrationViewCourseJS(request):
 			content["CourseAvailability"] = str(c.semester)
 			content["PrereqCount"] = str(c.prereqCount)
 			content["CoreqCount"] = str(c.coreqCount)
+			content["ID"] = str(c.id)
+
 			break
 			#result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
 					#   "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
 					#   "CoreqCount": str(c.coreqCount)}
 			# content.append(dict(result)) 
 	else:
-		for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):
-			content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
-			content["CourseName"] = str(c.name)
-			content["Description"] = str(c.description)
-			content["Category"] = str(c.category)
-			content["Hours"] = str(c.hours)
-			content["CourseAvailability"] = str(c.semester)
-			content["PrereqCount"] = str(c.prereqCount)
-			content["CoreqCount"] = str(c.coreqCount)
-			break
-			# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
-			# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
-			# 		  "CoreqCount": str(c.coreqCount)}
-			# content.append(dict(result)) 
-	#print (content)
+		if len(str(courseSearchText)) > 4:		#search course names
+			for c in Course.objects.filter(name__istartswith=str(courseSearchText)):
+				content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
+				content["CourseName"] = str(c.name)
+				content["Description"] = str(c.description)
+				content["Category"] = str(c.category)
+				content["Hours"] = str(c.hours)
+				content["CourseAvailability"] = str(c.semester)
+				content["PrereqCount"] = str(c.prereqCount)
+				content["CoreqCount"] = str(c.coreqCount)
+				content["ID"] = str(c.id)
+
+				break
+
+		else:
+			for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):		#search course dept
+				content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) #CourseDept CourseID
+				content["CourseName"] = str(c.name)
+				content["Description"] = str(c.description)
+				content["Category"] = str(c.category)
+				content["Hours"] = str(c.hours)
+				content["CourseAvailability"] = str(c.semester)
+				content["PrereqCount"] = str(c.prereqCount)
+				content["CoreqCount"] = str(c.coreqCount)
+				content["ID"] = str(c.id)
+
+				break
+				# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
+				# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
+				# 		  "CoreqCount": str(c.coreqCount)}
+				# content.append(dict(result)) 
+		#print (content)
+
 	return JsonResponse(content)
+
+@csrf_exempt
+def administrationEditCourseJS(request):
+
+	nCourseName = request.POST.get('CourseName', '')
+	nCourseDept = request.POST.get('DepartmentID', '')
+	nCourseID = request.POST.get('CourseNumber', '')
+	nCoursePrereqCount = request.POST.get('CoursePrerequisites', '')
+	nCourseCoreqCount = request.POST.get('CourseCorequisites', '')
+	nCourseHours = request.POST.get('CourseHours', '')
+	nCourseAvail = request.POST.get('CourseAvailability', '')
+	print (nCourseAvail)
+
+	if len(str(nCourseDept)) != 4 or len(str(nCourseID)) != 4:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error adding course. Course Department and Number must be 4 characters!'
+		}
+
+	else:
+		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
+		#if nCourseAvail == "0":
+		#	nCourseAvail = "Spring"
+		#elif nCourseAvail == "1":
+		#	nCourseAvail = "Fall"
+		#else:
+		#	nCourseAvail = "Both"
+
+		c.update(
+			name = str(nCourseName),
+			courseDept = str(nCourseDept).upper(),
+			courseID = nCourseID,
+			prereqCount = nCoursePrereqCount,
+			coreqCount = nCourseCoreqCount,
+			hours = nCourseHours,
+			semester = str(nCourseAvail)	
+			)
+		print(c)			
+
+		if c==1:
+			jsResponse = {
+				'success': 'True',
+				'message': 'Successfully added ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' to course list!'
+			}
+		elif c>1:
+			jsResponse = {
+				'success': 'False',
+				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' contains too many courses!'
+			}
+		elif c<1:
+			jsResponse = {
+				'success': 'False',
+				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + " isn't a course!"
+			}
+
+	return JsonResponse(jsResponse)
 
 @csrf_exempt
 def administrationAddCourseJS(request):	
@@ -114,34 +190,44 @@ def administrationAddCourseJS(request):
 	nCourseHours = request.POST.get('nCourseHours', '')
 	nCourseAvail = request.POST.get('nCourseAvail', '')
 	print (nCourseAvail)
-	c = Course.objects.filter(courseDept__istartswith=str(nCourseDept), courseID__startswith=nCourseID)
-	#print(c)			
-	if not c:
-		if nCourseAvail == "0":
-			nCourseAvail = "Spring"
-		elif nCourseAvail == "1":
-			nCourseAvail = "Fall"
-		else:
-			nCourseAvail = "Both"
-		print (nCourseAvail)
-		Course.objects.create(
-		name = str(nCourseName),
-		courseDept = str(nCourseDept),
-		courseID = nCourseID,
-		prereqCount = nCoursePrereqCount,
-		coreqCount = nCourseCoreqCount,
-		hours = nCourseHours,
-		semester = str(nCourseAvail)	
-		)
-		jsResponse = {
-			'success': 'True',
-		    'message': 'Successfully added ' + str(nCourseName) + ' to course list!'
-		}
-	else:
+
+	if len(str(nCourseDept)) != 4 or len(str(nCourseID)) != 4:
 		jsResponse = {
 			'success': 'False',
-			'message': 'Error adding course. ' + str(nCourseName) + ' already exists!'
+			'message': 'Error adding course. Course Department and Number must be 4 characters!'
 		}
+
+	else:
+		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
+		#print(c)			
+		if not c:
+			if nCourseAvail == "0":
+				nCourseAvail = "Spring"
+			elif nCourseAvail == "1":
+				nCourseAvail = "Fall"
+			else:
+				nCourseAvail = "Both"
+			print (nCourseAvail)
+			Course.objects.create(
+			name = str(nCourseName),
+			courseDept = str(nCourseDept).upper(),
+			courseID = nCourseID,
+			prereqCount = nCoursePrereqCount,
+			coreqCount = nCourseCoreqCount,
+			hours = nCourseHours,
+			semester = str(nCourseAvail)	
+			)
+			jsResponse = {
+				'success': 'True',
+				'message': 'Successfully added ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' to course list!'
+			}
+
+		else:
+			jsResponse = {
+				'success': 'False',
+				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' already exists!'
+			}
+
 	return JsonResponse(jsResponse)
 
 def pkLookUpJS(request):
@@ -214,7 +300,7 @@ def administrationRemoveCourseJS(request):
 	else:
 		jsResponse = {
 			'success': 'False',
-			'message': 'Error removing course, format as "DepartmentName CourseNumber"'
+			'message': 'Error removing course, format as "MATH 1710"'
 		}
 		
 	return JsonResponse(jsResponse)
@@ -222,11 +308,11 @@ def administrationRemoveCourseJS(request):
 
 @csrf_exempt	
 def administrationRemoveDegreeJS(request):
-	nDregreeName = request.POST.get('nDregreeName', '')
+	nDegreeName = request.POST.get('nDegreeName', '')
 	#ncourseList = request.POST.get('ncourseList', '')
 	ncatalogYear = request.POST.get('ncatalogYear', '')
 	#ndegreeInfo = request.POST.get('ndegreeInfo','')
-	value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear).delete()
+	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear).delete()
 	#print(c)			
 	if (value[0]==1):
 		#Degree.objects.create(
@@ -237,12 +323,36 @@ def administrationRemoveDegreeJS(request):
 		#)
 		jsResponse = {
 			'success': 'True',
-			'message': 'Successfully deleted ' + str(nDregreeName) + ' for degree plan ' + str(ncatalogYear) + ' !'
+			'message': 'Successfully deleted ' + str(nDegreeName) + ' for degree plan ' + str(ncatalogYear) + ' !'
 		}
 	else:
 		jsResponse = {
 			'success': 'False',
 			'message': 'Error removing degree plan ' + str(value[0]) + ' !'
+		}
+	return JsonResponse(jsResponse)
+
+
+
+@csrf_exempt	
+def administrationEditDegreeJS(request):
+	nDegreeName = request.POST.get('nDegreeName', '')
+	#ncourseList = request.POST.get('ncourseList', '')
+	ncatalogYear = request.POST.get('ncatalogYear', '')
+	ndegreeInfo = request.POST.get('ndegreeInfo','')
+	#value = Degree.objects.filter(name__istartswith=str(nDregreeName), catalogYear__startswith=ncatalogYear)
+	# Update all the headlines with pub_date in 2007.
+	NbrOfRow = Degree.objects.filter(name=str(nDegreeName), catalogYear__startswith=ncatalogYear).update(degreeInfo=ndegreeInfo)
+	#print(c)			
+	if NbrOfRow==1:
+		jsResponse = {
+			'success': 'True',
+			'message': 'Successfully updated ' + str(nDegreeName) + '  degree plan for  year ' + str(ncatalogYear) + ' !'
+		}
+	else:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error unable to update ' + str(nDegreeName) + ' degree plan for year ' + str(ncatalogYear) +' !'
 		}
 	return JsonResponse(jsResponse)
 
