@@ -81,6 +81,8 @@ def administrationViewCourseJS(request):
 			content["CourseAvailability"] = str(c.semester)
 			content["PrereqCount"] = str(c.prereqCount)
 			content["CoreqCount"] = str(c.coreqCount)
+			content["ID"] = str(c.id)
+
 			break
 			#result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
 					#   "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
@@ -97,11 +99,13 @@ def administrationViewCourseJS(request):
 				content["CourseAvailability"] = str(c.semester)
 				content["PrereqCount"] = str(c.prereqCount)
 				content["CoreqCount"] = str(c.coreqCount)
+				content["ID"] = str(c.id)
+
 				break
 
 		else:
 			for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):		#search course dept
-				content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
+				content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) #CourseDept CourseID
 				content["CourseName"] = str(c.name)
 				content["Description"] = str(c.description)
 				content["Category"] = str(c.category)
@@ -109,6 +113,8 @@ def administrationViewCourseJS(request):
 				content["CourseAvailability"] = str(c.semester)
 				content["PrereqCount"] = str(c.prereqCount)
 				content["CoreqCount"] = str(c.coreqCount)
+				content["ID"] = str(c.id)
+
 				break
 				# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
 				# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
