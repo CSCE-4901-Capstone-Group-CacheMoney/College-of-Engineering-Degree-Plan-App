@@ -73,7 +73,8 @@ def administrationViewCourseJS(request):
 		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
 		res = temp.match(courseSearchText).groups() 
 		for c in Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]):
-			content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
+			content["CourseDept"] =	str(c.courseDept)
+			content["CourseID"] = str(c.courseID)
 			content["CourseName"] = str(c.name)
 			content["Description"] = str(c.description)
 			content["Category"] = str(c.category)
@@ -91,7 +92,8 @@ def administrationViewCourseJS(request):
 	else:
 		if len(str(courseSearchText)) > 4:		#search course names
 			for c in Course.objects.filter(name__istartswith=str(courseSearchText)):
-				content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) 
+				content["CourseDept"] =	str(c.courseDept)
+				content["CourseID"] = str(c.courseID)
 				content["CourseName"] = str(c.name)
 				content["Description"] = str(c.description)
 				content["Category"] = str(c.category)
@@ -105,7 +107,8 @@ def administrationViewCourseJS(request):
 
 		else:
 			for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):		#search course dept
-				content["CourseCode"] =	str(c.courseDept)+ " " + str(c.courseID) #CourseDept CourseID
+				content["CourseDept"] =	str(c.courseDept)
+				content["CourseID"] = str(c.courseID)		
 				content["CourseName"] = str(c.name)
 				content["Description"] = str(c.description)
 				content["Category"] = str(c.category)
