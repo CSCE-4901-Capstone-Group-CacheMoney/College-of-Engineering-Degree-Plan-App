@@ -136,3 +136,12 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
+// credit: https://codepen.io/bewo
+function sanatize(input) {
+    return input.replace(/<script[^>]*?>.*?<\/script>/gi, '').
+                 replace(/<[\/\!]*?[^<>]*?>/gi, '').
+                 replace(/<style[^>]*?>.*?<\/style>/gi, '').
+                 replace(/<![\s\S]*?--[ \t\n\r]*>/gi, '').
+                 replace(/&nbsp;/g, '');
+}
