@@ -249,7 +249,6 @@ def pkLookUpJS(request):
 	
 	return JsonResponse(content)
 
-
 @csrf_exempt	
 def administrationAddDegreeJS(request):
 	nDegreeName = request.POST.get('nDegreeName', '')
