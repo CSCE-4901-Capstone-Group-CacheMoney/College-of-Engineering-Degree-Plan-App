@@ -11,6 +11,11 @@ $(document).ready(function() {
 	});
 
 	/*-----------------------view course js----------------------------------------- */
+    // force uppercase letters only
+    $("#view-course-search-input").on('keyup', function(){
+	    $(this).val(sanatize($(this).val().toUpperCase()));
+	});
+
 	// auto complete search for view course
 	$('#view-course-search-input').autocomplete({
 	    lookup: function (query, done) {
@@ -18,13 +23,13 @@ $(document).ready(function() {
 			var str1 = "undefined";
 	        $.post("/administration/view-course/js/",
 		    {
-		      courseSearchText: $("#view-course-search-input").val().trim()
+		      courseSearchText: sanatize($("#view-course-search-input").val().trim())
 			},
 		    function(data,status) {
 				if(!$.isEmptyObject(data)) {
 					result = {
 		            	suggestions: [
-							{"value": data.CourseCode + "-"+ data.CourseName}
+							{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
 		            	]
 					};
 					done(result);
@@ -45,13 +50,13 @@ $(document).ready(function() {
 		// send request to the back-end...
   		$.post("/administration/view-course/js/",
 	    {
-	      courseSearchText: $("#view-course-search-input").val().trim()
+	      courseSearchText: sanatize($("#view-course-search-input").val().trim())
 	    },
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
-		    	$("#view-course-deparment-id").val(data.CourseCode.split(" ")[0].trim());
-				$("#view-course-number").val(data.CourseCode.split(" ")[1].trim());
+		    	$("#view-course-deparment-id").val(data.CourseDept);
+				$("#view-course-number").val(data.CourseID);
 				$("#view-course-name").val(data.CourseName);
 
 				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
@@ -96,19 +101,24 @@ $(document).ready(function() {
 
 
     /*-----------------------edit course js----------------------------------------- */
+	// force uppercase letters only
+    $("#edit-course-search-input").on('keyup', function(){
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+
+	});
     // auto complete search for edit course
 	$('#edit-course-search-input').autocomplete({
 	    lookup: function (query, done) {
 	        var result;
 	        $.post("/administration/view-course/js/",
 		    {
-		      courseSearchText: $("#edit-course-search-input").val().trim()
+		      courseSearchText: sanatize($("#edit-course-search-input").val().trim())
 		    },
 		    function(data,status) {
 		    	if(!$.isEmptyObject(data)) {
 					result = {
 		            	suggestions: [
-							{"value": data.CourseCode + "-"+ data.CourseName}
+							{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
 		            	]
 					};
 					done(result);
@@ -129,14 +139,15 @@ $(document).ready(function() {
 		// send request to the back-end...
   		$.post("/administration/view-course/js/",
 	    {
-	      courseSearchText: $("#edit-course-search-input").val().trim()
+	      courseSearchText: sanatize($("#edit-course-search-input").val().trim())
 	    },
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
-		    	$("#edit-course-deparment-id").val(data.CourseCode.split(" ")[0].trim());
-				$("#edit-course-number").val(data.CourseCode.split(" ")[1].trim());
+		    	$("#edit-course-deparment-id").val(data.CourseDept);
+				$("#edit-course-number").val(data.CourseID);
 				$("#edit-course-name").val(data.CourseName);
+				$("#edit-course-id").val(data.ID);
 
 				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
 					$("#radio-spring").attr('checked', true);
@@ -182,13 +193,14 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/edit-course/js/",
    		{
-   			DepartmentID: $("#edit-course-deparment-id").val().trim(),
-			CourseNumber: $("#edit-course-number").val().trim(),
-			CourseName: $("#edit-course-name").val().trim(),
-			CourseAvailability: $("input[name='inlineRadioOptions']:checked").val(),
-			CoursePrerequisites: $("#edit-course-prerequisites").val().trim(),
-			CourseCorequisites: $("#edit-course-corequisites").val().trim(),
-			CourseHours: $("#edit-course-hours").val().trim()
+   			DepartmentID: sanatize($("#edit-course-deparment-id").val().trim()),
+			CourseNumber: sanatize($("#edit-course-number").val().trim()),
+			CourseName: sanatize($("#edit-course-name").val().trim()),
+			CourseAvailability: sanatize($("input[name='inlineRadioOptions']:checked").val()),
+			CoursePrerequisites: sanatize($("#edit-course-prerequisites").val().trim()),
+			CourseCorequisites: sanatize($("#edit-course-corequisites").val().trim()),
+			CourseHours: sanatize($("#edit-course-hours").val().trim()),
+			CourseID: sanatize($("#edit-course-id").val().trim())
    		},
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("success") != -1) {
@@ -211,18 +223,31 @@ $(document).ready(function() {
     });
 
     /*-----------------------add course js----------------------------------------- */
+    // force letters in dept only
+    // force uppercase letters only
+    $("#add-course-deparment-id").on('keyup', function(){
+    	$(this).val(sanatize($(this).val().replace(/[0-9]/gi,'')));
+	    $(this).val(sanatize($(this).val().toUpperCase()));
+
+	});
+	
+    // force numbers in dept only
+	$("#add-course-number").on('keyup', function(){
+    	$(this).val(sanatize($(this).val().replace(/[a-z]/gi,'')));
+
+	});
 	// also capture enter key to trigger above function
     $(document).on("click", "#add-course-submit-btn", function(e) {
     	// send request to the back-end...
 		$.post("/administration/add-course/js/",
    		{
-   			nCourseDept: $("#add-course-deparment-id").val().trim(),
-			nCourseID: $("#add-course-number").val().trim(),
-			nCourseName: $("#add-course-name").val().trim(),
-			nCourseAvail: $("input[name='inlineRadioOptions']:checked").val(),
-			nCoursePrereqCount: $("#add-course-prerequisites").val().trim(),
-			nCourseCoreqCount: $("#add-course-corequisites").val().trim(),
-			nCourseHours: $("#add-course-hours").val().trim()
+   			nCourseDept: sanatize($("#add-course-deparment-id").val().trim()),
+			nCourseID: sanatize($("#add-course-number").val().trim()),
+			nCourseName: sanatize($("#add-course-name").val().trim()),
+			nCourseAvail: sanatize($("input[name='inlineRadioOptions']:checked").val()),
+			nCoursePrereqCount: sanatize($("#add-course-prerequisites").val().trim()),
+			nCourseCoreqCount: sanatize($("#add-course-corequisites").val().trim()),
+			nCourseHours: sanatize($("#add-course-hours").val().trim())
    		},
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("true") != -1) {
@@ -251,19 +276,25 @@ $(document).ready(function() {
 
 
     /*-----------------------remove course js----------------------------------------- */
+    // force uppercase letters only
+    $("#remove-course-search-input").on('keyup', function(){
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+
+	});
+
     // auto complete search for remove course
 	$('#remove-course-search-input').autocomplete({
 	    lookup: function (query, done) {
 	        var result;
 	        $.post("/administration/view-course/js/",
 		    {
-		      courseSearchText: $("#remove-course-search-input").val().trim()
+		      courseSearchText: sanatize($("#remove-course-search-input").val().trim())
 		    },
 		    function(data,status) {
 		    	if(!$.isEmptyObject(data)) {
 					result = {
 		            	suggestions: [
-							{"value": data.CourseCode + "-"+ data.CourseName}
+							{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
 		            	]
 					};
 					done(result);
@@ -284,14 +315,15 @@ $(document).ready(function() {
 		// send request to the back-end...
   		$.post("/administration/view-course/js/",
 	    {
-	      courseSearchText: $("#remove-course-search-input").val().trim()
+	      courseSearchText: sanatize($("#remove-course-search-input").val().trim())
 	    },
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
 	    		// add data to fields below...
-		    	$("#remove-course-deparment-id").val(data.CourseCode.split(" ")[0].trim());
-				$("#remove-course-number").val(data.CourseCode.split(" ")[1].trim());
+		    	$("#remove-course-deparment-id").val(data.CourseDept);
+				$("#remove-course-number").val(data.CourseID);
 				$("#remove-course-name").val(data.CourseName);
+				$("#remove-course-id").val(data.ID);
 
 				if(data.CourseAvailability.toLowerCase().trim().indexOf("spring") != -1)
 					$("#radio-spring").attr('checked', true);
@@ -338,7 +370,8 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/remove-course/js/",
    		{
-   			courseSearchText: $("#remove-course-search-input").val().trim()
+   			courseSearchText: sanatize($("#remove-course-deparment-id").val().trim() + 
+   			" " + $("#remove-course-number").val().trim())
    		},
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("success") != -1) {
