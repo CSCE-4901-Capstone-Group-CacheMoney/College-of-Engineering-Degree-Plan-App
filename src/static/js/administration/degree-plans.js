@@ -58,7 +58,7 @@ $(document).ready(function() {
 			var requireHours = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
 
 			jsonResponse["Catagories"][catagory] = {};
-			jsonResponse["Catagories"][catagory]["Required Hours"] = requireHours;
+			jsonResponse["Catagories"][catagory]["Required # of Courses"] = requireHours;
 			jsonResponse["Catagories"][catagory]["Courses"] = [];
 
 			$(this).children(".catagory-courses").children("tr").each(function(index) {
@@ -113,7 +113,7 @@ $(document).ready(function() {
     			   '</div>' +
     			   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
     			   '<span class="input-group-text" style="padding-right: 1.0em;">' +
-    			   'Required Hours</span>' +
+    			   'Required # of Courses</span>' +
     			   '</div>' +
     			   '<input type="text" class="form-control mt-2">' +
     			   '<table class="catagory-courses w-100">' +
