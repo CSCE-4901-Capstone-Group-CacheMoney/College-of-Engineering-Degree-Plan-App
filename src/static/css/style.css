@@ -4,7 +4,7 @@ navbar-brand {
 navbar-nav {
 	display:inline-block;
 }
-.footer-custom{
+.footer-custom {
 	/*fix this so that the footer is not sticky, but *actually* at the bottom*/
 	/*position: fixed;
 	left: 0;
