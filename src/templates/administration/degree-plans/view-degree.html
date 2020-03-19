@@ -9,6 +9,7 @@
   .select2-container--default .select2-selection--single {
     padding-bottom: 2.2em;
   }
+  th, td{ padding: 7px;}
 </style>
 
 <div class="container">
@@ -64,6 +65,42 @@
     </div>
     <div class="row">
       <!-- where results can go -->
+      <!---->
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">Degree Name</span>
+      </div> 
+      <!----->
+      <div class="page-header text-center">
+        <input id="view-degree-name" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+      </div>
+      <table>
+        <tr>
+          <th>Computer Science and Engineering</th>
+          <th>Electrical Engineering</th>
+          <th>Computer Science and Engineering Core Electives</th>
+          <th>Computer Science and Engineering Free Electives</th>
+          <th>Computer Science and Engineering Breadth Electives</th>
+        </tr>   
+        <tr>
+          <td>CSCE 1030</td>
+          <td>EENG 2710</td>
+          <td>CSCE 3530</td>
+          <td>CSCE 4890</td>
+          <td>Take any 3*** or 4*** level course not already taken</td>
+        </tr>
+        <tr>
+          <td>CSCE 1040</td>
+          <td></td>
+          <td>CSCE 4115</td>
+        </tr>
+        <tr>
+          <td>CSCE 2100</td>
+        </tr>
+        <tr>
+          <td>CSCE 2110</td>
+        </tr>
+      </table>
+
     </div>
 </div>
 
