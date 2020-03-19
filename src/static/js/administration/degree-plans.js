@@ -113,7 +113,7 @@ $(document).ready(function() {
     			   '</div>' +
     			   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
     			   '<span class="input-group-text" style="padding-right: 1.0em;">' +
-    			   'Required Courses</span>' +
+    			   'Required Hours</span>' +
     			   '</div>' +
     			   '<input type="text" class="form-control mt-2">' +
     			   '<table class="catagory-courses w-100">' +
