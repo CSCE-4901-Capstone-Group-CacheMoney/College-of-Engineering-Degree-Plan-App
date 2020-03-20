@@ -256,6 +256,9 @@ def administrationAddDegreeJS(request):
 	ndegreeInfo = request.POST.get('ndegreeInfo','')
 	nCollegeName = request.POST.get('nCollegeName','')
 	nspecialty = request.POST.get('nspecialty','')
+	if nspecialty=='':
+		nspecialty='None'
+
 	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty))
 	#print(c)			
 	if not value:
@@ -318,6 +321,9 @@ def administrationRemoveDegreeJS(request):
 	ncatalogYear = request.POST.get('ncatalogYear', '')
 	nCollegeName = request.POST.get('nCollegeName','')
 	nspecialty = request.POST.get('nspecialty','')
+	if nspecialty=='':
+		nspecialty='None'
+
 	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).delete()
 
 	#print(c)			
@@ -342,6 +348,9 @@ def administrationEditDegreeJS(request):
 	ndegreeInfo = request.POST.get('ndegreeInfo','')
 	nCollegeName = request.POST.get('nCollegeName','')
 	nspecialty = request.POST.get('nspecialty','')
+	if nspecialty=='':
+		nspecialty='None'
+		
 	NbrOfRow = Degree.objects.filter(name=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).update(degreeInfo=ndegreeInfo)
 	#print(c)			
 	if NbrOfRow==1:
