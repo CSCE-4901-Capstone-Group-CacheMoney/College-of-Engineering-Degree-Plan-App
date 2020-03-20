@@ -147,23 +147,99 @@ $(document).ready(function() {
     });
 
 
-    /*-----------------------remove degree js----------------------------------------- */
-	$(document).on("click", "#remove-degree-submit-btn", function(e) {
+	/*-----------------------remove degree js----------------------------------------- */
+	
+	$('#remove-degree-search-input').on('keypress' , function(e) {
+     	var searchText = sanatize($(this).val().trim());
+		// auto complete search for view degree
+		$(this).autocomplete({
+		    lookup: function (query, done) {
+				var result;
+				$.post("/administration/view-degree/js/",
+			    {
+					degreeSearchText: sanatize(searchText)
+				},
+			    function(data,status) {
+					if(!$.isEmptyObject(data)) {
+						result = {
+			            	suggestions: [
+								{"value": data.nDegreeName + " - " + data.ncatalogYear}
+			            	]
+						};
+						done(result);
+					} else {
+						result = { suggestions: [] };
+						done(result);
+					}
+				});
+		    },
+		    onSelect: function (suggestion) {
+				$("#remove-degree-search-input").val(suggestion.value.split("-")[0].trim());
+				$("#remove-degree-search-btn").click();
+		    }
+		});
+	});
+
+	$(document).on("click", "#remove-degree-search-btn", function(e) {
     	// send request to the back-end...
-		$.post("/administration/remove-degree/js/",
+		$.post("/administration/view-degree/js/",
    		{
-   			// nDegreeCollegeName: $("#degreeremoveinputGroupSelect-1").val().trim(),
-   			nDegreeName: $("#degreeremoveinputGroupSelect-2").val().trim(),
-			ncatalogYear: $("#degreeremoveinputGroupSelect-3").val().trim()
-			// ndegreeInfo: $("#degreeremoveinputGroupSelect-4").val().trim()
+			degreeSearchText: sanatize($("#remove-degree-search-input").val().trim())
    		},
    		function(data,status) {
-   			if(data.success.toLowerCase().indexOf("true") != -1) {
-   				$("#remove-degree-submit-alert").removeClass("alert-danger");
+			if(!$.isEmptyObject(data)) {
+	    		// add data to fields below...
+		    	$("#remove-degree-name").val(data.nDegreeName);
+				$("#remove-college-name").val(data.nCollegeName);
+				$("#remove-catalog-year").val(data.ncatalogYear);
+				$("#remove-specialization").val(data.nspecialty);
+
+				// now show the input fields to the user
+				$("#remove-degree-alert").removeClass("alert-danger");
+				$("#remove-degree-alert").addClass("alert-success");
+				$("#remove-degree-alert").text("Degree Found!");
+				$("#remove-degree-alert").removeClass("d-none");
+
+				
+				// show form and scroll degree fields into view
+				$("#remove-degree-form").removeClass("d-none");
+				$('html, body').animate({
+			    	scrollTop: $("#remove-degree-search-btn").offset().top -20,
+			    	scrollLeft: $("#remove-degree-search-btn").offset().left -20
+				});
+
+   			} else {
+				$("#remove-degree-alert").addClass("d-none");
+   				$("#remove-degree-alert").removeClass("alert-success");
+				$("#remove-degree-alert").addClass("alert-danger");
+				$("#remove-degree-alert").text("Cannot Find Degree!");
+				$("#remove-degree-alert").removeClass("d-none");
+   			}
+   		});
+    });
+
+    // also capture enter key to trigger above function
+    $("#remove-degree-search-input").keypress(function(e) {
+        if(e.which == 13) { $("#remove-degree-search-btn").click(); }
+	});
+	
+	$(document).on("click", "#remove-degree-submit-btn", function(e) {
+		// send request to the back-end...
+		$.post("/administration/remove-degree/js/",
+   		{
+			   degreeSearchText: sanatize($("#remove-degree-name").val().trim()),
+			   nDegreeName: sanatize($("#remove-degree-name").val().trim()),
+			   ncatalogYear: sanatize($("#remove-catalog-year").val().trim()),
+			   nCollegeName: sanatize($("#remove-college-name").val().trim()),
+			   nspecialty: sanatize($("#remove-specialization").val().trim())
+   		},
+   		function(data,status) {
+   			if(data.success.toLowerCase().indexOf("success") != -1) {
+   				$("#remove-degeee-submit-alert").removeClass("alert-danger");
 				$("#remove-degree-submit-alert").addClass("alert-success");
 				$("#remove-degree-submit-alert").text(data.message);
 				$("#remove-degree-submit-alert").removeClass("d-none");
-				// show form and scroll course fields into view
+				// show form and scroll degree fields into view
 				$('html, body').animate({
 				    scrollTop: $("#remove-degree-submit-btn").offset().top -20,
 				    scrollLeft: $("#remove-degree-submit-btn").offset().left -20
@@ -176,11 +252,5 @@ $(document).ready(function() {
    			}
    		});
     });
-
-    // also capture enter key to trigger above function
-    $("#degreeremoveinputGroupSelect-4").keypress(function(e) {
-        if(e.which == 13) { $("#remove-degree-submit-btn").click(); }
-    });
-
 
 });

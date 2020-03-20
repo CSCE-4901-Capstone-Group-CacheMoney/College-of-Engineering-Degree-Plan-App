@@ -36,10 +36,16 @@ def administrationRemoveDegree(request):
 @csrf_exempt
 def administrationViewDegreeJS(request):
 	degreeSearchText = request.POST.get('degreeSearchText', '')
+	#degreeSearchText = degreeSearchText.replace(' ','')
+	print (degreeSearchText)
 	content={}
 	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
-		content["DegreeName"] = str(d.name)
-		content["DegreeInfo"] = str(d.degreeInfo)
+		content["nDegreeName"]        = str(d.name)
+		content["ndegreeInfo"]  	  = str(d.degreeInfo)
+		content["ncatalogYear"]		  = str(d.catalogYear)
+		content["nCollegeName"] 	  = str(d.CollegeName)
+		content["nspecialty"]         = str(d.specialty)
+		break
 
 	return JsonResponse(content)
 
@@ -314,11 +320,17 @@ def administrationRemoveCourseJS(request):
 
 @csrf_exempt	
 def administrationRemoveDegreeJS(request):
+	degreeSearchText = request.POST.get('degreeSearchText', '')		#get message from front end
+	degreeSearchText = degreeSearchText.replace(' ','')				#trim spaces
+	
 	nDegreeName = request.POST.get('nDegreeName', '')
 	ncatalogYear = request.POST.get('ncatalogYear', '')
+	# ndegreeInfo = request.POST.get('ndegreeInfo','')
 	nCollegeName = request.POST.get('nCollegeName','')
 	nspecialty = request.POST.get('nspecialty','')
-	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).delete()
+	
+	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear, 
+	CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).delete()
 
 	#print(c)			
 	if (value[0]==1):
