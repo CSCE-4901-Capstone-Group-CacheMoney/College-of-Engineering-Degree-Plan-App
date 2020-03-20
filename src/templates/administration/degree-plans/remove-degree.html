@@ -1,6 +1,67 @@
 {% extends 'administration/base.html' %}
 
 {% block content %}
+
+<div class="container">
+  <div class="page-header text-center">
+    <h4>Remove Degree</h4>
+  </div>
+    <div class="row">
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-default">Degree Name</span>
+                </div>
+                <input id="remove-degree-search-input" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+              </div>
+              <button id="remove-degree-search-btn" type="button" class="btn btn-outline-success btn-block">Search Degree</button>
+            </div>
+        </div>
+    </div>
+    <!--Reval after searching for course-->
+    <div class="row">
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <div id="remove-degree-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+            <div id="remove-degree-form" class="mb-3 d-none">
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">Degree Name</span>
+                </div>
+                <input id="remove-degree-name" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">College Name</span>
+                </div>
+                <input id="remove-college-name" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.9em;" id="inputGroup-sizing-default-2">Catalog Year</span>
+                </div>
+                <input id="remove-catalog-year" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+              
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Specialization</span>
+                </div>
+                <input id="remove-specialization" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
+              </div>
+
+              <button id="remove-degree-submit-btn" type="button" class="btn btn-outline-success btn-block">Remove Degree</button>
+              <div id="remove-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
 <style>
   /*some custom css for padding the search dropdown*/
   .select2-container--default .select2-selection--single {
@@ -16,13 +77,13 @@
       <div class="col-md-3"></div>
         <div class="col-md-6">
             <div id="remove-degree-form" class="mb-3">
-              
-              <!-- <div class="input-group mb-3">
+
+              <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">College Name</span>
                 </div>
                 <input id="degreeremoveinputGroupSelect-1" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
-              </div> -->
+              </div>
 
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -38,22 +99,22 @@
                 <input id="degreeremoveinputGroupSelect-3" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
               </div>
 
-              <!-- Example input(?): Core, University, Electrical Engineering, Free Electives -->
-              <!-- <div class="input-group mb-3">
+             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="padding-right: 3.8em;" id="inputGroup-sizing-default-4">Groupings</span>
+                  <span class="input-group-text" style="padding-right: 3.8em;" id="inputGroup-sizing-default-4">Specialty</span>
                 </div>
                 <input id="degreeremoveinputGroupSelect-4" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
-              </div> -->
+              </div>
+- ->      
 
-              <button id="remove-degree-submit-btn" type="button" class="btn btn-outline-success btn-block">Remove Base Degree</button>
+              <button id="remove-degree-submit-btn" type="button" class="btn btn-outline-success btn-block">Remove Degree</button>
               <div id="remove-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
             </div>
         </div>
     </div>
     <div class="row">
-      <!-- where results can go -->
+      <!- - where results can go - ->
     </div>
 </div>
-
+-->
 {% endblock %}
