@@ -34,7 +34,7 @@ $(document).ready(function() {
 					if(!$.isEmptyObject(data)) {
 						result = {
 			            	suggestions: [
-								{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
+								{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName + "-" + data.ID}
 			            	]
 						};
 						done(result);
@@ -46,6 +46,7 @@ $(document).ready(function() {
 		    },
 		    onSelect: function (suggestion) {
 		        $(this).val(suggestion.value.split("-")[0].trim());
+		        $(this).attr("course-id", suggestion.value.split("-")[2].trim());
 		    }
 		});
 	});
@@ -53,30 +54,35 @@ $(document).ready(function() {
 	$(document).on("click", "#add-degree-submit-btn", function(e) {
 
 		var jsonResponse = {};
-		jsonResponse["Catagories"] = {};
+		jsonResponse["Catagories"] = [];
 
-		$('.add-catagory').each(function(index) {
+		$('.add-catagory').each(function(catIndex) {
 
 			var catagory = sanatize($(this).children("input").eq(0).val().trim());
-			var requireHours = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
+			var requireNumCourses = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
 
-			jsonResponse["Catagories"][catagory] = {};
-			jsonResponse["Catagories"][catagory]["Required # of Courses"] = requireHours;
-			jsonResponse["Catagories"][catagory]["Courses"] = [];
+			jsonResponse["Catagories"][catIndex] = {};
+			jsonResponse["Catagories"][catIndex]["name"] = catagory;
+			jsonResponse["Catagories"][catIndex]["courses"] = [];
 
-			$(this).children(".catagory-courses").children("tr").each(function(index) {
-				var course = sanatize($(this).children().children().children("input").val().trim());
-				jsonResponse["Catagories"][catagory]["Courses"][index] = course;
+			$(this).children(".catagory-courses").children("tr").each(function(couIndex) {
+				var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
+				jsonResponse["Catagories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
 			});
 
+			jsonResponse["Catagories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
 		});
+
+		console.log(JSON.stringify(jsonResponse));
+		return;
 
     	// send request to the back-end...
 		$.post("/administration/add-degree/js/",
    		{
-   			nDegreeCollegeName: $("#degreeaddinputGroupSelect-4").val().trim(),
-   			nDegreeName: $("#degreeaddinputGroupSelect-2").val().trim(),
-			ncatalogYear: $("#degreeaddinputGroupSelect-3").val().trim(),
+   			nCollegeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
+   			nDegreeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
+			ncatalogYear: sanatize($("#degreeaddinputGroupSelect-3").val().trim()),
+			nspecialty: sanatize($("#degreeaddinputGroupSelect-4").val().trim()),
 			ndegreeInfo: JSON.stringify(jsonResponse)
    		},
    		function(data,status) {
@@ -118,7 +124,7 @@ $(document).ready(function() {
     			   '<span class="input-group-text" style="padding-right: 1.0em;">' +
     			   'Required # of Courses</span>' +
     			   '</div>' +
-    			   '<input type="text" class="form-control mt-2">' +
+    			   '<input type="text" value="0" class="form-control mt-2">' +
     			   '<table class="catagory-courses w-100">' +
     			   '</table>' +
     			   '<button type="button" class="add-catagory-course btn btn-outline-success mb-1 mt-1 ml-5">Add Course</button>' +
@@ -256,5 +262,87 @@ $(document).ready(function() {
    			}
    		});
     });
+
+
+    /*-----------------------edit degree js----------------------------------------- */
+	
+	$('#edit-degree-search-input').on('keypress' , function(e) {
+     	var searchText = sanatize($(this).val().trim());
+		// auto complete search for view degree
+		$(this).autocomplete({
+		    lookup: function (query, done) {
+				var result;
+				$.post("/administration/view-degree/js/",
+			    {
+					degreeSearchText: sanatize(searchText)
+				},
+			    function(data,status) {
+					if(!$.isEmptyObject(data)) {
+						result = {
+			            	suggestions: [
+								{"value": data.nDegreeName + " - " + data.ncatalogYear}
+			            	]
+						};
+						done(result);
+					} else {
+						result = { suggestions: [] };
+						done(result);
+					}
+				});
+		    },
+		    onSelect: function (suggestion) {
+				$("#edit-degree-search-input").val(suggestion.value.split("-")[0].trim());
+				$("#edit-degree-search-btn").click();
+		    }
+		});
+	});
+
+	$(document).on("click", "#edit-degree-search-btn", function(e) {
+    	// send request to the back-end...
+		$.post("/administration/view-degree/js/",
+   		{
+			degreeSearchText: sanatize($("#edit-degree-search-input").val().trim())
+   		},
+   		function(data,status) {
+			if(!$.isEmptyObject(data)) {
+	    		// add data to fields below...
+		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
+				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);
+				$("#degreeaddinputGroupSelect-3").val(data.ncatalogYear);
+				$("#degreeaddinputGroupSelect-4").val(data.nspecialty);
+
+				// now show the input fields to the user
+				$("#edit-degree-alert").removeClass("alert-danger");
+				$("#edit-degree-alert").addClass("alert-success");
+				$("#edit-degree-alert").text("Degree Found!");
+				$("#edit-degree-alert").removeClass("d-none");
+
+				
+				// show form and scroll degree fields into view
+				$("#edit-degree-form").removeClass("d-none");
+				$('html, body').animate({
+			    	scrollTop: $("#edit-degree-search-btn").offset().top -20,
+			    	scrollLeft: $("#edit-degree-search-btn").offset().left -20
+				});
+
+				// continue here...
+				$("#add-degree-catagory-btn").click();
+				// $(".add-catagory-course").click();
+				// $(".add-catagory-course").click();
+
+   			} else {
+				$("#edit-degree-alert").addClass("d-none");
+   				$("#edit-degree-alert").removeClass("alert-success");
+				$("#edit-degree-alert").addClass("alert-danger");
+				$("#edit-degree-alert").text("Cannot Find Degree!");
+				$("#edit-degree-alert").removeClass("d-none");
+   			}
+   		});
+    });
+
+    // also capture enter key to trigger above function
+    $("#edit-degree-search-input").keypress(function(e) {
+        if(e.which == 13) { $("#edit-degree-search-btn").click(); }
+	});
 
 });

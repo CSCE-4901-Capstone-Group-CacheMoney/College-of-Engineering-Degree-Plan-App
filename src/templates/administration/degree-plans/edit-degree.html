@@ -1,6 +1,4 @@
-<!-- page used for selecting a degree plan to edit -->
-
-{% extends 'administration/base.html' %}
+{% extends 'administration/home.html' %}
 
 {% block content %}
 
@@ -11,60 +9,125 @@
   }
 </style>
 
-<div class="container">
+<div>
   <div class="page-header text-center">
     <h4>Edit Degree</h4>
   </div>
     <div class="row">
-        <div class="col-lg-3"></div>
-            <div class="col-lg-6">
-                <form>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" style="padding-right: 3em;" for="degreeeditinputGroupSelect01">Select College</label>
-                      </div>
-                      <select class="custom-select select2" id="degreeeditinputGroupSelect-1">
-                        <option disabled selected value> -- select an option -- </option>
-                        <option>College of Engineering</option>
-                        <option>College of Education</option> 
-                        <option>College of Health and Public Service</option> 
-                        <option>College of Information</option> 
-                        <option>College of Liberal Arts and Social Sciences</option> 
-                      </select>
-                    </div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" style="padding-right: 3em;" for="degreeeditinputGroupSelect02">Select Degree</label>
-                      </div>
-                      <select class="custom-select select2" id="degreeeditinputGroupSelect-2">
-                        <option disabled selected value> -- select an option -- </option>
-                        <option>Computer Science</option>
-                        <option>Computer Engineering</option> 
-                        <option>Information Technology</option> 
-                        <option>Mechanical Engineering</option> 
-                        <option>Material Science</option>
-                      </select>
-                    </div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" for="degreeeditinputGroupSelect03">Select Catalog Year</label>
-                      </div>
-                      <select class="custom-select select2" id="degreeeditinputGroupSelect-3">
-                        <option disabled selected value> -- select an option -- </option>
-                             <option>2020</option>
-                             <option>2019</option> 
-                             <option>2018</option> 
-                             <option>2017</option> 
-                             <option>2016</option>
-                      </select>
-                    </div>
-                    <button type="button" class="btn btn-outline-success btn-block">Edit Degree</button>
-                </form>
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-default">Degree Name</span>
+                </div>
+                <input id="edit-degree-search-input" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+              </div>
+              <button id="edit-degree-search-btn" type="button" class="btn btn-outline-success btn-block mb-4">Search Degree</button>
             </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <div id="edit-degree-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+            <div id="edit-degree-form" class="mb-3 d-none">
+              
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.2em;" id="inputGroup-sizing-default-1">College Name</span>
+                </div>
+                <input id="degreeaddinputGroupSelect-1" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.3em;" id="inputGroup-sizing-default-2">Degree Name</span>
+                </div>
+                <input id="degreeaddinputGroupSelect-2" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.9em;" id="inputGroup-sizing-default-2">Catalog Year</span>
+                </div>
+                <input id="degreeaddinputGroupSelect-3" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+              </div>
+
+              <!-- Example input(?): Core, University, Electrical Engineering, Free Electives -->
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="padding-right: 2.4em;" id="inputGroup-sizing-default-4">Specialization</span>
+                </div>
+                <input id="degreeaddinputGroupSelect-4" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
+              </div>
+
+              <h4 class="text-center text-light pt-1 pb-1" style="background-color: green;">Degree Catagories</h4>
+              <div id="degree-catagories"></div>
+
+              <button id="add-degree-catagory-btn" type="button" class="btn btn-outline-success btn-block">Add Catagory</button>
+              <button id="add-degree-submit-btn" type="button" class="btn btn-outline-success btn-block mt-4">Update Degree</button>
+              <div id="edit-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+            </div>
+        </div>
     </div>
     <div class="row">
       <!-- where results can go -->
     </div>
 </div>
 
+<!---->
+<!--This was used for the glyphicon-plus button, removing this would remove the button but also restore CSS-->
+<!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
+
+<!-- <a href="javascript:void(0);" style="font-size:16px;" id="addNewCat" title="Add New Category"><span class="glyphicon glyphicon-plus">AddCategory</span></a>
+
+<table class="table table-hover small-text" id="table">
+    <th>Courses</th>
+    <th><a href="javascript:void(0);" style="font-size:16px;" id="addMore" title="Add More Courses"><span class="glyphicon glyphicon-plus"></span></a></th>
+    
+    <tr id="field1">
+      <td>
+        <input type="text" id="course-input1" class="form-control">
+      </td>
+      <td>
+        <a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a>
+      </td>
+    </tr>
+
+</table> -->
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>  -->
+
+
+<!-- <script>
+$(function(){
+    $('#addNewCat').on('click',function() {
+          $("#table").clone().appendTo("body");
+      });
+    $('#addMore').on('click', function() {
+              //https://stackoverflow.com/questions/10126395/how-to-jquery-clone-and-change-id/10127093
+              var $div = $('[id^="field"]:last');//course-input[last instance]
+              var num = parseInt($div.prop("id").match(/\d+/g),10) +1;
+              var data = $("#table tr:eq(1)").clone()
+              .closest("tr")
+              .appendTo("#table")
+              .prop('id','field'+num);
+              
+              var $div2 = $('[id^="course-input"]:last');
+              $div2.prop('id','course-input'+num);
+              //data.find("input").val('');
+     });
+     $(document).on('click', '.remove', function() {
+        var trIndex = $(this).closest("tr").index();
+          if(trIndex>1){
+           $(this).closest("tr").remove();
+           } 
+           else{
+             alert("First row is needed to copy");
+           }
+      });
+});      
+</script> -->
 {% endblock %}
