@@ -7,6 +7,8 @@ from courses.models import Course
 from degrees.models import Degree
 import re 										#for spliting string and number in courseSearchText
 import copy 
+import json
+import ast
 # Create your views here.
 
 # not need for code in this function, it just directs admin to home page after login
@@ -47,6 +49,61 @@ def administrationViewDegreeJS(request):
 		content["nspecialty"]         = str(d.specialty)
 		break
 
+	return JsonResponse(content)
+
+@csrf_exempt
+def administrationViewDegreeDetailedJS(request):
+	degreeSearchText = request.POST.get('degreeSearchText', '')
+	#degreeSearchText = degreeSearchText.replace(' ','')
+	print (degreeSearchText)
+	content={}
+	courseList=""
+	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
+		content["nDegreeName"]        = str(d.name)
+		courseList				  	  = json.dumps(d.degreeInfo)
+		content["ncatalogYear"]		  = str(d.catalogYear)
+		content["nCollegeName"] 	  = str(d.CollegeName)
+		content["nspecialty"]         = str(d.specialty)
+		
+		break
+
+	courseList_dict = json.loads(courseList)
+
+	jsonString={}
+	jsonValue=[]
+
+	for category in courseList_dict['Categories']:
+		catItem = {}
+		catItem['name'] = category.get('name')
+
+		courseItem = []
+		for item in range(len(category.get('courses'))):
+			singleClassItem = {}
+
+			c = Course.objects.get(id = category.get('courses')[item])
+			singleClassItem['id'] = str(c.id)
+			singleClassItem['courseID'] = str(c.courseID)
+			singleClassItem['courseDept'] = str(c.courseDept)
+			singleClassItem['name'] = str(c.name)
+			singleClassItem['prereqCount'] = str(c.prereqCount)
+			singleClassItem['category'] = str(c.category)
+			singleClassItem['hours'] = str(c.hours)
+			singleClassItem['semester'] = str(c.semester)
+			singleClassItem['description'] = str(c.description)
+			singleClassItem['coreqCount'] = str(c.hours)
+
+			courseItem.append(singleClassItem)
+
+		catItem['courses'] = courseItem
+		catItem['coursesRequired'] = category.get('coursesRequired')
+
+		jsonValue.append(catItem)
+	
+	jsonString['Categories'] = jsonValue
+
+
+	print(json.dumps(jsonString, indent=2))
+	content['ndegreeInfo'] = str(json.dumps(jsonString))
 	return JsonResponse(content)
 
 # TODO back-end code for courses
