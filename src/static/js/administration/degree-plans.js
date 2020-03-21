@@ -73,9 +73,6 @@ $(document).ready(function() {
 			jsonResponse["Catagories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
 		});
 
-		console.log(JSON.stringify(jsonResponse));
-		return;
-
     	// send request to the back-end...
 		$.post("/administration/add-degree/js/",
    		{
@@ -343,6 +340,10 @@ $(document).ready(function() {
     // also capture enter key to trigger above function
     $("#edit-degree-search-input").keypress(function(e) {
         if(e.which == 13) { $("#edit-degree-search-btn").click(); }
+	});
+
+	$(document).on("click", "#add-degree-submit-btn", function(e) {
+		$("#add-degree-submit-btn").click();
 	});
 
 });
