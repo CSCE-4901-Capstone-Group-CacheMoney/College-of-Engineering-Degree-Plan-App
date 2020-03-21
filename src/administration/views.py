@@ -299,7 +299,7 @@ def administrationAddCourseJS(request):
 def pkLookUpJS(request):
 	pk = request.POST.get('pk', '')
 	content={}
-	c = Degree.objects.get(id = pk)
+	c = Course.objects.get(id = pk)
 	content["CourseDept"] 	= str(c.courseDept)
 	content["CourseID"] 	= str(c.courseID) 
 	content["CourseName"] 	= str(c.name)
