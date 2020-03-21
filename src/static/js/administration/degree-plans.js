@@ -14,6 +14,9 @@ $(document).ready(function() {
 
 
 	/*-----------------------add degree js----------------------------------------- */
+	$("#degreeaddinputGroupSelect-3").on('keyup', function(){
+		$(this).val(sanatize($(this).val().replace(/[a-z]/gi,'')));
+	});	
 	// auto complete for courses
     $('#degree-catagories').on('keypress', '.add-course-input', function(e) {
     	// force uppercase
@@ -46,7 +49,7 @@ $(document).ready(function() {
 		    }
 		});
 	});
-
+	
 	$(document).on("click", "#add-degree-submit-btn", function(e) {
 
 		var jsonResponse = {};
@@ -163,7 +166,8 @@ $(document).ready(function() {
 					if(!$.isEmptyObject(data)) {
 						result = {
 			            	suggestions: [
-								{"value": data.nDegreeName + " - " + data.ncatalogYear}
+								{"value": data.nDegreeName + " - " + data.ncatalogYear,
+								"value": data.nDegreeName + " - " + data.ncatalogYear,"value": data.nDegreeName + " - " + data.ncatalogYear,"value": data.nDegreeName + " - " + data.ncatalogYear}
 			            	]
 						};
 						done(result);
