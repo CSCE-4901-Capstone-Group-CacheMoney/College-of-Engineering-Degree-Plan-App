@@ -18,7 +18,7 @@ $(document).ready(function() {
 		$(this).val(sanatize($(this).val().replace(/[a-z]/gi,'')));
 	});	
 	// auto complete for courses
-    $('#degree-catagories').on('keypress', '.add-course-input', function(e) {
+    $('#degree-categories').on('keypress', '.add-course-input', function(e) {
     	// force uppercase
     	$(this).val(sanatize($(this).val().toUpperCase()));
      	var searchText = sanatize($(this).val().trim());
@@ -54,30 +54,30 @@ $(document).ready(function() {
 	$(document).on("click", "#add-degree-submit-btn", function(e) {
 
 		var jsonResponse = {};
-		jsonResponse["Catagories"] = [];
+		jsonResponse["Categories"] = [];
 
-		$('.add-catagory').each(function(catIndex) {
+		$('.add-category').each(function(catIndex) {
 
-			var catagory = sanatize($(this).children("input").eq(0).val().trim());
+			var category = sanatize($(this).children("input").eq(0).val().trim());
 			var requireNumCourses = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
 
-			jsonResponse["Catagories"][catIndex] = {};
-			jsonResponse["Catagories"][catIndex]["name"] = catagory;
-			jsonResponse["Catagories"][catIndex]["courses"] = [];
+			jsonResponse["Categories"][catIndex] = {};
+			jsonResponse["Categories"][catIndex]["name"] = category;
+			jsonResponse["Categories"][catIndex]["courses"] = [];
 
-			$(this).children(".catagory-courses").children("tr").each(function(couIndex) {
+			$(this).children(".category-courses").children("tr").each(function(couIndex) {
 				var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
-				jsonResponse["Catagories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
+				jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
 			});
 
-			jsonResponse["Catagories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
+			jsonResponse["Categories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
 		});
 
     	// send request to the back-end...
 		$.post("/administration/add-degree/js/",
    		{
    			nCollegeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
-   			nDegreeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
+   			nDegreeName: sanatize($("#degreeaddinputGroupSelect-2").val().trim()),
 			ncatalogYear: sanatize($("#degreeaddinputGroupSelect-3").val().trim()),
 			nspecialty: sanatize($("#degreeaddinputGroupSelect-4").val().trim()),
 			ndegreeInfo: JSON.stringify(jsonResponse)
@@ -107,12 +107,12 @@ $(document).ready(function() {
         if(e.which == 13) { $("#add-degree-submit-btn").click(); }
     });
 
-    // for adding degree catagories
-    $(document).on("click", "#add-degree-catagory-btn", function(e) {
-    	var html = '<div class="add-catagory input-group mb-3">' +
+    // for adding degree Categories
+    $(document).on("click", "#add-degree-category-btn", function(e) {
+    	var html = '<div class="add-category input-group mb-3">' +
     			   '<div class="input-group-prepend">' +
     			   '<span class="input-group-text" style="padding-right: .5em;">' +
-    			   '<i class="fa fa-trash remove-catagory mr-1"></i>Catagory Name</span>' +
+    			   '<i class="fa fa-trash remove-category mr-1"></i>category Name</span>' +
     			   '</div>' +
     			   '<input type="text" class="form-control">' +
     			   '<div class="w-100">' +
@@ -122,18 +122,18 @@ $(document).ready(function() {
     			   'Required # of Courses</span>' +
     			   '</div>' +
     			   '<input type="text" value="0" class="form-control mt-2">' +
-    			   '<table class="catagory-courses w-100">' +
+    			   '<table class="category-courses w-100">' +
     			   '</table>' +
-    			   '<button type="button" class="add-catagory-course btn btn-outline-success mb-1 mt-1 ml-5">Add Course</button>' +
+    			   '<button type="button" class="add-category-course btn btn-outline-success mb-1 mt-1 ml-5">Add Course</button>' +
     			   '</div>';
-    	$("#degree-catagories").append(html);
+    	$("#degree-categories").append(html);
     });
 
-    $(document).on("click", ".remove-catagory", function(e) {
+    $(document).on("click", ".remove-category", function(e) {
     	$(this).parent().parent().parent().remove();
     });
 
-    $(document).on("click", ".add-catagory-course", function(e) {
+    $(document).on("click", ".add-category-course", function(e) {
     	var html = '<tr>'+
     	           '<td>' +
     			   '<div class="add-course input-group mt-2 mb-2 ml-5">' +
@@ -145,7 +145,7 @@ $(document).ready(function() {
     			   '</div>' +
     			   '</td>' +
     	           '</tr>';
-    	$(this).parent().children(".catagory-courses").append(html);
+    	$(this).parent().children(".category-courses").append(html);
     });
 
     $(document).on("click", ".remove-course", function(e) {
@@ -296,7 +296,7 @@ $(document).ready(function() {
 
 	$(document).on("click", "#edit-degree-search-btn", function(e) {
     	// send request to the back-end...
-		$.post("/administration/view-degree/js/",
+		$.post("/administration/view-degree-detailed/js/",
    		{
 			degreeSearchText: sanatize($("#edit-degree-search-input").val().trim())
    		},
@@ -323,14 +323,14 @@ $(document).ready(function() {
 				});
 
 				// grab info from back-end, start populating fields
-				var jsonResponse = JSON.parse(data.ndegreeInfo);
+				var jsonResponse = JSON.parse(data.ndegreeInfo.replace(/'/g, '"'));
 
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 
-					var html = '<div class="add-catagory input-group mb-3">' +
+					var html = '<div class="add-category input-group mb-3">' +
 							   '<div class="input-group-prepend">' +
 							   '<span class="input-group-text" style="padding-right: .5em;">' +
-							   '<i class="fa fa-trash remove-catagory mr-1"></i>Catagory Name</span>' +
+							   '<i class="fa fa-trash remove-category mr-1"></i>category Name</span>' +
 							   '</div>' +
 							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'">' +
 							   '<div class="w-100">' +
@@ -340,7 +340,7 @@ $(document).ready(function() {
 							   'Required # of Courses</span>' +
 							   '</div>' +
 							   '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2">' +
-							   '<table class="catagory-courses w-100">';
+							   '<table class="category-courses w-100">';
 
 							   for(var j = 0; j < jsonResponse.Categories[i].courses.length; j++){
 							   		html += '<tr>'+
@@ -357,9 +357,9 @@ $(document).ready(function() {
 							   }
 
 						html += '</table>' +
-							   '<button type="button" class="add-catagory-course btn btn-outline-success mb-1 mt-1 ml-5">Add Course</button>' +
+							   '<button type="button" class="add-category-course btn btn-outline-success mb-1 mt-1 ml-5">Add Course</button>' +
 							   '</div>';
-					$("#degree-catagories").append(html);
+					$("#degree-categories").append(html);
 
 				}
 
@@ -384,23 +384,23 @@ $(document).ready(function() {
 	$(document).on("click", "#edit-degree-submit-btn", function(e) {
 
 		var jsonResponse = {};
-		jsonResponse["Catagories"] = [];
+		jsonResponse["Categories"] = [];
 
-		$('.add-catagory').each(function(catIndex) {
+		$('.add-category').each(function(catIndex) {
 
-			var catagory = sanatize($(this).children("input").eq(0).val().trim());
+			var category = sanatize($(this).children("input").eq(0).val().trim());
 			var requireNumCourses = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
 
-			jsonResponse["Catagories"][catIndex] = {};
-			jsonResponse["Catagories"][catIndex]["name"] = catagory;
-			jsonResponse["Catagories"][catIndex]["courses"] = [];
+			jsonResponse["Categories"][catIndex] = {};
+			jsonResponse["Categories"][catIndex]["name"] = category;
+			jsonResponse["Categories"][catIndex]["courses"] = [];
 
-			$(this).children(".catagory-courses").children().children("tr").each(function(couIndex) {
+			$(this).children(".category-courses").children().children("tr").each(function(couIndex) {
 				var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
-				jsonResponse["Catagories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
+				jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
 			});
 
-			jsonResponse["Catagories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
+			jsonResponse["Categories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
 		});
 
     	// send request to the back-end...
@@ -467,7 +467,7 @@ $(document).ready(function() {
 
     $(document).on("click", "#view-degree-search-btn", function(e) {
     	// send request to the back-end...
-		$.post("/administration/view-degree/js/",
+		$.post("/administration/view-degree-detailed/js/",
    		{
 			degreeSearchText: sanatize($("#view-degree-search-input").val().trim())
    		},
@@ -494,14 +494,14 @@ $(document).ready(function() {
 				});
 
 				// grab info from back-end, start populating fields
-				var jsonResponse = JSON.parse(data.ndegreeInfo);
+				var jsonResponse = JSON.parse(data.ndegreeInfo.replace(/'/g, '"'));
 
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 
-					var html = '<div class="add-catagory input-group mb-3">' +
+					var html = '<div class="add-category input-group mb-3">' +
 							   '<div class="input-group-prepend">' +
 							   '<span class="input-group-text" style="padding-right: .5em;">' +
-							   '<i class="mr-1"></i>Catagory Name</span>' +
+							   '<i class="mr-1"></i>category Name</span>' +
 							   '</div>' +
 							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'" disabled>' +
 							   '<div class="w-100">' +
@@ -511,7 +511,7 @@ $(document).ready(function() {
 							   'Required # of Courses</span>' +
 							   '</div>' +
 							   '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" disabled>' +
-							   '<table class="catagory-courses w-100">';
+							   '<table class="category-courses w-100">';
 
 							   for(var j = 0; j < jsonResponse.Categories[i].courses.length; j++){
 							   		html += '<tr>'+
@@ -529,7 +529,7 @@ $(document).ready(function() {
 
 						html += '</table>' +
 							   '</div>';
-					$("#degree-catagories").append(html);
+					$("#degree-Categories").append(html);
 
 				}
 
