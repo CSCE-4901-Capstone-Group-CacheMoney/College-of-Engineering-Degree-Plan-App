@@ -101,7 +101,6 @@ def administrationViewDegreeDetailedJS(request):
 	
 	jsonString['Categories'] = jsonValue
 
-
 	print(json.dumps(jsonString, indent=2))
 	content['ndegreeInfo'] = str(json.dumps(jsonString))
 	return JsonResponse(content)
@@ -299,7 +298,7 @@ def administrationAddCourseJS(request):
 def pkLookUpJS(request):
 	pk = request.POST.get('pk', '')
 	content={}
-	c = Course.objects.get(id = pk)
+	c = Degree.objects.get(id = pk)
 	content["CourseDept"] 	= str(c.courseDept)
 	content["CourseID"] 	= str(c.courseID) 
 	content["CourseName"] 	= str(c.name)
@@ -322,13 +321,15 @@ def administrationAddDegreeJS(request):
 	if nspecialty=='':
 		nspecialty='None'
 
+	#print(json.loads(ndegreeInfo))
+
 	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty))
 	#print(c)			
 	if not value:
 		Degree.objects.create(
 		name = str(nDegreeName),
 		catalogYear = str(ncatalogYear),
-		degreeInfo = str(ndegreeInfo),
+		degreeInfo = json.loads(ndegreeInfo),
 		CollegeName = str(nCollegeName),
 		specialty = str(nspecialty)
 		)
