@@ -50,6 +50,25 @@ $(document).ready(function() {
 		    }
 		});
 	});
+
+    // add course iD if user manually enters course
+	$('#degree-categories').on('focusout', '.add-course-input', function(e) {
+		// force uppercase
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+     	var searchText = sanatize($(this).val().trim());
+     	var thisInputElement = $(this);
+     	$.post("/administration/view-course/js/",
+	    {
+	      courseSearchText: sanatize(searchText)
+		},
+	    function(data,status) {
+			if(!$.isEmptyObject(data)) {
+				$(thisInputElement).attr("course-id", data.ID);
+			} else {
+				$(thisInputElement).attr("course-id", "");
+			}
+		});
+	});
 	
 	$(document).on("click", "#add-degree-submit-btn", function(e) {
 
@@ -149,7 +168,7 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".remove-course", function(e) {
-    	$(this).parent().parent().parent().remove();
+    	$(this).parent().parent().parent().parent().parent().remove();
     });
 
 
@@ -323,7 +342,7 @@ $(document).ready(function() {
 				});
 
 				// grab info from back-end, start populating fields
-				var jsonResponse = JSON.parse(data.ndegreeInfo.replace(/'/g, '"'));
+				var jsonResponse =JSON.parse(data.ndegreeInfo);
 
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 
@@ -494,7 +513,7 @@ $(document).ready(function() {
 				});
 
 				// grab info from back-end, start populating fields
-				var jsonResponse = JSON.parse(data.ndegreeInfo.replace(/'/g, '"'));
+				var jsonResponse =JSON.parse(data.ndegreeInfo);
 
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 
