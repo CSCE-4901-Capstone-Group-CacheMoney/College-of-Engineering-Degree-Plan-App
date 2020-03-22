@@ -43,7 +43,7 @@ def administrationViewDegreeJS(request):
 	content={}
 	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
 		content["nDegreeName"]        = str(d.name)
-		content["ndegreeInfo"]  	  = str(d.degreeInfo)
+		content["ndegreeInfo"]  	  = str(json.dumps(d.degreeInfo))
 		content["ncatalogYear"]		  = str(d.catalogYear)
 		content["nCollegeName"] 	  = str(d.CollegeName)
 		content["nspecialty"]         = str(d.specialty)
