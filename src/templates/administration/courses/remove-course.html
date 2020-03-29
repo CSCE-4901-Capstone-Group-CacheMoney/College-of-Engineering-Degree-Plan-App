@@ -67,22 +67,25 @@
               </div>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisites</span>
-                </div>
-                <input id="remove-course-prerequisites" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
-              </div>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" style="padding-right: 3.5em;" id="inputGroup-sizing-default-5">Corequisites</span>
-                </div>
-                <input id="remove-course-corequisites" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-5">
-              </div>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
                   <span class="input-group-text" style="padding-right: 6.4em;" id="inputGroup-sizing-default-6">Hours</span>
                 </div>
                 <input id="remove-course-hours" type="text" readonly class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-6">
               </div>
+
+
+              <div id="course-requirements">
+                <h4 class="text-center text-light pt-1 pb-1 mt-2" style="background-color: green;">Prerequisites</h4>
+                <div id="course-prerequisites"></div>
+
+                <h4 class="text-center text-light pt-1 pb-1 mt-2" style="background-color: green;">Corequisites</h4>
+                <div id="course-corequisites"></div>
+              </div>
+
+
+              <h4 class="text-center text-light pt-1 pb-1 mt-2" style="background-color: green;">Degree Specific Requirements</h4>
+              <div id="add-course-degree-spec-reqs"></div>
+
+
               <input id="remove-course-id" type="text" class="d-none">
               <button id="remove-course-submit-btn" type="button" class="btn btn-outline-danger btn-block">Remove Course</button>
               <div id="remove-course-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>

@@ -67,22 +67,28 @@
               </div>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisites</span>
-                </div>
-                <input id="edit-course-prerequisites" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">
-              </div>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" style="padding-right: 3.5em;" id="inputGroup-sizing-default-5">Corequisites</span>
-                </div>
-                <input id="edit-course-corequisites" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-5">
-              </div>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
                   <span class="input-group-text" style="padding-right: 6.4em;" id="inputGroup-sizing-default-6">Hours</span>
                 </div>
                 <input id="edit-course-hours" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-6">
               </div>
+
+
+              <div id="course-requirements">
+                <h4 class="text-center text-light pt-1 pb-1 mt-2" style="background-color: green;">Prerequisites</h4>
+                <div id="course-prerequisites"></div>
+                <button id="add-course-prerequisite" type="button" class="btn btn-outline-success btn-block mb-2">Add Prerequisite</button>
+
+                <h4 class="text-center text-light pt-1 pb-1 mt-2" style="background-color: green;">Corequisites</h4>
+                <div id="course-corequisites"></div>
+                <button id="add-course-corequisites" type="button" class="btn btn-outline-success btn-block mb-2">Add Corequisites</button>
+              </div>
+
+
+              <h4 class="text-center text-light pt-1 pb-1 mt-2" style="background-color: green;">Degree Specific Requirements</h4>
+              <div id="add-course-degree-spec-reqs"></div>
+              <button id="add-course-degree-spec-req" type="button" class="btn btn-outline-success btn-block mb-2">Add Degree Specific Requirement</button>
+
+
               <input id="edit-course-id" type="text" class="d-none">
               <button id="edit-course-update-btn" type="button" class="btn btn-outline-success btn-block">Update Course</button>
               <div id="edit-course-update-alert" class="alert mt-2 d-none text-center" role="alert"></div>
