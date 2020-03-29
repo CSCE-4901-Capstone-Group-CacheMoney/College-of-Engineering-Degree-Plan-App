@@ -85,12 +85,11 @@ def administrationViewDegreeDetailedJS(request):
 			singleClassItem['courseID'] = str(c.courseID)
 			singleClassItem['courseDept'] = str(c.courseDept)
 			singleClassItem['name'] = str(c.name)
-			singleClassItem['prereqCount'] = str(c.prereqCount)
+			singleClassItem['preCoreq'] = str(c.preCoReq)
 			singleClassItem['category'] = str(c.category)
 			singleClassItem['hours'] = str(c.hours)
 			singleClassItem['semester'] = str(c.semester)
 			singleClassItem['description'] = str(c.description)
-			singleClassItem['coreqCount'] = str(c.hours)
 
 			courseItem.append(singleClassItem)
 
@@ -142,8 +141,7 @@ def administrationViewCourseJS(request):
 			content["Category"] = str(c.category)
 			content["Hours"] = str(c.hours)
 			content["CourseAvailability"] = str(c.semester)
-			content["PrereqCount"] = str(c.prereqCount)
-			content["CoreqCount"] = str(c.coreqCount)
+			content["PreCoreq"] = str(json.dumps(c.preCoReq))
 			content["ID"] = str(c.id)
 
 			break
@@ -161,8 +159,7 @@ def administrationViewCourseJS(request):
 				content["Category"] = str(c.category)
 				content["Hours"] = str(c.hours)
 				content["CourseAvailability"] = str(c.semester)
-				content["PrereqCount"] = str(c.prereqCount)
-				content["CoreqCount"] = str(c.coreqCount)
+				content["PreCoreq"] = str(json.dumps(c.preCoReq))
 				content["ID"] = str(c.id)
 
 				break
@@ -176,8 +173,7 @@ def administrationViewCourseJS(request):
 				content["Category"] = str(c.category)
 				content["Hours"] = str(c.hours)
 				content["CourseAvailability"] = str(c.semester)
-				content["PrereqCount"] = str(c.prereqCount)
-				content["CoreqCount"] = str(c.coreqCount)
+				content["PreCoreq"] = str(json.dumps(c.preCoReq))
 				content["ID"] = str(c.id)
 
 				break
@@ -190,13 +186,187 @@ def administrationViewCourseJS(request):
 	return JsonResponse(content)
 
 @csrf_exempt
+def administrationViewCourseDetailedJS(request):
+
+	courseSearchText = request.POST.get('courseSearchText', '')
+	courseSearchText = courseSearchText.replace(' ','')
+	print (courseSearchText)
+	content={}
+	preCoreq = ""
+	contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
+	
+	if contains_digit:
+		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
+		res = temp.match(courseSearchText).groups() 
+		for c in Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]):
+			content["CourseDept"] =	str(c.courseDept)
+			content["CourseID"] = str(c.courseID)
+			content["CourseName"] = str(c.name)
+			content["Description"] = str(c.description)
+			content["Category"] = str(c.category)
+			content["Hours"] = str(c.hours)
+			content["CourseAvailability"] = str(c.semester)
+			preCoreq = json.dumps(c.preCoReq)
+			content["ID"] = str(c.id)
+
+			break
+
+	else:
+		if len(str(courseSearchText)) > 4:		#search course names
+			for c in Course.objects.filter(name__istartswith=str(courseSearchText)):
+				content["CourseDept"] =	str(c.courseDept)
+				content["CourseID"] = str(c.courseID)
+				content["CourseName"] = str(c.name)
+				content["Description"] = str(c.description)
+				content["Category"] = str(c.category)
+				content["Hours"] = str(c.hours)
+				content["CourseAvailability"] = str(c.semester)
+				preCoreq = json.dumps(c.preCoReq)
+				content["ID"] = str(c.id)
+
+				break
+
+		else:
+			for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):		#search course dept
+				content["CourseDept"] =	str(c.courseDept)
+				content["CourseID"] = str(c.courseID)		
+				content["CourseName"] = str(c.name)
+				content["Description"] = str(c.description)
+				content["Category"] = str(c.category)
+				content["Hours"] = str(c.hours)
+				content["CourseAvailability"] = str(c.semester)
+				preCoreq = json.dumps(c.preCoReq)
+				content["ID"] = str(c.id)
+
+				break
+
+	
+	preCoreq_dict = json.loads(preCoreq)
+
+	jsonString={}
+	jsonValue=[]
+
+	for category in preCoreq_dict['Categories']:
+		catItem = {}
+		catItem['College'] = category.get('College')
+		catItem['DegreeName'] = category.get('DegreeName')
+		catItem['DegreeYear'] = category.get('DegreeYear')
+		catItem['Specialty'] = category.get('Specialty')
+
+		preReqItem = []
+		for item in range(len(category.get('PreReqs'))):
+			singleClassItem = {}
+
+			c = Course.objects.get(id = category.get('PreReqs')[item])
+			singleClassItem['id'] = str(c.id)
+			singleClassItem['courseID'] = str(c.courseID)
+			singleClassItem['courseDept'] = str(c.courseDept)
+			singleClassItem['name'] = str(c.name)
+			singleClassItem['preCoreq'] = str(c.preCoReq)
+			singleClassItem['category'] = str(c.category)
+			singleClassItem['hours'] = str(c.hours)
+			singleClassItem['semester'] = str(c.semester)
+			singleClassItem['description'] = str(c.description)
+
+			preReqItem.append(singleClassItem)
+
+		catItem['PreReqs'] = preReqItem
+
+		coReqItem = []
+		for item in range(len(category.get('CoReqs'))):
+			singleClassItem = {}
+
+			c = Course.objects.get(id = category.get('CoReqs')[item])
+			singleClassItem['id'] = str(c.id)
+			singleClassItem['courseID'] = str(c.courseID)
+			singleClassItem['courseDept'] = str(c.courseDept)
+			singleClassItem['name'] = str(c.name)
+			singleClassItem['preCoreq'] = str(c.preCoReq)
+			singleClassItem['category'] = str(c.category)
+			singleClassItem['hours'] = str(c.hours)
+			singleClassItem['semester'] = str(c.semester)
+			singleClassItem['description'] = str(c.description)
+
+			coReqItem.append(singleClassItem)
+
+		catItem['CoReqs'] = coReqItem
+
+		jsonValue.append(catItem)
+	
+	jsonString['Categories'] = jsonValue
+
+	print(json.dumps(jsonString, indent=2))
+	content['PreCoreq'] = str(json.dumps(jsonString))
+
+	return JsonResponse(content)
+
+##############################
+
+	degreeSearchText = request.POST.get('degreeSearchText', '')
+	#degreeSearchText = degreeSearchText.replace(' ','')
+	print (degreeSearchText)
+	content={}
+	courseList=""
+	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
+		content["nDegreeName"]        = str(d.name)
+		courseList				  	  = json.dumps(d.degreeInfo)
+		content["ncatalogYear"]		  = str(d.catalogYear)
+		content["nCollegeName"] 	  = str(d.CollegeName)
+		content["nspecialty"]         = str(d.specialty)
+		
+		break
+
+	courseList_dict = json.loads(courseList)
+
+	jsonString={}
+	jsonValue=[]
+
+	for category in courseList_dict['Categories']:
+		catItem = {}
+		catItem['name'] = category.get('name')
+
+		courseItem = []
+		for item in range(len(category.get('courses'))):
+			singleClassItem = {}
+
+			c = Course.objects.get(id = category.get('courses')[item])
+			singleClassItem['id'] = str(c.id)
+			singleClassItem['courseID'] = str(c.courseID)
+			singleClassItem['courseDept'] = str(c.courseDept)
+			singleClassItem['name'] = str(c.name)
+			singleClassItem['preCoreq'] = str(c.preCoReq)
+			singleClassItem['category'] = str(c.category)
+			singleClassItem['hours'] = str(c.hours)
+			singleClassItem['semester'] = str(c.semester)
+			singleClassItem['description'] = str(c.description)
+
+			courseItem.append(singleClassItem)
+
+		catItem['courses'] = courseItem
+		catItem['coursesRequired'] = category.get('coursesRequired')
+
+		jsonValue.append(catItem)
+	
+	jsonString['Categories'] = jsonValue
+
+	print(json.dumps(jsonString, indent=2))
+	content['ndegreeInfo'] = str(json.dumps(jsonString))
+	return JsonResponse(content)
+
+
+
+
+
+
+
+
+@csrf_exempt
 def administrationEditCourseJS(request):
 
 	nCourseName = request.POST.get('CourseName', '')
 	nCourseDept = request.POST.get('DepartmentID', '')
 	nCourseID = request.POST.get('CourseNumber', '')
-	nCoursePrereqCount = request.POST.get('CoursePrerequisites', '')
-	nCourseCoreqCount = request.POST.get('CourseCorequisites', '')
+	nCoursePreCoreq = request.POST.get('CoursePrerequisites', '')
 	nCourseHours = request.POST.get('CourseHours', '')
 	nCourseAvail = request.POST.get('CourseAvailability', '')
 	print (nCourseAvail)
@@ -220,8 +390,7 @@ def administrationEditCourseJS(request):
 			name = str(nCourseName),
 			courseDept = str(nCourseDept).upper(),
 			courseID = nCourseID,
-			prereqCount = nCoursePrereqCount,
-			coreqCount = nCourseCoreqCount,
+			preCoReq = json.loads(nCoursePreCoreq),
 			hours = nCourseHours,
 			semester = str(nCourseAvail)	
 			)
@@ -250,8 +419,7 @@ def administrationAddCourseJS(request):
 	nCourseName = request.POST.get('nCourseName', '')
 	nCourseDept = request.POST.get('nCourseDept', '')
 	nCourseID = request.POST.get('nCourseID', '')
-	nCoursePrereqCount = request.POST.get('nCoursePrereqCount', '')
-	nCourseCoreqCount = request.POST.get('nCourseCoreqCount', '')
+	nCoursePreCoreqInfo = json.loads(request.POST.get('nCoursePreCoreqInfo', ''))
 	nCourseHours = request.POST.get('nCourseHours', '')
 	nCourseAvail = request.POST.get('nCourseAvail', '')
 	print (nCourseAvail)
@@ -277,8 +445,7 @@ def administrationAddCourseJS(request):
 			name = str(nCourseName),
 			courseDept = str(nCourseDept).upper(),
 			courseID = nCourseID,
-			prereqCount = nCoursePrereqCount,
-			coreqCount = nCourseCoreqCount,
+			preCoReq = nCoursePreCoreqInfo,
 			hours = nCourseHours,
 			semester = str(nCourseAvail)	
 			)
@@ -306,8 +473,7 @@ def pkLookUpJS(request):
 	content["Category"] 	= str(c.category)
 	content["Hours"] 		= str(c.hours)
 	content["CourseAvailability"] = str(c.semester)
-	content["PrereqCount"] 	= str(c.prereqCount)
-	content["CoreqCount"] 	= str(c.coreqCount)
+	content["PreCoreq"] 	= str(c.preCoReq)
 	
 	return JsonResponse(content)
 

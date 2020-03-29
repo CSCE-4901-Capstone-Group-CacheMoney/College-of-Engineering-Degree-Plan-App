@@ -22,6 +22,7 @@ urlpatterns = [
 	path('remove-course/', views.administrationRemoveCourse, name='administrationRemoveCourse'),
 	# add courses js requests urls at a later time....
 	path('view-course/js/', views.administrationViewCourseJS, name='administrationViewCourseJS'),
+	path('view-course-detailed/js/', views.administrationViewCourseDetailedJS, name='administrationViewCourseDetailedJS'),
 	path('edit-course/js/', views.administrationEditCourseJS, name='administrationEditCourseJS'),
 	path('add-course/js/', views.administrationAddCourseJS, name='administrationAddCourseJS'),
 	path('remove-course/js/', views.administrationRemoveCourseJS, name='administrationRemoveCourseJS'),
