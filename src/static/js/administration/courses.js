@@ -48,7 +48,7 @@ $(document).ready(function() {
 	// function for capturing view text search info
 	$(document).on("click", "#view-course-search-btn", function(e) {
 		// send request to the back-end...
-  		$.post("/administration/view-course/js/",
+  		$.post("/administration/view-course-detailed/js/",
 	    {
 	      courseSearchText: sanatize($("#view-course-search-input").val().trim())
 	    },
@@ -84,8 +84,7 @@ $(document).ready(function() {
 				});
 
 				// parse out json for all generic and degree specific pre/co requisites
-				var nCoursePreCoreqInfo = '{"Categories":[{"College":"College of Engineering","DegreeName":"Computer Science","DegreeYear":"2020","Specialty":"None","PreReqs":[4,12],"CoReqs":[1,44]},{"College":"","DegreeName":"","DegreeYear":"","Specialty":"","PreReqs":[22,4],"CoReqs":[1,12]}]}';
-				var jsonResponse = JSON.parse(nCoursePreCoreqInfo);
+				var jsonResponse = JSON.parse(data.PreCoreq);
 				// parse out json for all degree specific pre/co requisites
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 					if(jsonResponse.Categories[i].College.length != 0 && jsonResponse.Categories[i].DegreeYear.length != 0 && jsonResponse.Categories[i].Specialty.length != 0){
@@ -93,14 +92,14 @@ $(document).ready(function() {
 				    			   '<div class="input-group-prepend">' +
 				    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Degree Name</span>' +
 				    			   '</div>' + 
-				    			   '<input readonly type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'">' + 
+				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" readonly>' + 
 				    			   '<table class="degree-spec-course-reqs w-100 mt-3">';
 				    			   for(var j = 0; j < jsonResponse.Categories[i].PreReqs.length; j++){
 				    			   		html += '<tr><td><div class="input-group mb-3 ml-5">';
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 								    			'</div>' + 
-								    			'<input readonly type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
 								    			'</div></tr></td>';
 				    			   }
 				    			   for(var j = 0; j < jsonResponse.Categories[i].CoReqs.length; j++){
@@ -108,7 +107,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 								    			'</div>' + 
-								    			'<input readonly type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
 								    			'</div></tr></td>';
 				    			   }
 				    		html +=	'</table>' +
@@ -121,7 +120,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 							    			'</div>' + 
-							    			'<input readonly type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
 							    			'</div>';
 							    $("#course-prerequisites").append(html);
 		    			   }
@@ -130,7 +129,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 							    			'</div>' + 
-							    			'<input readonly type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly>' + 
 							    			'</div>';
 							    $("#course-corequisites").append(html);
 		    			   }
@@ -191,7 +190,7 @@ $(document).ready(function() {
 	// function for capturing view text search info
 	$(document).on("click", "#edit-course-search-btn", function(e) {
 		// send request to the back-end...
-  		$.post("/administration/view-course/js/",
+  		$.post("/administration/view-course-detailed/js/",
 	    {
 	      courseSearchText: sanatize($("#edit-course-search-input").val().trim())
 	    },
@@ -228,8 +227,7 @@ $(document).ready(function() {
 				});
 
 				// parse out json for all generic and degree specific pre/co requisites
-				var nCoursePreCoreqInfo = '{"Categories":[{"College":"College of Engineering","DegreeName":"Computer Science","DegreeYear":"2020","Specialty":"None","PreReqs":[4,12],"CoReqs":[1,44]},{"College":"","DegreeName":"","DegreeYear":"","Specialty":"","PreReqs":[22,4],"CoReqs":[1,12]}]}';
-				var jsonResponse = JSON.parse(nCoursePreCoreqInfo);
+				var jsonResponse = JSON.parse(data.PreCoreq);
 				// parse out json for all degree specific pre/co requisites
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 					if(jsonResponse.Categories[i].College.length != 0 && jsonResponse.Categories[i].DegreeYear.length != 0 && jsonResponse.Categories[i].Specialty.length != 0){
@@ -244,7 +242,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Prerequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    			   for(var j = 0; j < jsonResponse.Categories[i].CoReqs.length; j++){
@@ -252,7 +250,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Corequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    		html +=	'</table>' +
@@ -267,7 +265,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Prerequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'">' + 
 							    			'</div>';
 							    $("#course-prerequisites").append(html);
 		    			   }
@@ -276,7 +274,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Corequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'">' + 
 							    			'</div>';
 							    $("#course-corequisites").append(html);
 		    			   }
@@ -300,6 +298,58 @@ $(document).ready(function() {
     });
 
     $(document).on("click", "#edit-course-update-btn", function(e) {
+    	// build json entries for course general and degree specific pre and co req
+    	var jsonResponse = {};
+		jsonResponse["Categories"] = [];
+
+    	if($("#add-course-degree-spec-reqs").children().length > 0){
+    		for(var i = 0; i < $("#add-course-degree-spec-reqs").children().length; i++){
+    			jsonResponse["Categories"][i] = {};
+    			var degreeName = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").val().trim());
+    			var catalogYear = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("catalog-year").trim());
+    			var college = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("college").trim());
+    			var specialty = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("specialty").trim());
+    			jsonResponse["Categories"][i]["College"] = college;
+    			jsonResponse["Categories"][i]["DegreeName"] = degreeName;
+    			jsonResponse["Categories"][i]["DegreeYear"] = parseInt(catalogYear);
+    			jsonResponse["Categories"][i]["Specialty"] = specialty;
+    			jsonResponse["Categories"][i]["PreReqs"] = [];
+    			jsonResponse["Categories"][i]["CoReqs"] = [];
+    			if($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().length > 0){
+    				var k = 0;
+    				var l = 0;
+    				for(var j = 0; j < $("#add-course-degree-spec-reqs").children().eq(i).children("table").children().length; j++){
+    					if($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").hasClass("course-prerequisite-input")){
+    						var courseID = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").attr("course-id"));
+    						jsonResponse["Categories"][i]["PreReqs"][k] = parseInt(courseID);
+    						k++
+    					}
+    					else if($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").hasClass("course-corequisite-input")){
+    						var courseID = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").attr("course-id"));
+    						jsonResponse["Categories"][i]["CoReqs"][l] = parseInt(courseID);
+    						l++;
+    					}
+    				}
+    			}
+    		}
+    	}
+		// build generic pre co req json entry
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length] = {};
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["College"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["DegreeName"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["DegreeYear"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["Specialty"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["PreReqs"] = [];
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["CoReqs"] = [];
+		for(var i = 0; i < $("#course-prerequisites").children().length; i++){
+			var courseID = sanatize($("#course-prerequisites").children().eq(i).children("input").attr("course-id"));
+			jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["PreReqs"][i] = parseInt(courseID);
+		}
+		for(var i = 0; i < $("#course-corequisites").children().length; i++){
+			var courseID = sanatize($("#course-corequisites").children().eq(i).children("input").attr("course-id"));
+			jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["CoReqs"][i] = parseInt(courseID);
+		}
+		console.log(JSON.stringify(jsonResponse));
     	// send request to the back-end...
 		$.post("/administration/edit-course/js/",
    		{
@@ -307,8 +357,7 @@ $(document).ready(function() {
 			CourseNumber: sanatize($("#edit-course-number").val().trim()),
 			CourseName: sanatize($("#edit-course-name").val().trim()),
 			CourseAvailability: sanatize($("input[name='inlineRadioOptions']:checked").val()),
-			CoursePrerequisites: sanatize($("#edit-course-prerequisites").val().trim()),
-			CourseCorequisites: sanatize($("#edit-course-corequisites").val().trim()),
+			nCoursePreCoreqInfo: JSON.stringify(jsonResponse),
 			CourseHours: sanatize($("#edit-course-hours").val().trim()),
 			CourseID: sanatize($("#edit-course-id").val().trim())
    		},
@@ -638,7 +687,7 @@ $(document).ready(function() {
 	// function for capturing view text search info
 	$(document).on("click", "#remove-course-search-btn", function(e) {
 		// send request to the back-end...
-  		$.post("/administration/view-course/js/",
+  		$.post("/administration/view-course-detailed/js/",
 	    {
 	      courseSearchText: sanatize($("#remove-course-search-input").val().trim())
 	    },
@@ -675,8 +724,7 @@ $(document).ready(function() {
 				});
 
 				// parse out json for all generic and degree specific pre/co requisites
-				var nCoursePreCoreqInfo = '{"Categories":[{"College":"College of Engineering","DegreeName":"Computer Science","DegreeYear":"2020","Specialty":"None","PreReqs":[4,12],"CoReqs":[1,44]},{"College":"","DegreeName":"","DegreeYear":"","Specialty":"","PreReqs":[22,4],"CoReqs":[1,12]}]}';
-				var jsonResponse = JSON.parse(nCoursePreCoreqInfo);
+				var jsonResponse = JSON.parse(data.PreCoreq);
 				// parse out json for all degree specific pre/co requisites
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 					if(jsonResponse.Categories[i].College.length != 0 && jsonResponse.Categories[i].DegreeYear.length != 0 && jsonResponse.Categories[i].Specialty.length != 0){
@@ -684,14 +732,14 @@ $(document).ready(function() {
 				    			   '<div class="input-group-prepend">' +
 				    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Degree Name</span>' +
 				    			   '</div>' + 
-				    			   '<input readonly type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'">' + 
+				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" readonly>' + 
 				    			   '<table class="degree-spec-course-reqs w-100 mt-3">';
 				    			   for(var j = 0; j < jsonResponse.Categories[i].PreReqs.length; j++){
 				    			   		html += '<tr><td><div class="input-group mb-3 ml-5">';
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 								    			'</div>' + 
-								    			'<input readonly type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
 								    			'</div></tr></td>';
 				    			   }
 				    			   for(var j = 0; j < jsonResponse.Categories[i].CoReqs.length; j++){
@@ -699,7 +747,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 								    			'</div>' + 
-								    			'<input readonly type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
 								    			'</div></tr></td>';
 				    			   }
 				    		html +=	'</table>' +
@@ -712,7 +760,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 							    			'</div>' + 
-							    			'<input readonly type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
 							    			'</div>';
 							    $("#course-prerequisites").append(html);
 		    			   }
@@ -721,7 +769,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 							    			'</div>' + 
-							    			'<input readonly type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly>' + 
 							    			'</div>';
 							    $("#course-corequisites").append(html);
 		    			   }
