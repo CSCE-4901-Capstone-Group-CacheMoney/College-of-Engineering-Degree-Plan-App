@@ -228,16 +228,66 @@ $(document).ready(function() {
     $("#add-course-deparment-id").on('keyup', function(){
     	$(this).val(sanatize($(this).val().replace(/[0-9]/gi,'')));
 	    $(this).val(sanatize($(this).val().toUpperCase()));
-
 	});
 	
     // force numbers in dept only
 	$("#add-course-number").on('keyup', function(){
     	$(this).val(sanatize($(this).val().replace(/[a-z]/gi,'')));
-
 	});
+
 	// also capture enter key to trigger above function
     $(document).on("click", "#add-course-submit-btn", function(e) {
+    	// build json entries for course general and degree specific pre and co req
+    	var jsonResponse = {};
+		jsonResponse["Categories"] = [];
+
+    	if($("#add-course-degree-spec-reqs").children().length > 0){
+    		for(var i = 0; i < $("#add-course-degree-spec-reqs").children().length; i++){
+    			jsonResponse["Categories"][i] = {};
+    			var degreeName = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").val().trim());
+    			var catalogYear = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("catalog-year").trim());
+    			var college = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("college").trim());
+    			var specialty = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("specialty").trim());
+    			jsonResponse["Categories"][i]["College"] = college;
+    			jsonResponse["Categories"][i]["DegreeName"] = degreeName;
+    			jsonResponse["Categories"][i]["DegreeYear"] = parseInt(catalogYear);
+    			jsonResponse["Categories"][i]["Specialty"] = specialty;
+    			jsonResponse["Categories"][i]["PreReqs"] = [];
+    			jsonResponse["Categories"][i]["CoReqs"] = [];
+    			if($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().length > 0){
+    				var k = 0;
+    				var l = 0;
+    				for(var j = 0; j < $("#add-course-degree-spec-reqs").children().eq(i).children("table").children().length; j++){
+    					if($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").hasClass("course-prerequisite-input")){
+    						var courseID = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").attr("course-id"));
+    						jsonResponse["Categories"][i]["PreReqs"][k] = parseInt(courseID);
+    						k++
+    					}
+    					else if($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").hasClass("course-corequisite-input")){
+    						var courseID = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("table").children().eq(j).children().children().children("input").attr("course-id"));
+    						jsonResponse["Categories"][i]["CoReqs"][l] = parseInt(courseID);
+    						l++;
+    					}
+    				}
+    			}
+    		}
+    	}
+		// build generic pre co req json entry
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length] = {};
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["College"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["DegreeName"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["DegreeYear"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["Specialty"] = "";
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["PreReqs"] = [];
+		jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["CoReqs"] = [];
+		for(var i = 0; i < $("#course-prerequisites").children().length; i++){
+			var courseID = sanatize($("#course-prerequisites").children().eq(i).children("input").attr("course-id"));
+			jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["PreReqs"][i] = parseInt(courseID);
+		}
+		for(var i = 0; i < $("#course-corequisites").children().length; i++){
+			var courseID = sanatize($("#course-corequisites").children().eq(i).children("input").attr("course-id"));
+			jsonResponse["Categories"][$("#add-course-degree-spec-reqs").children().length]["CoReqs"][i] = parseInt(courseID);
+		}
     	// send request to the back-end...
 		$.post("/administration/add-course/js/",
    		{
@@ -245,9 +295,8 @@ $(document).ready(function() {
 			nCourseID: sanatize($("#add-course-number").val().trim()),
 			nCourseName: sanatize($("#add-course-name").val().trim()),
 			nCourseAvail: sanatize($("input[name='inlineRadioOptions']:checked").val()),
-			nCoursePrereqCount: sanatize($("#add-course-prerequisites").val().trim()),
-			nCourseCoreqCount: sanatize($("#add-course-corequisites").val().trim()),
-			nCourseHours: sanatize($("#add-course-hours").val().trim())
+			nCoursePreCoreqInfo: JSON.stringify(jsonResponse),
+			nCourseHours: sanatize($("#add-course-hours").val().trim()),
    		},
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("true") != -1) {
@@ -274,6 +323,176 @@ $(document).ready(function() {
         if(e.which == 13) { $("#add-course-submit-btn").click(); }
     });
 
+
+    // for adding course prerequisites
+    $(document).on("click", "#add-course-prerequisite, .add-degree-course-prerequisite", function(e) {
+    	var html = "";
+    	if($(this).hasClass("add-degree-course-prerequisite"))
+    		html += '<div class="input-group mb-3 ml-5">';
+    	else
+    		html += '<div class="input-group mb-3">';
+
+    		html += '<div class="input-group-prepend">' +
+    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Prerequisite</span>' +
+    			   '</div>' + 
+    			   '<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+    			   '</div>';
+    	
+    	if($(this).hasClass("add-degree-course-prerequisite"))
+    		$(this).parent().children("table").append('<tr><td>'+ html +'</tr></td>');
+    	else
+    		$("#course-prerequisites").append(html);
+    });
+
+    // for adding course corequisites
+    $(document).on("click", "#add-course-corequisites, .add-degree-course-corequisite", function(e) {
+    	var html = "";
+    	if($(this).hasClass("add-degree-course-corequisite"))
+    		html += '<div class="input-group mb-3 ml-5">';
+    	else
+    		html += '<div class="input-group mb-3">';
+
+    		html += '<div class="input-group-prepend">' +
+    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Corequisite</span>' +
+    			   '</div>' + 
+    			   '<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+    			   '</div>';
+
+    	if($(this).hasClass("add-degree-course-corequisite"))
+    		$(this).parent().children("table").append('<tr><td>'+ html +'</tr></td>');
+    	else
+    		$("#course-corequisites").append(html);
+    });
+
+
+    // for adding course prerequisites DEGREE SPECIFIC
+    $(document).on("click", "#add-course-degree-spec-req", function(e) {
+    	var html = '<div class="input-group mb-3">' +
+    			   '<div class="input-group-prepend">' +
+    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Degree Name</span>' +
+    			   '</div>' + 
+    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+    			   '<table class="degree-spec-course-reqs w-100 mt-3">' + 
+    			   '</table>' +
+    			   '<button type="button" class="add-degree-course-prerequisite btn btn-outline-success mb-1 mt-1 ml-5">Add Prerequisite</button>' +
+    			   '<button type="button" class="add-degree-course-corequisite btn btn-outline-success mb-1 mt-1 ml-5">Add Corequisites</button>' +
+    			   '</div>';
+    	$("#add-course-degree-spec-reqs").append(html);
+    });
+
+
+    // auto complete for courses in pre and co req
+    $('#course-requirements, #add-course-degree-spec-reqs').on('keypress', '.course-prerequisite-input, .course-corequisite-input', function(e) {
+    	// force uppercase
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+     	var searchText = sanatize($(this).val().trim());
+		// auto complete search for view course
+		$(this).autocomplete({
+		    lookup: function (query, done) {
+				var result;
+		        $.post("/administration/view-course/js/",
+			    {
+			      courseSearchText: sanatize(searchText)
+				},
+			    function(data,status) {
+					if(!$.isEmptyObject(data)) {
+						result = {
+			            	suggestions: [
+								{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName + "-" + data.ID}
+			            	]
+						};
+						done(result);
+					} else {
+						result = { suggestions: [] };
+						done(result);
+					}
+				});
+		    },
+		    onSelect: function (suggestion) {
+		        $(this).val(suggestion.value.split("-")[0].trim());
+		        $(this).attr("course-id", suggestion.value.split("-")[2].trim());
+		    }
+		});
+	});
+
+    // add course iD if user manually enters course in pre and co req
+	$('#course-requirements, #add-course-degree-spec-reqs').on('focusout', '.course-prerequisite-input, .course-corequisite-input', function(e) {
+		// force uppercase
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+     	var searchText = sanatize($(this).val().trim());
+     	var thisInputElement = $(this);
+     	$.post("/administration/view-course/js/",
+	    {
+	      courseSearchText: sanatize(searchText)
+		},
+	    function(data,status) {
+			if(!$.isEmptyObject(data)) {
+				$(thisInputElement).attr("course-id", data.ID);
+			} else {
+				$(thisInputElement).attr("course-id", "");
+			}
+		});
+	});
+
+
+	// auto complete for degree specific pre and co req reqs (DEGREE SPECIFIC)
+    $('#add-course-degree-spec-reqs').on('keypress', '.course-degree-name-input', function(e) {
+    	// force uppercase
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+     	var searchText = sanatize($(this).val().trim());
+		// auto complete search for view course
+		$(this).autocomplete({
+		    lookup: function (query, done) {
+				var result;
+		        $.post("/administration/view-degree/js/",
+			    {
+			      degreeSearchText: sanatize(searchText)
+				},
+			    function(data,status) {
+					if(!$.isEmptyObject(data)) {
+						result = {
+			            	suggestions: [
+								{"value": data.nDegreeName + " - " + data.ncatalogYear + " - " + data.nCollegeName + " - " + data.nspecialty}
+			            	]
+						};
+						done(result);
+					} else {
+						result = { suggestions: [] };
+						done(result);
+					}
+				});
+		    },
+		    onSelect: function (suggestion) {
+		        $(this).val(suggestion.value.split("-")[0].trim());
+		        $(this).attr("catalog-year", suggestion.value.split("-")[1].trim());
+		        $(this).attr("college", suggestion.value.split("-")[2].trim());
+		        $(this).attr("specialty", suggestion.value.split("-")[3].trim());
+		    }
+		});
+	});
+
+    // add degree info if user manually enters degree (DEGREE SPECIFIC)
+	$('#add-course-degree-spec-reqs').on('focusout', '.course-degree-name-input', function(e) {
+		// force uppercase
+    	$(this).val(sanatize($(this).val().toUpperCase()));
+     	var searchText = sanatize($(this).val().trim());
+     	var thisInputElement = $(this);
+     	$.post("/administration/view-degree/js/",
+	    {
+	      degreeSearchText: sanatize(searchText)
+		},
+	    function(data,status) {
+			if(!$.isEmptyObject(data) && !data.nDegreeName.toLowerCase().indexOf("none")) {
+				$(thisInputElement).attr("catalog-year", data.ncatalogYear);
+				$(thisInputElement).attr("college", data.nCollegeName);
+				$(thisInputElement).attr("specialty", data.nspecialty);
+			} else {
+				$(thisInputElement).attr("catalog-year", "");
+				$(thisInputElement).attr("college", "");
+				$(thisInputElement).attr("specialty", "");
+			}
+		});
+	});
 
     /*-----------------------remove course js----------------------------------------- */
     // force uppercase letters only
