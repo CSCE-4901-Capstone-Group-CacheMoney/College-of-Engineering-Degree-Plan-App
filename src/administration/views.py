@@ -197,7 +197,7 @@ def administrationViewCourseDetailedJS(request):
 	
 	if contains_digit:
 		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
-		res = temp.match(courseSearchText).groups() 
+		res = temp.match(courseSearchText).groups()
 		for c in Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]):
 			content["CourseDept"] =	str(c.courseDept)
 			content["CourseID"] = str(c.courseID)
@@ -240,7 +240,10 @@ def administrationViewCourseDetailedJS(request):
 
 				break
 
-	
+	#if course wasn't found in the database, retrn empty json
+	if preCoreq == "":
+		return JsonResponse(content)
+
 	preCoreq_dict = json.loads(preCoreq)
 
 	jsonString={}
@@ -300,117 +303,36 @@ def administrationViewCourseDetailedJS(request):
 
 	return JsonResponse(content)
 
-##############################
-
-	degreeSearchText = request.POST.get('degreeSearchText', '')
-	#degreeSearchText = degreeSearchText.replace(' ','')
-	print (degreeSearchText)
-	content={}
-	courseList=""
-	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
-		content["nDegreeName"]        = str(d.name)
-		courseList				  	  = json.dumps(d.degreeInfo)
-		content["ncatalogYear"]		  = str(d.catalogYear)
-		content["nCollegeName"] 	  = str(d.CollegeName)
-		content["nspecialty"]         = str(d.specialty)
-		
-		break
-
-	courseList_dict = json.loads(courseList)
-
-	jsonString={}
-	jsonValue=[]
-
-	for category in courseList_dict['Categories']:
-		catItem = {}
-		catItem['name'] = category.get('name')
-
-		courseItem = []
-		for item in range(len(category.get('courses'))):
-			singleClassItem = {}
-
-			c = Course.objects.get(id = category.get('courses')[item])
-			singleClassItem['id'] = str(c.id)
-			singleClassItem['courseID'] = str(c.courseID)
-			singleClassItem['courseDept'] = str(c.courseDept)
-			singleClassItem['name'] = str(c.name)
-			singleClassItem['preCoreq'] = str(c.preCoReq)
-			singleClassItem['category'] = str(c.category)
-			singleClassItem['hours'] = str(c.hours)
-			singleClassItem['semester'] = str(c.semester)
-			singleClassItem['description'] = str(c.description)
-
-			courseItem.append(singleClassItem)
-
-		catItem['courses'] = courseItem
-		catItem['coursesRequired'] = category.get('coursesRequired')
-
-		jsonValue.append(catItem)
-	
-	jsonString['Categories'] = jsonValue
-
-	print(json.dumps(jsonString, indent=2))
-	content['ndegreeInfo'] = str(json.dumps(jsonString))
-	return JsonResponse(content)
-
-
-
-
-
-
-
-
 @csrf_exempt
 def administrationEditCourseJS(request):
 
 	nCourseName = request.POST.get('CourseName', '')
 	nCourseDept = request.POST.get('DepartmentID', '')
 	nCourseID = request.POST.get('CourseNumber', '')
-	nCoursePreCoreq = request.POST.get('CoursePrerequisites', '')
+	nCoursePreCoreqInfo = json.loads(request.POST.get('nCoursePreCoreqInfo', ''))
 	nCourseHours = request.POST.get('CourseHours', '')
 	nCourseAvail = request.POST.get('CourseAvailability', '')
-	print (nCourseAvail)
+	nID = request.POST.get('CourseID', '')
 
-	if len(str(nCourseDept)) != 4 or len(str(nCourseID)) != 4:
-		jsResponse = {
-			'success': 'False',
-			'message': 'Error adding course. Course Department and Number must be 4 characters!'
-		}
+	print (nID)
 
-	else:
-		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
-		#if nCourseAvail == "0":
-		#	nCourseAvail = "Spring"
-		#elif nCourseAvail == "1":
-		#	nCourseAvail = "Fall"
-		#else:
-		#	nCourseAvail = "Both"
+	c = Course.objects.filter(id=nID)
 
-		c.update(
-			name = str(nCourseName),
-			courseDept = str(nCourseDept).upper(),
-			courseID = nCourseID,
-			preCoReq = json.loads(nCoursePreCoreq),
-			hours = nCourseHours,
-			semester = str(nCourseAvail)	
-			)
-		print(c)			
+	c.update(
+		name = str(nCourseName),
+		courseDept = str(nCourseDept).upper(),
+		courseID = nCourseID,
+		preCoReq = nCoursePreCoreqInfo,
+		hours = nCourseHours,
+		semester = str(nCourseAvail)	
+		)
 
-		if c==1:
-			jsResponse = {
-				'success': 'True',
-				'message': 'Successfully added ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' to course list!'
-			}
-		elif c>1:
-			jsResponse = {
-				'success': 'False',
-				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' contains too many courses!'
-			}
-		elif c<1:
-			jsResponse = {
-				'success': 'False',
-				'message': 'Error adding course. ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + " isn't a course!"
-			}
+	print(c)
+	
+	jsResponse = {
+		'success': 'True',
+		'message': 'Successfully added ' + str(nCourseDept).upper() + ' ' + str(nCourseID) + ' to course list!'
+	}
 
 	return JsonResponse(jsResponse)
 
