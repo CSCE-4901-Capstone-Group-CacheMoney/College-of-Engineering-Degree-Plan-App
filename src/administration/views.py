@@ -184,6 +184,54 @@ def administrationViewCourseJS(request):
 		#print (content)
 
 	return JsonResponse(content)
+@csrf_exempt
+## Function that gives CourseDept, CourseID, and pkid of matching courses for Auto Search front-end
+def autoSearchJS(request):
+	courseSearchText = request.POST.get('courseSearchText', '')
+	courseSearchText = courseSearchText.replace(' ','')
+	print (courseSearchText)
+	content=[{}]
+	contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
+	
+	if contains_digit:
+		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
+		res = temp.match(courseSearchText).groups() 
+		for c in Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]):
+			result = {
+				"CourseDept": str(c.courseDept),
+				"CourseID"	: str(c.courseID),
+				"CourseName": str(c.name),
+				"ID"		: str(c.id),
+			}
+			content.append(result) 
+	else:
+		if len(str(courseSearchText)) > 4:		#search course names
+			for c in Course.objects.filter(name__istartswith=str(courseSearchText)):
+				result = {
+					"CourseDept": str(c.courseDept),
+					"CourseID"	: str(c.courseID),
+					"CourseName": str(c.name),
+					"ID"		: str(c.id),
+				}
+				content.append(result) 
+
+		else:
+			for c in Course.objects.filter(courseDept__istartswith=str(courseSearchText)):		#search course dept
+				result = {
+					"CourseDept": str(c.courseDept),
+					"CourseID"	: str(c.courseID),
+					"CourseName": str(c.name),
+					"ID"		: str(c.id),
+				}
+				content.append(result) 
+				# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
+				# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
+				# 		  "CoreqCount": str(c.coreqCount)}
+				# content.append(dict(result)) 
+		#print (content)
+
+	return JsonResponse(content, safe=False)
+
 
 @csrf_exempt
 def administrationViewCourseDetailedJS(request):

@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
 	path('pkLookUp/js/', views.pkLookUpJS, name='pkLookUpJS'),
+	path('autoSearch/js/', views.autoSearchJS, name='autoSearchJS'),
 
 	path('view-degree/', views.administrationViewDegree, name='administrationViewDegree'),
 	path('edit-degree/', views.administrationEditDegree, name='administrationEditDegree'),
@@ -32,4 +33,5 @@ urlpatterns = [
 	path('add-resource/', views.administrationAddResource, name='administrationAddResource'),
 	path('remove-resource/', views.administrationRemoveResource, name='administrationRemoveResource'),
 	# add resources js requests urls at a later time....
-]
+	
+]	
