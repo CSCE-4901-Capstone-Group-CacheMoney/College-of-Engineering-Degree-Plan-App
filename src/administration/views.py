@@ -51,6 +51,22 @@ def administrationViewDegreeJS(request):
 
 	return JsonResponse(content)
 
+## Function that gives DegreeName, CatalogYear, and pkid of matching degrees  for Auto Search front-end
+@csrf_exempt
+def autoSearchDegreeJS(request):
+	degreeSearchText = request.POST.get('degreeSearchText', '')
+	print (degreeSearchText)
+	content=[{}]
+	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
+		result = {
+			"DegreeName"	: str(d.name),
+			"CatalogYear"	: str(d.catalogYear),
+			"ID"			: str(d.id),
+		}
+		content.append(result) 
+
+	return JsonResponse(content, safe=False)
+
 @csrf_exempt
 def administrationViewDegreeDetailedJS(request):
 	degreeSearchText = request.POST.get('degreeSearchText', '')
@@ -186,7 +202,7 @@ def administrationViewCourseJS(request):
 	return JsonResponse(content)
 @csrf_exempt
 ## Function that gives CourseDept, CourseID, and pkid of matching courses for Auto Search front-end
-def autoSearchJS(request):
+def autoSearchCourseJS(request):
 	courseSearchText = request.POST.get('courseSearchText', '')
 	courseSearchText = courseSearchText.replace(' ','')
 	print (courseSearchText)

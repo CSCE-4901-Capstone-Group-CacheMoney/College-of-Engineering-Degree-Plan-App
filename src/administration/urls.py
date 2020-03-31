@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
 	path('pkLookUp/js/', views.pkLookUpJS, name='pkLookUpJS'),
-	path('autoSearch/js/', views.autoSearchJS, name='autoSearchJS'),
+	path('autoSearchCourse/js/', views.autoSearchCourseJS, name='autoSearchCourseJS'),
+	path('autoSearchDegree/js/', views.autoSearchDegreeJS, name='autoSearchDegreeJS'),
 
 	path('view-degree/', views.administrationViewDegree, name='administrationViewDegree'),
 	path('edit-degree/', views.administrationEditDegree, name='administrationEditDegree'),
