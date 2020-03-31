@@ -394,7 +394,7 @@ $(document).ready(function() {
    			} else {
    				$("#edit-course-update-alert").removeClass("alert-success");
 				$("#edit-course-update-alert").addClass("alert-danger");
-				$("#edit-course-update-alert").text("Unable to Update Course!");
+				$("#edit-course-update-alert").text(data.message);
 				$("#edit-course-update-alert").removeClass("d-none");
    			}
    		});
