@@ -356,13 +356,13 @@ def administrationAddCourseJS(request):
 		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
 		#print(c)			
 		if not c:
-			if nCourseAvail == "0":
-				nCourseAvail = "Spring"
-			elif nCourseAvail == "1":
-				nCourseAvail = "Fall"
-			else:
-				nCourseAvail = "Both"
-			print (nCourseAvail)
+			# if nCourseAvail == "0":
+			# 	nCourseAvail = "Spring"
+			# elif nCourseAvail == "1":
+			# 	nCourseAvail = "Fall"
+			# else:
+			# 	nCourseAvail = "Both"
+			print ('W/o if stmts: ',nCourseAvail)
 			Course.objects.create(
 			name = str(nCourseName),
 			courseDept = str(nCourseDept).upper(),
