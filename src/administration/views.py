@@ -51,6 +51,22 @@ def administrationViewDegreeJS(request):
 
 	return JsonResponse(content)
 
+## Function that gives DegreeName, CatalogYear, and pkid of matching degrees  for Auto Search front-end
+@csrf_exempt
+def autoSearchDegreeJS(request):
+	degreeSearchText = request.POST.get('degreeSearchText', '')
+	print (degreeSearchText)
+	content=[{}]
+	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
+		result = {
+			"DegreeName"	: str(d.name),
+			"CatalogYear"	: str(d.catalogYear),
+			"ID"			: str(d.id),
+		}
+		content.append(result) 
+
+	return JsonResponse(content, safe=False)
+
 @csrf_exempt
 def administrationViewDegreeDetailedJS(request):
 	degreeSearchText = request.POST.get('degreeSearchText', '')
@@ -186,13 +202,25 @@ def administrationViewCourseJS(request):
 	return JsonResponse(content)
 @csrf_exempt
 ## Function that gives CourseDept, CourseID, and pkid of matching courses for Auto Search front-end
-def autoSearchJS(request):
+def autoSearchCourseJS(request):
 	courseSearchText = request.POST.get('courseSearchText', '')
 	courseSearchText = courseSearchText.replace(' ','')
 	print (courseSearchText)
 	content=[{}]
 	contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
-	
+
+	if courseSearchText.isdigit() is True:					# search for courseID
+		print('autoSearchCourse courseSearchText: ', courseSearchText)
+		for c in Course.objects.filter(courseID__startswith = courseSearchText):
+			result = {
+				"CourseDept": str(c.courseDept),
+				"CourseID"	: str(c.courseID),
+				"CourseName": str(c.name),
+				"ID"		: str(c.id),
+			}
+			content.append(result) 
+		return JsonResponse(content, safe=False)
+
 	if contains_digit:
 		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
 		res = temp.match(courseSearchText).groups() 
