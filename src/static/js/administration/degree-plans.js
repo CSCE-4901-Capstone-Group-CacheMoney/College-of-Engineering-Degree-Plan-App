@@ -26,18 +26,23 @@ $(document).ready(function() {
 		$(this).autocomplete({
 		    lookup: function (query, done) {
 				var result;
-		        $.post("/administration/view-course/js/",
+		        $.post("/administration/autoSearch/js/",
 			    {
 			      courseSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
-					if(!$.isEmptyObject(data)) {
-						result = {
-			            	suggestions: [
-								{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName + "-" + data.ID}
-			            	]
-						};
+					if(data.length > 1) {
+						suggestions = [];
+						var k = 0;
+						for(var i = 1; i < data.length; i++){
+							suggestions[k] = {};
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName + "-" + data[i].ID;
+							k++;
+						}
+
+						result = { suggestions };
 						done(result);
+
 					} else {
 						result = { suggestions: [] };
 						done(result);
@@ -45,8 +50,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion.value.split("-")[0].trim());
-		        $(this).attr("course-id", suggestion.value.split("-")[2].trim());
+		        $(this).val(suggestion["value"].split("-")[0].trim());
+		        $(this).attr("course-id", suggestion["value"].split("-")[2].trim());
 		    }
 		});
 	});

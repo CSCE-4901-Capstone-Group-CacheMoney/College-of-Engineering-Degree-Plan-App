@@ -20,19 +20,23 @@ $(document).ready(function() {
 	$('#view-course-search-input').autocomplete({
 	    lookup: function (query, done) {
 			var result;
-			var str1 = "undefined";
-	        $.post("/administration/view-course/js/",
+	        $.post("/administration/autoSearch/js/",
 		    {
 		      courseSearchText: sanatize($("#view-course-search-input").val().trim())
 			},
 		    function(data,status) {
-				if(!$.isEmptyObject(data)) {
-					result = {
-		            	suggestions: [
-							{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
-		            	]
-					};
+				if(data.length > 1) {
+					suggestions = [];
+					var k = 0;
+					for(var i = 1; i < data.length; i++){
+						suggestions[k] = {};
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName;
+						k++;
+					}
+
+					result = { suggestions };
 					done(result);
+
 				} else {
 					result = { suggestions: [] };
 					done(result);
@@ -40,7 +44,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#view-course-search-input").val(suggestion.value.split("-")[0].trim());
+	        $("#view-course-search-input").val(suggestion["value"].split("-")[0].trim());
 	        $("#view-course-search-btn").click();
 	    }
 	});
@@ -54,6 +58,11 @@ $(document).ready(function() {
 	    },
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
+	    		// delete previous children if they exist
+	    		$("#course-prerequisites").children().remove();
+	    		$("#course-corequisites").children().remove();
+	    		$("#add-course-degree-spec-reqs").children().remove();
+
 	    		// add data to fields below...
 		    	$("#view-course-deparment-id").val(data.CourseDept);
 				$("#view-course-number").val(data.CourseID);
@@ -162,19 +171,24 @@ $(document).ready(function() {
     // auto complete search for edit course
 	$('#edit-course-search-input').autocomplete({
 	    lookup: function (query, done) {
-	        var result;
-	        $.post("/administration/view-course/js/",
+			var result;
+	        $.post("/administration/autoSearch/js/",
 		    {
 		      courseSearchText: sanatize($("#edit-course-search-input").val().trim())
-		    },
+			},
 		    function(data,status) {
-		    	if(!$.isEmptyObject(data)) {
-					result = {
-		            	suggestions: [
-							{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
-		            	]
-					};
+				if(data.length > 1) {
+					suggestions = [];
+					var k = 0;
+					for(var i = 1; i < data.length; i++){
+						suggestions[k] = {};
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName;
+						k++;
+					}
+
+					result = { suggestions };
 					done(result);
+
 				} else {
 					result = { suggestions: [] };
 					done(result);
@@ -182,7 +196,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#edit-course-search-input").val(suggestion.value.split("-")[0].trim());
+	        $("#edit-course-search-input").val(suggestion["value"].split("-")[0].trim());
 	        $("#edit-course-search-btn").click();
 	    }
 	});
@@ -196,6 +210,11 @@ $(document).ready(function() {
 	    },
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
+	    		// delete previous children if they exist
+	    		$("#course-prerequisites").children().remove();
+	    		$("#course-corequisites").children().remove();
+	    		$("#add-course-degree-spec-reqs").children().remove();
+
 	    		// add data to fields below...
 		    	$("#edit-course-deparment-id").val(data.CourseDept);
 				$("#edit-course-number").val(data.CourseID);
@@ -566,20 +585,25 @@ $(document).ready(function() {
      	var searchText = sanatize($(this).val().trim());
 		// auto complete search for view course
 		$(this).autocomplete({
-		    lookup: function (query, done) {
+			lookup: function (query, done) {
 				var result;
-		        $.post("/administration/view-course/js/",
+		        $.post("/administration/autoSearch/js/",
 			    {
 			      courseSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
-					if(!$.isEmptyObject(data)) {
-						result = {
-			            	suggestions: [
-								{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName + "-" + data.ID}
-			            	]
-						};
+					if(data.length > 1) {
+						suggestions = [];
+						var k = 0;
+						for(var i = 1; i < data.length; i++){
+							suggestions[k] = {};
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName + "-" + data[i].ID;
+							k++;
+						}
+
+						result = { suggestions };
 						done(result);
+
 					} else {
 						result = { suggestions: [] };
 						done(result);
@@ -587,8 +611,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion.value.split("-")[0].trim());
-		        $(this).attr("course-id", suggestion.value.split("-")[2].trim());
+		        $(this).val(suggestion["value"].split("-")[0].trim());
+		        $(this).attr("course-id", suggestion["value"].split("-")[2].trim());
 		    }
 		});
 	});
@@ -678,19 +702,24 @@ $(document).ready(function() {
     // auto complete search for remove course
 	$('#remove-course-search-input').autocomplete({
 	    lookup: function (query, done) {
-	        var result;
-	        $.post("/administration/view-course/js/",
+			var result;
+	        $.post("/administration/autoSearch/js/",
 		    {
 		      courseSearchText: sanatize($("#remove-course-search-input").val().trim())
-		    },
+			},
 		    function(data,status) {
-		    	if(!$.isEmptyObject(data)) {
-					result = {
-		            	suggestions: [
-							{"value": data.CourseDept + " " +  data.CourseID + "-"+ data.CourseName}
-		            	]
-					};
+				if(data.length > 1) {
+					suggestions = [];
+					var k = 0;
+					for(var i = 1; i < data.length; i++){
+						suggestions[k] = {};
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName;
+						k++;
+					}
+
+					result = { suggestions };
 					done(result);
+
 				} else {
 					result = { suggestions: [] };
 					done(result);
@@ -698,7 +727,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#remove-course-search-input").val(suggestion.value.split("-")[0].trim());
+	        $("#remove-course-search-input").val(suggestion["value"].split("-")[0].trim());
 	        $("#remove-course-search-btn").click();
 	    }
 	});
@@ -712,6 +741,11 @@ $(document).ready(function() {
 	    },
 	    function(data,status) {
 	    	if(!$.isEmptyObject(data)) {
+	    		// delete previous children if they exist
+	    		$("#course-prerequisites").children().remove();
+	    		$("#course-corequisites").children().remove();
+	    		$("#add-course-degree-spec-reqs").children().remove();
+
 	    		// add data to fields below...
 		    	$("#remove-course-deparment-id").val(data.CourseDept);
 				$("#remove-course-number").val(data.CourseID);
