@@ -26,7 +26,7 @@ $(document).ready(function() {
 		$(this).autocomplete({
 		    lookup: function (query, done) {
 				var result;
-		        $.post("/administration/autoSearch/js/",
+		        $.post("/administration/autoSearchCourse/js/",
 			    {
 			      courseSearchText: sanatize(searchText)
 				},

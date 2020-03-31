@@ -20,7 +20,7 @@ $(document).ready(function() {
 	$('#view-course-search-input').autocomplete({
 	    lookup: function (query, done) {
 			var result;
-	        $.post("/administration/autoSearch/js/",
+	        $.post("/administration/autoSearchCourse/js/",
 		    {
 		      courseSearchText: sanatize($("#view-course-search-input").val().trim())
 			},
@@ -172,7 +172,7 @@ $(document).ready(function() {
 	$('#edit-course-search-input').autocomplete({
 	    lookup: function (query, done) {
 			var result;
-	        $.post("/administration/autoSearch/js/",
+	        $.post("/administration/autoSearchCourse/js/",
 		    {
 		      courseSearchText: sanatize($("#edit-course-search-input").val().trim())
 			},
@@ -587,7 +587,7 @@ $(document).ready(function() {
 		$(this).autocomplete({
 			lookup: function (query, done) {
 				var result;
-		        $.post("/administration/autoSearch/js/",
+		        $.post("/administration/autoSearchCourse/js/",
 			    {
 			      courseSearchText: sanatize(searchText)
 				},
@@ -703,7 +703,7 @@ $(document).ready(function() {
 	$('#remove-course-search-input').autocomplete({
 	    lookup: function (query, done) {
 			var result;
-	        $.post("/administration/autoSearch/js/",
+	        $.post("/administration/autoSearchCourse/js/",
 		    {
 		      courseSearchText: sanatize($("#remove-course-search-input").val().trim())
 			},
