@@ -208,7 +208,19 @@ def autoSearchCourseJS(request):
 	print (courseSearchText)
 	content=[{}]
 	contains_digit = any(map(str.isdigit,courseSearchText))	#check if the search string contains digit
-	
+
+	if courseSearchText.isdigit() is True:					# search for courseID
+		print('autoSearchCourse courseSearchText: ', courseSearchText)
+		for c in Course.objects.filter(courseID__startswith = courseSearchText):
+			result = {
+				"CourseDept": str(c.courseDept),
+				"CourseID"	: str(c.courseID),
+				"CourseName": str(c.name),
+				"ID"		: str(c.id),
+			}
+			content.append(result) 
+		return JsonResponse(content, safe=False)
+
 	if contains_digit:
 		temp = re.compile("([a-zA-Z]+)([0-9]+)") 			#splitting courseDept and courseID
 		res = temp.match(courseSearchText).groups() 
