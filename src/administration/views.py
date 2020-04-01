@@ -62,6 +62,8 @@ def autoSearchDegreeJS(request):
 			"DegreeName"	: str(d.name),
 			"CatalogYear"	: str(d.catalogYear),
 			"ID"			: str(d.id),
+			"CollegeName"	: str(d.CollegeName),
+			"Specialty"		: str(d.specialty),
 		}
 		content.append(result) 
 
