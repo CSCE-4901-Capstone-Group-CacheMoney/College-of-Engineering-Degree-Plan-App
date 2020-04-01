@@ -185,19 +185,23 @@ $(document).ready(function() {
 		$(this).autocomplete({
 		    lookup: function (query, done) {
 				var result;
-				$.post("/administration/view-degree/js/",
+				$.post("/administration/autoSearchDegree/js/",
 			    {
 					degreeSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
-					if(!$.isEmptyObject(data)) {
-						result = {
-			            	suggestions: [
-								{"value": data.nDegreeName + " - " + data.ncatalogYear,
-								"value": data.nDegreeName + " - " + data.ncatalogYear,"value": data.nDegreeName + " - " + data.ncatalogYear,"value": data.nDegreeName + " - " + data.ncatalogYear}
-			            	]
-						};
+			    	if(data.length > 1) {
+						suggestions = [];
+						var k = 0;
+						for(var i = 1; i < data.length; i++){
+							suggestions[k] = {};
+							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							k++;
+						}
+
+						result = { suggestions };
 						done(result);
+
 					} else {
 						result = { suggestions: [] };
 						done(result);
@@ -205,7 +209,7 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-				$("#remove-degree-search-input").val(suggestion.value.split("-")[0].trim());
+				$("#remove-degree-search-input").val(suggestion["value"].split("-")[0].trim());
 				$("#remove-degree-search-btn").click();
 		    }
 		});
@@ -291,20 +295,25 @@ $(document).ready(function() {
      	var searchText = sanatize($(this).val().trim());
 		// auto complete search for view degree
 		$(this).autocomplete({
-		    lookup: function (query, done) {
+			lookup: function (query, done) {
 				var result;
-				$.post("/administration/view-degree/js/",
+				$.post("/administration/autoSearchDegree/js/",
 			    {
 					degreeSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
-					if(!$.isEmptyObject(data)) {
-						result = {
-			            	suggestions: [
-								{"value": data.nDegreeName + " - " + data.ncatalogYear}
-			            	]
-						};
+			    	if(data.length > 1) {
+						suggestions = [];
+						var k = 0;
+						for(var i = 1; i < data.length; i++){
+							suggestions[k] = {};
+							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							k++;
+						}
+
+						result = { suggestions };
 						done(result);
+
 					} else {
 						result = { suggestions: [] };
 						done(result);
@@ -312,7 +321,7 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-				$("#edit-degree-search-input").val(suggestion.value.split("-")[0].trim());
+				$("#edit-degree-search-input").val(suggestion["value"].split("-")[0].trim());
 				$("#edit-degree-search-btn").click();
 		    }
 		});
@@ -464,18 +473,23 @@ $(document).ready(function() {
 		$(this).autocomplete({
 		    lookup: function (query, done) {
 				var result;
-				$.post("/administration/view-degree/js/",
+				$.post("/administration/autoSearchDegree/js/",
 			    {
 					degreeSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
-					if(!$.isEmptyObject(data)) {
-						result = {
-			            	suggestions: [
-								{"value": data.nDegreeName + " - " + data.ncatalogYear}
-			            	]
-						};
+			    	if(data.length > 1) {
+						suggestions = [];
+						var k = 0;
+						for(var i = 1; i < data.length; i++){
+							suggestions[k] = {};
+							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							k++;
+						}
+
+						result = { suggestions };
 						done(result);
+
 					} else {
 						result = { suggestions: [] };
 						done(result);
@@ -483,7 +497,7 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-				$("#view-degree-search-input").val(suggestion.value.split("-")[0].trim());
+				$("#view-degree-search-input").val(suggestion["value"].split("-")[0].trim());
 				$("#view-degree-search-btn").click();
 		    }
 		});
