@@ -335,6 +335,9 @@ $(document).ready(function() {
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {
+				// delete previous children if they exist
+	    		$("#degree-categories").children().remove();
+
 	    		// add data to fields below...
 		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
 				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);
@@ -511,6 +514,9 @@ $(document).ready(function() {
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {
+				// delete previous children if they exist
+	    		$("#degree-categories").children().remove();
+	    		
 	    		// add data to fields below...
 		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
 				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);

@@ -644,20 +644,25 @@ $(document).ready(function() {
      	var searchText = sanatize($(this).val().trim());
 		// auto complete search for view course
 		$(this).autocomplete({
-		    lookup: function (query, done) {
+			lookup: function (query, done) {
 				var result;
-		        $.post("/administration/view-degree/js/",
+		        $.post("/administration/autoSearchDegree/js/",
 			    {
-			      degreeSearchText: sanatize(searchText)
+			      courseSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
-					if(!$.isEmptyObject(data)) {
-						result = {
-			            	suggestions: [
-								{"value": data.nDegreeName + " - " + data.ncatalogYear + " - " + data.nCollegeName + " - " + data.nspecialty}
-			            	]
-						};
+					if(data.length > 1) {
+						suggestions = [];
+						var k = 0;
+						for(var i = 1; i < data.length; i++){
+							suggestions[k] = {};
+							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear + " - " + data[i].CollegeName + " - " + data[i].Specialty;
+							k++;
+						}
+
+						result = { suggestions };
 						done(result);
+
 					} else {
 						result = { suggestions: [] };
 						done(result);
@@ -665,10 +670,10 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion.value.split("-")[0].trim());
-		        $(this).attr("catalog-year", suggestion.value.split("-")[1].trim());
-		        $(this).attr("college", suggestion.value.split("-")[2].trim());
-		        $(this).attr("specialty", suggestion.value.split("-")[3].trim());
+		        $(this).val(suggestion["value"].split("-")[0].trim());
+		        $(this).attr("catalog-year", suggestion["value"].split("-")[1].trim());
+		        $(this).attr("college", suggestion["value"].split("-")[2].trim());
+		        $(this).attr("specialty", suggestion["value"].split("-")[3].trim());
 		    }
 		});
 	});
