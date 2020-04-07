@@ -42,6 +42,7 @@ urlpatterns = [
     path('administration/', administrationHomeView, name="administrationHomeView"),
     path('administration/', include('administration.urls')),
 
+    path('session/', session, name='session'),
     path('session/', sessionHomeView, name='sessionHomeView'),
     path('session/', include('session.urls')),
 ]

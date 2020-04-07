@@ -9,7 +9,7 @@ class Session(models.Model):
 	sessionID = models.CharField(max_length = 8)		#PositiveSmallIntegerField()
 	sessionPIN = models.PositiveSmallIntegerField()
 	degreeName = models.CharField(max_length=100)
-	completedCourses = JSONField()
+	completedCourses = JSONField(default=dict)
 
 	def str(self):
 		return str(self.sessionID) + ' ' + str(self.degreeName) + ' ' + str(self.completedCourse)  

@@ -15,14 +15,15 @@ import ast
 # not need for code in this function, it just directs admin to home page after login
 # @user_passes_test(lambda u: u.is_superuser, login_url='/users/login/')
 def sessionHomeView(request):
-	return render(request, 'session/base.html', {})
+	return render(request, 'student/session.html', {})
 
 @csrf_exempt
 def studentCreateSession(request):
-	sessionid= request.POST.get('sessionid', '')
-	pin = request.POST.get('pin', '')
-	degree = request.POST.get('degree', '')
-	completed = request.POST.get('completed', '')
+	sessionid	= request.POST.get('sessionid', '')
+	pin 		= request.POST.get('pin', '')
+	degree 		= request.POST.get('degree', '')
+	# completed = request.POST.get('completed', '')
+	completed 	= json.loads(request.POST.get('completed', ''))
 	# degreeSearchText = degreeSearchText.replace(' ','')
 	#print (degreeSearchText)
 	# content={}
@@ -31,7 +32,7 @@ def studentCreateSession(request):
 		sessionID = str(sessionid),
 		sessionPIN = pin,
 		degreeName = str(degree),
-		completedCourses =  json.loads(completed),
+		completedCourses =  completed			#json.loads(completed),
 		)
 	jsResponse = {
 		'success': 'True',
