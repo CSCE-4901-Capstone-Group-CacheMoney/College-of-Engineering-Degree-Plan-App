@@ -169,8 +169,7 @@ $(document).ready(function() {
 			// });
 
 			//jsonResponse["Categories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
-
-			jsonResponse["Categories"]["courses"][catIndex] = sanatize($(this).children(".add-course-input").attr("course-id").trim());
+			jsonResponse["Categories"]["courses"][catIndex] = parseInt(sanatize($(this).children(".add-course-input").attr("course-id").trim()));
 
 		});
 
