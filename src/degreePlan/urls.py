@@ -21,6 +21,7 @@ from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, add
 from transferCredits.views import transferCreditView, addTransferCredit
 from home.views import homeView
 from administration.views import administrationHomeView
+from session.views import sessionHomeView
 
 #make sure to add the path to the to the url patters below
 #**** don't forget the comma !!!
@@ -30,7 +31,7 @@ urlpatterns = [
     path('degrees/', allDegreesView, name='degrees'),
     path('degree/', degreeClassesView, name='degreePlan'),
     path('timeline/', degreeTimeline, name='timeline'),
-    path('session/', session, name='session'),
+   
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
     path('transferCreditList/', transferCreditView, name='transferCreditList'),
@@ -40,5 +41,8 @@ urlpatterns = [
     path('addTransferCredit/', addTransferCredit, name="addTransferCredit"),
     path('administration/', administrationHomeView, name="administrationHomeView"),
     path('administration/', include('administration.urls')),
+
+    path('session/', sessionHomeView, name='sessionHomeView'),
+    path('session/', include('session.urls')),
 ]
 

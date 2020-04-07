@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'tecmCore',
     'mathCore',
     'administration',
-
+    'session',
     # any third party apps we use
 ]
 
