@@ -144,6 +144,29 @@ background-color: rgba(85,198,87,.6);
 	height: 75%;
 	width: 75%;
 }
+
+.video-fluid {
+width: 100%;
+height: auto;
+margin-left:auto;
+margin-right:auto;
+position: relative;
+}
+
+.content{
+ position:absolute;
+ top:42%;
+ left:50%;
+ transform: translate(-50%, -50%);
+ z-index:1;
+ color:white;
+ font-size:58px;
+ font-family:"Times New Roman", Times, serif;
+
+}
+
+
+
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
 .autocomplete-selected { background: #F0F0F0; }
