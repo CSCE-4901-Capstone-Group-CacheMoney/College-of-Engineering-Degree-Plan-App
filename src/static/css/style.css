@@ -146,11 +146,10 @@ background-color: rgba(85,198,87,.6);
 }
 
 .video-fluid {
-width: 100%;
-height: auto;
-margin-left:auto;
-margin-right:auto;
-position: relative;
+margin: 0 auto;
+right: 0;
+left: 0;
+position: absolute;
 }
 
 .content{
@@ -165,6 +164,13 @@ position: relative;
 
 }
 
+#myCarousel {
+	overflow:hidden
+}
+
+video {
+  object-fit: fill;
+}
 
 
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }

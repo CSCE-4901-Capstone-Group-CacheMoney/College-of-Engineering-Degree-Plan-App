@@ -30,9 +30,53 @@
 
             {% block content %}
             <!-- We can still put stuff here -->
-          lass="list-group-item list-group-item-success" style="font-size: 19px; background-color:rgba(85,198,87,.6);" >Advising Resources</li>
+         <!--  lass="list-group-item list-group-item-success" style="font-size: 19px; background-color:rgba(85,198,87,.6);" >Advising Resources</li>
+            <p>This text is normal.</p> -->
 
-<p>This text is normal.</p>
+
+            <div id="mobile-view" class="d-none">
+                <img style="-webkit-user-select: none;max-width: 100%;margin: auto;" src="https://www.unt.edu/sites/default/files/bluebonnets_mobile.png">
+            </div>
+            
+            <div id="myCarousel" class="carousel slide d-none" data-ride="carousel">
+              
+              <!-- The slideshow -->
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <video id="myVideo" autoplay muted loop width="1100" height="600">
+                    <source src="https://www.unt.edu/sites/default/files/bluebonnets.mp4" type="video/mp4">
+                  </video>
+                  <div class="carousel-caption d-md-block" style="bottom: 70%">
+                    <h2>UNT Degree Planning Administration Service<h2>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    if(!checkIfMobileDevice()){
+                        var width = $(document).width();
+                        var height = $(document).height();
+                        var top = $("#myCarousel").offset().top;
+                        var left = $("#myCarousel").offset().left;
+                        $("#myCarousel").removeClass("d-none");
+
+                        $("#myCarousel").css("width", width);
+                        $("#myVideo").css("width", width);
+
+                        $("#myVideo").css("height", height - 306);
+
+                        $("#myCarousel").offset({ top: top +225, left: left });
+                        $("#myVideo").offset({ top: top +225, left: left });
+                    } else {
+                        $("#mobile-view").removeClass("d-none");
+                    }
+                    
+                });
+            </script>
+
             {% endblock %}
         </div>
     </body>
