@@ -187,6 +187,15 @@ def editDegree(request):
 
     return render(request, 'degree/editDegree.html', { "context": context })
 
+def session(request):
+
+
+    degreeDropdown = DegreeSelectionForm()
+    context = {}
+
+    return render(request, 'student/session.html', { "context": context })
+
+
 
 
 
@@ -283,3 +292,5 @@ def AddDegree(request):
 	# and that's it! Only other thing is will extend out the dictionary variables
 	# once you start fetching a lot of data to send back to JavaScript
 	# probably just an extended to dictionary variable to act as the jsResponse
+
+  

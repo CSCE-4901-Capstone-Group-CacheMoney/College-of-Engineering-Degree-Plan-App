@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header text-center">
+      <h4>Create a Session</h4>
+    </div>
+      <div class="row">
+        <div class="col-md-3"></div>
+          <div class="col-md-6">
+              <div id="create-session-form" class="mb-3">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" style="padding-right: 2.2em;" type="text" id="inputGroup-sizing-default-1">Unique ID</span>
+                  </div>
+                  <input id="create-session-id" type="text" class="form-control" readonly="" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">Pin Number</span>
+                  </div>
+                  <input id="create-session-pin" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4">
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" style="padding-right: 2.9em;" id="inputGroup-sizing-default-2">Search Degree</span>
+                  </div>
+                  <input id="search-degree" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2">
+                </div>
+  
+                <h4 class="text-center text-light pt-1 pb-1" style="background-color: green;">Completed Courses</h4>
+                <div id="completed-courses"></div>
+  
+                <button id="add-course-btn" type="button" class="btn btn-outline-success btn-block">Add Course</button>
+
+                <button id="session-submit-btn" type="button" class="btn btn-outline-success btn-block mt-4">Submit</button>
+                <div id="add-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+              </div>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}
