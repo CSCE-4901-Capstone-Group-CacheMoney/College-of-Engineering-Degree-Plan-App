@@ -19,11 +19,10 @@ def sessionHomeView(request):
 
 @csrf_exempt
 def studentCreateSession(request):
-	sessionid	= request.POST.get('sessionid', '')
-	pin 		= request.POST.get('pin', '')
-	degree 		= request.POST.get('degree', '')
-	# completed = request.POST.get('completed', '')
-	completed 	= json.loads(request.POST.get('completed', ''))
+	sessionid	= request.POST.get('sessionID', '')
+	pin 		= request.POST.get('sessionPIN', '')
+	degree 		= request.POST.get('sessionDegree', '')
+	completed 	= json.loads(request.POST.get('sessionInfo', ''))
 	# degreeSearchText = degreeSearchText.replace(' ','')
 	#print (degreeSearchText)
 	# content={}
@@ -32,7 +31,7 @@ def studentCreateSession(request):
 		sessionID = str(sessionid),
 		sessionPIN = pin,
 		degreeName = str(degree),
-		completedCourses =  completed			#json.loads(completed),
+		completedCourses =  completed
 		)
 	jsResponse = {
 		'success': 'True',

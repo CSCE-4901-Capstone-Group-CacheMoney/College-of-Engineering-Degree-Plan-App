@@ -185,11 +185,11 @@ $(document).ready(function() {
 		hi = JSON.stringify(jsonResponse);
 		console.log(hi);
     	// send request to the back-end...
-		$.post("/session/create-session/js/",
+		$.post("/session/studentCreateSession/",
    		{
-   			sessionId: sanatize($("create-session-id").val().trim()),
-   			sessionPin: sanatize($("#create-session-pin").val().trim()),
-			sessionDegree: sanatize($("search-degree").val().trim()),
+   			sessionID: sanatize($("#create-session-id").val().trim()),
+   			sessionPIN: parseInt(sanatize($("#create-session-pin").val().trim())),
+			sessionDegree: sanatize($("#search-degree").val().trim()),
 			sessionInfo: JSON.stringify(jsonResponse)
 		},   
    		function(data,status) {
