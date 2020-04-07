@@ -152,22 +152,26 @@ $(document).ready(function() {
 	$(document).on("click", "#session-submit-btn", function(e) {
 
 		var jsonResponse = {};
-		jsonResponse["Categories"] = [];
+		jsonResponse["Categories"] = {};
+		jsonResponse["Categories"]["courses"] = [];
 
 		$('.add-course').each(function(catIndex) {
 			//var category = sanatize($(this).children("input").eq(0).val().trim());
 			//var requireNumCourses = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
 
-			jsonResponse["Categories"][catIndex] = {};
+			//jsonResponse["Categories"][catIndex] = {};
 			//jsonResponse["Categories"][catIndex]["name"] = category;
-			jsonResponse["Categories"][catIndex]["courses"] = []; 
+			//jsonResponse["Categories"][catIndex]["courses"] = [];
 
-			$(this).children(".add-course-input").children("tr").each(function(couIndex) {
-				var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
-				jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
-			});
+			// $(this).children(".add-course-input").children("tr").each(function(couIndex) {
+			// 	var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
+			// 	jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
+			// });
 
 			//jsonResponse["Categories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
+
+			jsonResponse["Categories"]["courses"][catIndex] = sanatize($(this).children(".add-course-input").attr("course-id").trim());
+
 		});
 
 		var hi = document.getElementById("create-session-id").value;
