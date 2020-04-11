@@ -19,7 +19,7 @@ from django.urls import path, include
 #here is where we import the urls that we have created
 from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree, session
 from transferCredits.views import transferCreditView, addTransferCredit
-from home.views import homeView
+from home.views import homeView, resourcesView
 from administration.views import administrationHomeView
 from session.views import sessionHomeView
 
@@ -45,5 +45,7 @@ urlpatterns = [
     path('session/', session, name='session'),
     path('session/', sessionHomeView, name='sessionHomeView'),
     path('session/', include('session.urls')),
+
+    path('resources/', resourcesView, name='resources'),
 ]
 

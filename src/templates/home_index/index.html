@@ -2,49 +2,20 @@
 
 {% block content %}
 
-	<div id="mobile-view" class="d-none">
-		<img style="-webkit-user-select: none;max-width: 100%;margin: auto;" src="https://www.unt.edu/sites/default/files/bluebonnets_mobile.png">
+	<div id="hero-feature" class="hero-video standard bottom">
+		<div class="hero-wrapper">
+			<video muted="" loop="" autoplay="" poster="https://unt.edu/sites/default/files/bluebonnets_xl.png" id="herovid">
+				<source data-mp4="https://unt.edu/sites/default/files/bluebonnets.mp4" type="video/mp4" src="https://unt.edu/sites/default/files/bluebonnets.mp4">
+			</video>
+
+			<div class="overlay">
+				<div class="content col large-12 mid-center	text-center">
+					<h2 class="hero-title">UNT Degree Planning Service</h2>
+					<h4 class="hero-message">To start please select Session in the navigation bar above.</h4>
+				</div>
+			</div>
+
+		</div>
 	</div>
-	
-	<div id="myCarousel" class="carousel slide d-none" data-ride="carousel">
-	  
-	  <!-- The slideshow -->
-	  <div class="carousel-inner">
-	    <div class="carousel-item active">
-	      <video id="myVideo" autoplay muted loop width="1100" height="600">
-	      	<source src="https://www.unt.edu/sites/default/files/bluebonnets.mp4" type="video/mp4">
-	      </video>
-	      <div class="carousel-caption d-md-block" style="bottom: 70%">
-	        <h2>UNT Degree Planning Service<h2>
-	      </div>
-	    </div>
-	  </div>
-
-	</div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		if(!checkIfMobileDevice()){
-			var width = $(document).width();
-			var height = $(document).height();
-			var top = $("#myCarousel").offset().top;
-			var left = $("#myCarousel").offset().left;
-			$("#myCarousel").removeClass("d-none");
-
-			$("#myCarousel").css("width", width);
-			$("#myVideo").css("width", width);
-
-			$("#myVideo").css("height", height - 306);
-
-			$("#myCarousel").offset({ top: top +225, left: left });
-			$("#myVideo").offset({ top: top +225, left: left });
-		} else {
-			$("#mobile-view").removeClass("d-none");
-		}
-		
-	});
-</script>
-
-
 
 {% endblock %}

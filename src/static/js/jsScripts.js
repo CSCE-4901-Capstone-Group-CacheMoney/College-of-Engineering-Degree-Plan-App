@@ -81,6 +81,11 @@ $(document).ready(function(){
     });
 
 });
+$(document).ready(function(){
+    if($("#hero-feature").length != 0){
+        $("#hero-feature").parent().removeClass("container");
+    }
+});
 $(document).on("click", ".remover", function(e){
     e.preventDefault();
     console.log("removing");
