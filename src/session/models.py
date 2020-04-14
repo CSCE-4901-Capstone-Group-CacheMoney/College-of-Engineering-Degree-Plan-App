@@ -10,6 +10,7 @@ class Session(models.Model):
 	sessionPIN = models.PositiveSmallIntegerField()
 	degreeName = models.CharField(max_length=100)
 	completedCourses = JSONField(default=dict)
+	last_visit = models.DateField(auto_now = True)
 
 	def str(self):
 		return str(self.sessionID) + ' ' + str(self.degreeName) + ' ' + str(self.completedCourse)  
