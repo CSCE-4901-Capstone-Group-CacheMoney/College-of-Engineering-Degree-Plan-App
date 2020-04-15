@@ -20,6 +20,10 @@ import ast
 def sessionHomeView(request):
 	return render(request, 'student/session.html', {})
 
+#basic view for a user to edit their session variables
+def sessionEditView(request):
+	return render(request, 'student/edit-session.html', {})
+
 @csrf_exempt
 def studentCreateSession(request):
 	sessionid	= request.POST.get('sessionID', '')

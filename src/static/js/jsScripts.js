@@ -136,6 +136,25 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// cookie management provided by QuirksMode
+// link: http://www.quirksmode.org/js/cookies.html
+function create_cookie(name, value, days) {
+    var expires;
+
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+}
+
+function erase_cookie(name) {
+    create_cookie(name, "", -1);
+}
+
 // credit: https://docs.djangoproject.com/en/3.0/ref/csrf/
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection

@@ -21,7 +21,7 @@ from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, add
 from transferCredits.views import transferCreditView, addTransferCredit
 from home.views import homeView, resourcesView
 from administration.views import administrationHomeView
-from session.views import sessionHomeView
+from session.views import sessionHomeView, sessionEditView
 
 #make sure to add the path to the to the url patters below
 #**** don't forget the comma !!!
@@ -44,6 +44,7 @@ urlpatterns = [
 
     path('session/', session, name='session'),
     path('session/', sessionHomeView, name='sessionHomeView'),
+    path('edit-session/', sessionEditView, name='sessionEditView'),
     path('session/', include('session.urls')),
 
     path('resources/', resourcesView, name='resources'),
