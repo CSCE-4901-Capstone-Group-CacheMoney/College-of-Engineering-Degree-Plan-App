@@ -28,6 +28,9 @@ def sessionEditView(request):
 def sessionLoginView(request):
 	return render(request, 'student/login-session.html', {})
 
+def sessionViewDegreePlan(request):
+	return render(request, 'student/view-transcript-session.html', {})
+
 @csrf_exempt
 def studentCreateSession(request):
 	sessionid	= request.POST.get('sessionID', '')
