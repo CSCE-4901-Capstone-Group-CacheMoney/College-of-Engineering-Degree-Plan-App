@@ -221,26 +221,24 @@ video {
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 
-/*Credit: https://getbootstrap.com/docs/4.0/examples/sticky-footer/ */
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-body {
-  margin-bottom: 60px; /* Margin bottom by footer height */
-}
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+/*Credit: https://stackoverflow.com/users/147601/nick-heiner
+		  https://stackoverflow.com/users/473625/bentoncoding 
+*/
+/* Sticky footer styles -------------------------------------- */
+html{ height:100%; }
+body{ min-height:100%; padding:0; margin:0; position:relative; }
+
+body::after{ content:''; display:block; height:100px; }
+
+footer{ 
+  position:absolute;
+  bottom:0; 
+  width:100%; 
   background: rgba(85,198,87,.6);
   text-align: center;
 }
 
-.footer a {
+footer a {
 	color: #495057;
 	text-decoration: none;
 }

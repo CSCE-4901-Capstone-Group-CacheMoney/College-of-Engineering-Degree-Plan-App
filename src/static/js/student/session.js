@@ -211,8 +211,8 @@ $(document).ready(function() {
 				$("#add-degree-submit-alert").removeClass("d-none");
 				// show form and scroll course fields into view
 				$('html, body').animate({
-				    scrollTop: $("#add-degree-submit-btn").offset().top -20,
-				    scrollLeft: $("#add-degree-submit-btn").offset().left -20
+				    scrollTop: $("#session-submit-btn").offset().top -20,
+				    scrollLeft: $("#session-submit-btn").offset().left -20
 				});
    			} else {
    				$("#add-degree-submit-alert").removeClass("alert-success");
@@ -225,12 +225,25 @@ $(document).ready(function() {
 
     /*-----------------------login session js----------------------------------------- */
     $(document).on("click", "#session-login-btn", function(e) {
-		// TODO: back-end connection for updating session variables
-		$("#session-login-submit-alert").removeClass("alert-danger");
-		$("#session-login-submit-alert").addClass("alert-success");
-		$("#session-login-submit-alert").text("Logged Into Session Successfully!");
-		$("#session-login-submit-alert").removeClass("d-none");
-
+		$.post("/session/checkUserExistence/",
+   		{
+   			sessionid: sanatize($("#login-session-id").val().trim()),
+   			pin: parseInt(sanatize($("#login-session-pin").val().trim()))
+		},   
+   		function(data,status) {
+   			if(data.success.toLowerCase().indexOf("true") != -1){
+   				$("#session-login-submit-alert").removeClass("alert-danger");
+				$("#session-login-submit-alert").addClass("alert-success");
+				$("#session-login-submit-alert").text(data.message);
+				$("#session-login-submit-alert").removeClass("d-none");
+				window.location.replace("/session/edit/");
+   			} else {
+   				$("#session-login-submit-alert").removeClass("alert-success");
+				$("#session-login-submit-alert").addClass("alert-danger");
+				$("#session-login-submit-alert").text(data.message);
+				$("#session-login-submit-alert").removeClass("d-none");
+   			}
+   		});
 	});
 
 
