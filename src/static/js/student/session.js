@@ -9,6 +9,15 @@ $(document).ready(function() {
 	    }
 	});
 
+	// check whether to omit session login/logout create/edit navlinks
+	if(getCookie('uniqueid') == null){
+		$(".session-logout_lnk").addClass("d-none");
+		$(".session-edit_lnk").addClass("d-none");
+	} else {
+		$(".session-login_lnk").addClass("d-none");
+		$(".session-create_lnk").addClass("d-none");
+	}
+
 	function sessionCreate(length) { //better alg?
 		//Math.random().toString(36).substr(2, length)
 		var result           = '';
@@ -18,9 +27,11 @@ $(document).ready(function() {
 		   result += characters.charAt(Math.floor(Math.random() * charactersLength)); //Math.random() predictable?
 		}
 		var dest = document.getElementById("create-session-id").value=result;
+		create_cookie("uniqueid", dest);
 		return dest;
 	}
-	sessionCreate(8);
+	// wrapping this in an if statement so it does not break js on other pages
+	if($("#create-session-title").length){sessionCreate(8);}
 	 
 	$("#degreeaddinputGroupSelect-3").on('keyup', function(){
 		$(this).val(sanatize($(this).val().replace(/[a-z]/gi,'')));
@@ -211,4 +222,64 @@ $(document).ready(function() {
    			}
    		});
     });
+
+    /*-----------------------login session js----------------------------------------- */
+    $(document).on("click", "#session-login-btn", function(e) {
+		// TODO: back-end connection for updating session variables
+		$("#session-login-submit-alert").removeClass("alert-danger");
+		$("#session-login-submit-alert").addClass("alert-success");
+		$("#session-login-submit-alert").text("Logged Into Session Successfully!");
+		$("#session-login-submit-alert").removeClass("d-none");
+
+	});
+
+
+	/*-----------------------logout session js----------------------------------------- */
+	$(document).on("click", ".session-logout_lnk", function(e) {
+		erase_cookie("uniqueid");
+		window.location.replace("/session/login/");
+	});
+
+	/*-----------------------edit session js----------------------------------------- */
+	if($("#edit-session-title").length){
+		// check if session is valid,
+		// otherwise send to create session
+		if(getCookie('uniqueid') == null){
+			// send user to create session page
+			window.location.replace("/session/create/");
+		} else {
+			// TODO: ajax call to get session variables, for now hard code it....
+			$("#edit-session-pin").val("1234");
+			$("#search-degree").val("Computer Science - 2020");
+
+			for(var i = 0; i < 5; i++){
+				var html = '<tr>'+
+    	           '<td>' +
+    			   '<div class="add-course input-group mt-2 mb-2 ml-5">' +
+    			   '<div class="input-group-prepend">' +
+    			   '<span class="input-group-text" style="padding-right: .5em;">' +
+    			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
+    			   '</div>' +
+    			   '<input type="text" class="form-control add-course-input" value="CSCE 1030">' +
+    			   '</div>' +
+    			   '</td>' +
+    	           '</tr>';
+    			$("#completed-courses").append(html);
+			}
+		}
+
+	}
+
+	$(document).on("click", "#session-update-btn", function(e) {
+		// TODO: back-end connection for updating session variables
+		$("#edit-session-update-alert").removeClass("alert-danger");
+		$("#edit-session-update-alert").addClass("alert-success");
+		$("#edit-session-update-alert").text("Session Updated Successfully!");
+		$("#edit-session-update-alert").removeClass("d-none");
+
+	});
+
+
+
+
 });

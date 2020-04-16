@@ -24,6 +24,10 @@ def sessionHomeView(request):
 def sessionEditView(request):
 	return render(request, 'student/edit-session.html', {})
 
+#basic view for a user to login to session
+def sessionLoginView(request):
+	return render(request, 'student/login-session.html', {})
+
 @csrf_exempt
 def studentCreateSession(request):
 	sessionid	= request.POST.get('sessionID', '')
