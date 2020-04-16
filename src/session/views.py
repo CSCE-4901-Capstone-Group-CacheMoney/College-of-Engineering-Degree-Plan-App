@@ -93,3 +93,71 @@ def checkUserExistence(request):
 		}
 			
 	return JsonResponse(jsResponse)
+
+@csrf_exempt
+def getSessionData(request):
+	sessionid	= request.POST.get('sessionid', '')
+	pin 		= request.POST.get('pin', '')
+	print('Received sessionid: ',sessionid, ' and pin: ', pin)
+	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
+	content = {} 
+	# content = Session.objects.filter(sessionID = str(sessionid), sessionPIN = pin)
+	# content["uDegreeName"] 		= 	str(c.degreeName)
+	# content["uCompletedCourses"] = 	str(json.dumps(c.completedCourses))
+	# str(json.dumps(d.degreeInfo))
+	# data = {}
+
+	for data in Session.objects.filter(sessionID = str(sessionid), sessionPIN = pin):
+		content = {
+			"degreeName"		: str(data.degreeName),
+		# 	"completedCourses"	: str(json.dumps(data.completedCourses)),
+		}	
+
+		courseList = json.dumps(data.completedCourses)
+	
+	courseList_dict = json.loads(courseList)
+	category = courseList_dict['Categories']
+	print('\ncourseList_dict:', courseList_dict)
+	print("item inside courses:")
+	
+	courseItem = []
+	for item in range(len(category.get('courses'))):
+		singleClassItem = {}
+
+		c = Course.objects.get(id = category.get('courses')[item])
+		singleClassItem['id'] = str(c.id)
+		singleClassItem['courseID'] = str(c.courseID)
+		singleClassItem['courseDept'] = str(c.courseDept)
+		print(category.get('courses')[item])
+	
+		courseItem.append(singleClassItem)
+	# print("courseItem: ",courseItem)
+	courses = {}
+	# courses["courses"] = courseItem
+	courses.update({"courses" : courseItem})
+	# print("courses: ",courses)
+
+	# categories = {}
+	# categories["Categories"] = courses
+	# print("Categ: ",categories)
+	content.update({"Categories" : courses})
+	return JsonResponse(content)
+
+
+
+# {
+#    "Categories":{
+#       "courses":[
+#          {
+#             "id":12,
+#             "courseDept":"CSCE",
+#             "courseID":1030
+#          },
+#          {
+#             "id":4,
+#             "courseDept":"MATH",
+#             "courseID":1700
+#          }
+#       ]
+#    }
+# }
