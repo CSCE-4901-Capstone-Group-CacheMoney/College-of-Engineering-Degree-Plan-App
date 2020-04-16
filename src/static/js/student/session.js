@@ -13,6 +13,8 @@ $(document).ready(function() {
 	if(getCookie('uniqueid') == null){
 		$(".session-logout_lnk").addClass("d-none");
 		$(".session-edit_lnk").addClass("d-none");
+		$(".session-view-degree_lnk").addClass("d-none");
+		$(".session-view-timeline_lnk").addClass("d-none");
 	} else {
 		$(".session-login_lnk").addClass("d-none");
 		$(".session-create_lnk").addClass("d-none");
@@ -236,6 +238,7 @@ $(document).ready(function() {
 				$("#session-login-submit-alert").addClass("alert-success");
 				$("#session-login-submit-alert").text(data.message);
 				$("#session-login-submit-alert").removeClass("d-none");
+				create_cookie("uniqueid", sanatize($("#login-session-id").val().trim()));
 				window.location.replace("/session/edit/");
    			} else {
    				$("#session-login-submit-alert").removeClass("alert-success");
