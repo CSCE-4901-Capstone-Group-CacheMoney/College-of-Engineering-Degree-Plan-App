@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+#from degrees.models import Degree
 
 # Create your models here.
 class Degree(models.Model):

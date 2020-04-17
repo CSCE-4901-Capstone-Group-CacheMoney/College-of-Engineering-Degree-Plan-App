@@ -14,10 +14,14 @@ from mathCore.models import MathClasses
 
 #adding something to create a model to dict
 from django.forms.models import model_to_dict
-from .utils import timelineGenerator, processTimeline, courseDescriptionStructure, generateDictEntry, extractInfo, processChoices
+from .utils import timelineGenerator, processTimeline, courseDescriptionStructure, generateDictEntry, extractInfo, processChoices, timelineGenerator2
 
-# Tate Test....
+
 from pprint import pprint
+import re
+import copy
+import json
+import ast
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 
 # Create your views here.
@@ -129,7 +133,7 @@ def degreeTimeline(request):
       ### assume we extracted all the classes from the JSON degree object
       ### and placed them in a list.
       #degreeCourses = ["MATH 1710", "MATH 1720", "TECM 2700", "CSCE 2100", "CSCE 2110", "CSCE 3110", "CSCE 4110", "CSCE 4444", "CSCE 4901"]
-
+ 
       if 'taken' not in request.session:
         print("no taken courses")
         taken = []
@@ -289,8 +293,68 @@ def AddDegree(request):
 
 	return JsonResponse(jsResponse)
 
+def solve(s):
+    s = s.split('\n', 1)[-1]
+    if s.find('\n') == -1:
+        return ''
+    return s.rsplit('\n', 1)[0]
+
+def degreeTimeline2(request):	
+
+  uniqueID = request.POST.get('uniqueID', '')
+
+  #{"Categories": [{"College": "None", "DegreeName": "BIOMEDICAL ENGINEERING", "DegreeYear": null, "Specialty": "None", "PreReqs": [12, 18], "CoReqs": [19]}, {"College": "", "DegreeName": "", "DegreeYear": "", "Specialty": "", "PreReqs": [23, 22], "CoReqs": [2, 1]}]}
+  
+  """{
+    "Categories": {
+        "courses": [
+            23,
+            12
+        ]
+    }
+  }"""
+
+  #Computer Science - 2020
+
+  for d in session.objects.filter(name__istartswith=str(yOHu7BAD)):
+    courses = session.objects.filter(name="completedCourses")
+    degree = session.objects.filter(name="degreeName")
+  courses = solve(courses)
+  courses = solve(courses)
+  courses = solve(courses)
+  #completed course array
+  comparr = []
+
+  for course in iter(courses.split()):
+    comparr += int(course)
+
+  timeline = timelineGenerator2(degree, comparr)
+
+  return timeline
 	# and that's it! Only other thing is will extend out the dictionary variables
 	# once you start fetching a lot of data to send back to JavaScript
 	# probably just an extended to dictionary variable to act as the jsResponse
 
-  
+
+def timelineTest(request):
+    sessionid = request.POST.get('sessionid', '')
+    
+    degree = '{"Categories":[{"name":"Major Requirements","courses":[22,23,24,25,26,27,115,28,29,30],"coursesRequired":0},{"name":"Capstone/Senior Thesis","courses":[32,33],"coursesRequired":1},{"name":"CSCE Core","courses":[34,35,36,91,92],"coursesRequired":2},{"name":"CSCE Breadth","courses":[37,38,98,42,99,41],"coursesRequired":2},{"name":"Other required","courses":[2,1,6,7,21,4],"coursesRequired":0},{"name":"Physics Laboratory Science","courses":[8,9,10,11],"coursesRequired":0},{"name":"General Laboratory Science","courses":[12,14,16,18,19],"coursesRequired":2}]}'
+    coursesTaken = '{"Categories":{"courses":[23,12]}}'
+    degreeName = 'Computer Science - 2020'
+    classArr = (timelineGenerator2(degree, coursesTaken, degreeName))
+    jsonResponse = {}
+    jsonResponse["Courses"] = []
+    j=0
+    for course in classArr:
+      print(course)
+      item = Course.objects.get(id=course)
+      #JsonResponse["Courses"].append({"id": item.id, "CourseDept": item.courseDept, "CourseID": item.courseID, "Optional": 3, "Course List": ["CSCE 1030", "CSCE 1040"]})
+      jsonResponse["Courses"].append({"id": item.id, "CourseDept": item.courseDept, "CourseID": item.courseID})
+      j+=1
+
+    print(jsonResponse)    
+    jsonResponse = (json.dumps(jsonResponse))
+    print(jsonResponse)
+    #return render(request, "base.html", {})
+    return JsonResponse(jsonResponse, safe=False)

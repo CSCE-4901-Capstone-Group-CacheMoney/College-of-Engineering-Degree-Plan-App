@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'administration',
     'session',
     # any third party apps we use
+    'pyscheduler',
+    'multiprocessing',
 ]
 
 MIDDLEWARE = [

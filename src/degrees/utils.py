@@ -1,5 +1,5 @@
 # This file holds utility functions for the degrees
-from courses.models import Course, Prereq
+from courses.models import Course, Prereq   #, preCoReq
 
 from django.forms.models import model_to_dict
 
@@ -9,6 +9,13 @@ import math
 
 import copy
 
+import time
+
+import json
+
+from serialScheduler import SerialScheduler
+from processParallelScheduler import ProcessParallelScheduler
+
 # needs the course array and the university core array
 def timelineGenerator(courses, electives, rankings, coursesTaken, transferCredits):
 
@@ -16,7 +23,11 @@ def timelineGenerator(courses, electives, rankings, coursesTaken, transferCredit
 # TEST values
     #degreeCourses = ["MATH 1710", "MATH 1720", "TECM 2700", "CSCE 2100", "CSCE 2110", "CSCE 3110", "CSCE 4110", "CSCE 4444", "CSCE 4901"]
     coreCats = ["Communication", "Creative Arts", "Language, Philosophy, and Culture"]
-
+    print("Courses: " + str(courses))
+    print("Electives: " + str(electives))
+    print("Rankings: " + str(rankings))
+    print("CoursesTaken: " + str(coursesTaken))
+    print("Transfer Credits: " + str(transferCredits))
     uniCore = []
     for i in range(8):
         uniCore.append("University Core")
@@ -639,3 +650,160 @@ def processChoices(currentChoices, newChoices):
             currentChoices.append(course)
 
     return currentChoices
+
+def sleep(this):
+
+    time.sleep(4)
+
+    return this
+
+def add_tasks(scheduler, test_function, courses, coursedeps):
+    temparr = []
+    for course in courses:
+        temparr.clear()
+        if course in coursedeps.keys():
+            print("Course with dep: " + str(course) + " dep: " + str(coursedeps[course]))
+            for dep in coursedeps[course]:
+                temparr.append(str(dep))
+            scheduler.add_task(task_name = str(course), dependencies = temparr, description ="",target_function = test_function ,function_kwargs={"this":int(course)})
+        else:
+            print(course)
+            scheduler.add_task(task_name = str(course), dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":int(course)})
+
+def echo(this):
+    return this
+
+def add_testtasks(scheduler, test_function):
+
+    scheduler.add_task(task_name = "22", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":22})
+    scheduler.add_task(task_name = "23", dependencies = ["22", "2"], description ="",target_function = test_function ,function_kwargs={"this":23})
+    scheduler.add_task(task_name = "24", dependencies = ["23"], description ="",target_function = test_function ,function_kwargs={"this":24})
+    scheduler.add_task(task_name = "25", dependencies = ["24"], description ="",target_function = test_function ,function_kwargs={"this":25})
+    scheduler.add_task(task_name = "26", dependencies = ["24"], description ="",target_function = test_function ,function_kwargs={"this":26})
+    scheduler.add_task(task_name = "27", dependencies = ["24", "25"], description ="",target_function = test_function ,function_kwargs={"this":27})
+    scheduler.add_task(task_name = "115", dependencies = ["27"], description ="",target_function = test_function ,function_kwargs={"this":115})
+    scheduler.add_task(task_name = "28", dependencies = ["24"], description ="",target_function = test_function ,function_kwargs={"this":28})
+    scheduler.add_task(task_name = "29", dependencies = ["28"], description ="",target_function = test_function ,function_kwargs={"this":29})
+    scheduler.add_task(task_name = "30", dependencies = ["27"], description ="",target_function = test_function ,function_kwargs={"this":30})
+    scheduler.add_task(task_name = "33", dependencies = ["115", "3"], description ="",target_function = test_function ,function_kwargs={"this":33})
+    scheduler.add_task(task_name = "34", dependencies = ["28"], description ="",target_function = test_function ,function_kwargs={"this":34})
+    scheduler.add_task(task_name = "35", dependencies = ["24", "25"], description ="",target_function = test_function ,function_kwargs={"this":35})
+    scheduler.add_task(task_name = "37", dependencies = ["27"], description ="",target_function = test_function ,function_kwargs={"this":37})
+    scheduler.add_task(task_name = "38", dependencies = ["24", "25", "7"], description ="",target_function = test_function ,function_kwargs={"this":38})
+    scheduler.add_task(task_name = "3", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":3})
+    scheduler.add_task(task_name = "2", dependencies = ["3"], description ="",target_function = test_function ,function_kwargs={"this":2})
+    scheduler.add_task(task_name = "1", dependencies = ["2"], description ="",target_function = test_function ,function_kwargs={"this":1})
+    scheduler.add_task(task_name = "6", dependencies = ["2"], description ="",target_function = test_function ,function_kwargs={"this":6})
+    scheduler.add_task(task_name = "7", dependencies = ["1"], description ="",target_function = test_function ,function_kwargs={"this":7})
+    scheduler.add_task(task_name = "21", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":21})
+    scheduler.add_task(task_name = "4", dependencies = ["43", "118"], description ="",target_function = test_function ,function_kwargs={"this":4})
+    scheduler.add_task(task_name = "8", dependencies = ["2"], description ="",target_function = test_function ,function_kwargs={"this":8})
+    scheduler.add_task(task_name = "9", dependencies = ["2"], description ="",target_function = test_function ,function_kwargs={"this":9})
+    scheduler.add_task(task_name = "10", dependencies = ["1", "9"], description ="",target_function = test_function ,function_kwargs={"this":10})
+    scheduler.add_task(task_name = "11", dependencies = ["1", "9"], description ="",target_function = test_function ,function_kwargs={"this":11})
+    scheduler.add_task(task_name = "12", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":12})
+    scheduler.add_task(task_name = "16", dependencies = ["12"], description ="",target_function = test_function ,function_kwargs={"this":16})
+    scheduler.add_task(task_name = "107", dependencies = ["4"], description ="",target_function = test_function ,function_kwargs={"this":107})
+    scheduler.add_task(task_name = "118", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":118})
+    scheduler.add_task(task_name = "43", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":43})
+
+class TaskScheduler():
+
+    def testSerialScheduling(self, courses, coursedeps):
+
+        serial = SerialScheduler()
+
+        add_tasks(serial, echo, courses, coursedeps)
+
+        print(serial.run())
+
+    def ParallelScheduling(self, courses, coursedeps):
+
+        parallel = ProcessParallelScheduler(5)
+
+        add_tasks(parallel, sleep, courses, coursedeps)
+
+        results = parallel.run()
+
+        return results
+
+    def TestParallelScheduling(self):
+
+        parallel = ProcessParallelScheduler(5)
+
+        add_testtasks(parallel, sleep)
+
+        results = parallel.run()
+
+        return results
+
+def timelineGenerator2(degree, classesTaken, degreeName):
+    print("Test")
+    print(degree)
+    print(classesTaken)
+    degreeYear = ""
+    new = ""
+    for letter in degreeName:
+        if (letter.isdigit()):
+            degreeYear+=letter
+        elif (letter.isalpha()):
+            new+=letter
+    #{"Categories": [{"College": "None", "DegreeName": "BIOMEDICAL ENGINEERING", "DegreeYear": null, "Specialty": "None", "PreReqs": [12, 18], "CoReqs": [19]}, {"College": "", "DegreeName": "", "DegreeYear": "", "Specialty": "", "PreReqs": [23, 22], "CoReqs": [2, 1]}]}
+    degreeLoad = json.loads(degree)
+    classLoad = json.loads(classesTaken)
+    classes = []
+    #multiple course options
+    varclasses = []
+    #those course options category names
+    varclassescat = []
+    tempclasses = []
+    classdeps = {}
+    for reqs in degreeLoad["Categories"]:
+        for courses in reqs["courses"]:
+            print(courses)
+            i=0
+            if courses in classLoad["Categories"]["courses"]:
+                if (int(reqs["coursesRequired"])>0):
+                    print("Only some required")
+                    i+=1
+                continue
+            tempclasses.append(int(courses))
+        if reqs["coursesRequired"]==0:
+            for currcourse in tempclasses:
+                classes.append(currcourse)
+            tempclasses.clear()
+        else:
+            while(i<int(reqs["coursesRequired"])):
+                classes.append(tempclasses[i])
+                varclasses.append(tempclasses[i])
+                i+=1
+            tempclasses.clear()
+            varclassescat.append(reqs["name"])
+    deps = {}
+
+    for currclass in classes:
+        if(currclass == 28):
+            #Course.objects.filter(id=28)
+            obj = Course.objects.get(id=currclass)
+            print(str(json.dumps(obj.preCoReq)))
+            deps = json.loads(str(json.dumps(obj.preCoReq)))
+            for currDeg in deps["Categories"]:
+                if currDeg["DegreeName"]==new and currDeg["Categories"]==degreeYear:
+                    print("Found specific degree reqs")
+                    classdeps[currclass].append(currDeg["PreReqs"])
+                    classdeps[currclass].append(currDeg["CoReqs"])
+                elif(deps["Categories"][0]["DegreeName"]==""):
+                    print("Using no specific degree")
+                    classdeps[currclass] = deps["Categories"][0]["PreReqs"]
+            
+
+    print("All classes: " + str(classes))
+    print("Changable classes: " + str(varclasses))
+    print("Changable class cats: " + str(varclassescat))
+    print("Single class dependencies " + str(classdeps))
+
+
+    schedule = TaskScheduler()
+    print(schedule.testSerialScheduling(classes, classdeps))
+    print(schedule.ParallelScheduling(classes, classdeps))
+    return schedule.TestParallelScheduling()
