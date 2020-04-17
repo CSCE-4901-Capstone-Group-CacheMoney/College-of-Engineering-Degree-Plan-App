@@ -76,7 +76,7 @@ def administrationViewDegreeDetailedJS(request):
 	print (degreeSearchText)
 	content={}
 	courseList=""
-	for d in Degree.objects.filter(name__istartswith=str(degreeSearchText)):
+	for d in Degree.objects.filter(id__istartswith=degreeSearchText):
 		content["nDegreeName"]        = str(d.name)
 		courseList				  	  = json.dumps(d.degreeInfo)
 		content["ncatalogYear"]		  = str(d.catalogYear)
