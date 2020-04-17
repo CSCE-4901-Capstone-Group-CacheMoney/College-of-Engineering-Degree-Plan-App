@@ -553,9 +553,14 @@ $(document).ready(function() {
 							   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
 							   '<span class="input-group-text" style="padding-right: 1.0em;">' +
 							   'Required # of Courses</span>' +
-							   '</div>' +
-							   '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" disabled>' +
-							   '<table class="category-courses w-100">';
+							   '</div>';
+							   
+							   if(parseInt(jsonResponse.Categories[i].coursesRequired) == 0)
+							   		html += '<input type="text" value="All" class="form-control mt-2" disabled>';
+							   	else
+							   		html += '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" disabled>';
+
+							   html += '<table class="category-courses w-100">';
 
 							   for(var j = 0; j < jsonResponse.Categories[i].courses.length; j++){
 							   		html += '<tr>'+

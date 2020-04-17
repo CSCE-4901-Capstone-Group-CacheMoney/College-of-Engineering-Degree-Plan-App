@@ -29,7 +29,6 @@ $(document).ready(function() {
 		   result += characters.charAt(Math.floor(Math.random() * charactersLength)); //Math.random() predictable?
 		}
 		var dest = document.getElementById("create-session-id").value=result;
-		create_cookie("uniqueid", dest);
 		return dest;
 	}
 	// wrapping this in an if statement so it does not break js on other pages
@@ -216,6 +215,9 @@ $(document).ready(function() {
 				    scrollTop: $("#session-submit-btn").offset().top -20,
 				    scrollLeft: $("#session-submit-btn").offset().left -20
 				});
+				create_cookie("uniqueid", sanatize($("#create-session-id").val().trim()));
+				create_cookie("uniquepin", parseInt(sanatize($("#create-session-pin").val().trim())));
+				window.location.replace("/session/edit/");
    			} else {
    				$("#add-degree-submit-alert").removeClass("alert-success");
 				$("#add-degree-submit-alert").addClass("alert-danger");
@@ -239,6 +241,7 @@ $(document).ready(function() {
 				$("#session-login-submit-alert").text(data.message);
 				$("#session-login-submit-alert").removeClass("d-none");
 				create_cookie("uniqueid", sanatize($("#login-session-id").val().trim()));
+				create_cookie("uniquepin", parseInt(sanatize($("#login-session-pin").val().trim())));
 				window.location.replace("/session/edit/");
    			} else {
    				$("#session-login-submit-alert").removeClass("alert-success");
@@ -264,26 +267,31 @@ $(document).ready(function() {
 			// send user to create session page
 			window.location.replace("/session/create/");
 		} else {
-			// TODO: ajax call to get session variables, for now hard code it....
-			$("#edit-session-pin").val("1234");
-			$("#search-degree").val("Computer Science - 2020");
 
-			for(var i = 0; i < 5; i++){
-				var html = '<tr>'+
-    	           '<td>' +
-    			   '<div class="add-course input-group mt-2 mb-2 ml-5">' +
-    			   '<div class="input-group-prepend">' +
-    			   '<span class="input-group-text" style="padding-right: .5em;">' +
-    			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
-    			   '</div>' +
-    			   '<input type="text" class="form-control add-course-input" value="CSCE 1030">' +
-    			   '</div>' +
-    			   '</td>' +
-    	           '</tr>';
-    			$("#completed-courses").append(html);
-			}
+			$.post("/session/getSessionData/",
+	   		{
+	   			sessionid: sanatize(getCookie("uniqueid")),
+	   			pin: parseInt(getCookie("uniquepin"))
+			},   
+	   		function(data,status) {
+	   			$("#edit-session-pin").val(parseInt(getCookie("uniquepin")));
+	   			$("#search-degree").val(data.degreeName.trim());
+	   			for (var i = 0; i < data.Categories.courses.length; i++){
+					var html = '<tr>'+
+	    	           '<td>' +
+	    			   '<div class="add-course input-group mt-2 mb-2 ml-5">' +
+	    			   '<div class="input-group-prepend">' +
+	    			   '<span class="input-group-text" style="padding-right: .5em;">' +
+	    			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
+	    			   '</div>' +
+	    			   '<input type="text" class="form-control add-course-input" course-id="'+data.Categories.courses[i].id+'" value="'+data.Categories.courses[i].courseDept+" "+data.Categories.courses[i].courseID+'">' +
+	    			   '</div>' +
+	    			   '</td>' +
+	    	           '</tr>';
+	    			$("#completed-courses").append(html);
+				}
+	   		});
 		}
-
 	}
 
 	$(document).on("click", "#session-update-btn", function(e) {
@@ -296,6 +304,88 @@ $(document).ready(function() {
 	});
 
 
+
+	/*-----------------------view degree plan js----------------------------------------- */
+	if($("#view-degree-search-input").length){
+		$(".input-group").eq(0).addClass("d-none");
+		$("button").addClass("d-none");
+    	// send request to the back-end...
+		$.post("/administration/view-degree-detailed/js/",
+   		{
+			degreeSearchText: sanatize("Computer Science")
+   		},
+   		function(data,status) {
+			if(!$.isEmptyObject(data)) {
+				// delete previous children if they exist
+	    		$("#degree-categories").children().remove();
+	    		
+	    		// add data to fields below...
+		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
+				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);
+				$("#degreeaddinputGroupSelect-3").val(data.ncatalogYear);
+				$("#degreeaddinputGroupSelect-4").val(data.nspecialty);
+			
+				// show form and scroll degree fields into view
+				$("#view-degree-form").removeClass("d-none");
+				$('html, body').animate({
+			    	scrollTop: $("#view-degree-search-btn").offset().top -20,
+			    	scrollLeft: $("#view-degree-search-btn").offset().left -20
+				});
+
+				// grab info from back-end, start populating fields
+				var jsonResponse =JSON.parse(data.ndegreeInfo);
+
+				for(var i = 0; i < jsonResponse.Categories.length; i++){
+
+					var html = '<div class="add-category input-group mb-3">' +
+							   '<div class="input-group-prepend">' +
+							   '<span class="input-group-text" style="padding-right: .5em;">' +
+							   '<i class="mr-1"></i>category Name</span>' +
+							   '</div>' +
+							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'" disabled>' +
+							   '<div class="w-100">' +
+							   '</div>' +
+							   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
+							   '<span class="input-group-text" style="padding-right: 1.0em;">' +
+							   'Required # of Courses</span>' +
+							   '</div>';
+
+							   if(parseInt(jsonResponse.Categories[i].coursesRequired) == 0)
+							   		html += '<input type="text" value="All" class="form-control mt-2" disabled>';
+							   	else
+							   		html += '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" disabled>';
+
+							   html += '<table class="category-courses w-100">';
+
+							   for(var j = 0; j < jsonResponse.Categories[i].courses.length; j++){
+							   		html += '<tr>'+
+						    	           '<td>' +
+						    			   '<div class="add-course input-group mt-2 mb-2 ml-5">' +
+						    			   '<div class="input-group-prepend">' +
+						    			   '<span class="input-group-text" style="padding-right: .5em;">' +
+						    			   '<i class="mr-1"></i>Course Name</span>' +
+						    			   '</div>' +
+						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input" disabled>' +
+						    			   '</div>' +
+						    			   '</td>' +
+						    	           '</tr>';
+							   }
+
+						html += '</table>' +
+							   '</div>';
+					$("#degree-Categories").append(html);
+
+				}
+
+   			} else {
+				$("#view-degree-alert").addClass("d-none");
+   				$("#view-degree-alert").removeClass("alert-success");
+				$("#view-degree-alert").addClass("alert-danger");
+				$("#view-degree-alert").text("Cannot Find Degree Plan!");
+				$("#view-degree-alert").removeClass("d-none");
+   			}
+   		});
+	}
 
 
 });
