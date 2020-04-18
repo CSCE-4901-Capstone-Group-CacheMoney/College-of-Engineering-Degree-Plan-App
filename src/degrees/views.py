@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 #import the degrees model
 from .models import Degree
@@ -11,6 +12,8 @@ from .forms import DegreeSelectionForm, CoursesSelectionForm
 from courses.models import Course
 from tecmCore.models import TechClasses
 from mathCore.models import MathClasses
+from session.models import Session
+
 
 #adding something to create a model to dict
 from django.forms.models import model_to_dict
@@ -335,14 +338,18 @@ def degreeTimeline2(request):
 	# once you start fetching a lot of data to send back to JavaScript
 	# probably just an extended to dictionary variable to act as the jsResponse
 
-
+@csrf_exempt
 def timelineTest(request):
-    sessionid = request.POST.get('sessionid', '')
+    #grabbing the session
+    #sessionid = request.POST.get('sessionid')
+    #print("Sessionid: " + str(sessionid))
+    #degree = '{"Categories":[{"name":"Major Requirements","courses":[22,23,24,25,26,27,115,28,29,30],"coursesRequired":0},{"name":"Capstone/Senior Thesis","courses":[32,33],"coursesRequired":1},{"name":"CSCE Core","courses":[34,35,36,91,92],"coursesRequired":2},{"name":"CSCE Breadth","courses":[37,38,98,42,99,41],"coursesRequired":2},{"name":"Other required","courses":[2,1,6,7,21,4],"coursesRequired":0},{"name":"Physics Laboratory Science","courses":[8,9,10,11],"coursesRequired":0},{"name":"General Laboratory Science","courses":[12,14,16,18,19],"coursesRequired":2}]}'
+    #obj = Session.objects.get(sessionID = str(sessionid))
+    #coursesTaken = obj.completedCourses
+    #degreeName = obj.degreeName
+
+    classArr = (timelineGenerator2())#coursesTaken, degreeName))
     
-    degree = '{"Categories":[{"name":"Major Requirements","courses":[22,23,24,25,26,27,115,28,29,30],"coursesRequired":0},{"name":"Capstone/Senior Thesis","courses":[32,33],"coursesRequired":1},{"name":"CSCE Core","courses":[34,35,36,91,92],"coursesRequired":2},{"name":"CSCE Breadth","courses":[37,38,98,42,99,41],"coursesRequired":2},{"name":"Other required","courses":[2,1,6,7,21,4],"coursesRequired":0},{"name":"Physics Laboratory Science","courses":[8,9,10,11],"coursesRequired":0},{"name":"General Laboratory Science","courses":[12,14,16,18,19],"coursesRequired":2}]}'
-    coursesTaken = '{"Categories":{"courses":[23,12]}}'
-    degreeName = 'Computer Science - 2020'
-    classArr = (timelineGenerator2(degree, coursesTaken, degreeName))
     jsonResponse = {}
     jsonResponse["Courses"] = []
     j=0
@@ -353,7 +360,6 @@ def timelineTest(request):
       jsonResponse["Courses"].append({"id": item.id, "CourseDept": item.courseDept, "CourseID": item.courseID})
       j+=1
 
-    print(jsonResponse)    
     jsonResponse = (json.dumps(jsonResponse))
     print(jsonResponse)
     #return render(request, "base.html", {})

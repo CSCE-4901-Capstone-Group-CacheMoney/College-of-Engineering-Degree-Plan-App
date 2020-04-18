@@ -15,6 +15,7 @@ urlpatterns = [
 	path('remove-degree/js/', views.administrationRemoveDegreeJS, name='administrationRemoveDegreeJS'),
 	path('edit-degree/js/', views.administrationEditDegreeJS, name='administrationEditDegreeJS'),
 	path('view-degree/js/', views.administrationViewDegreeJS, name='administrationViewDegreeJS'),
+
 	path('view-degree-detailed/js/', views.administrationViewDegreeDetailedJS, name='administrationViewDegreeDetailedJS'),
 
 
