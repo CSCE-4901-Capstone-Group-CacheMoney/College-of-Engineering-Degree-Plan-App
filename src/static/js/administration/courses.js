@@ -506,6 +506,9 @@ $(document).ready(function() {
 				    scrollTop: $("#add-course-submit-btn").offset().top -20,
 				    scrollLeft: $("#add-course-submit-btn").offset().left -20
 				});
+				setTimeout(function() {
+			        location.reload(true);
+			    }, 1000);
    			} else {
    				$("#add-course-submit-alert").removeClass("alert-success");
 				$("#add-course-submit-alert").addClass("alert-danger");
@@ -628,10 +631,12 @@ $(document).ready(function() {
 	      courseSearchText: sanatize(searchText)
 		},
 	    function(data,status) {
+	    	// temp turning this off as it is causing issues
+	    	// with adding course IDs to json
 			if(!$.isEmptyObject(data)) {
-				$(thisInputElement).attr("course-id", data.ID);
+				//$(thisInputElement).attr("course-id", data.ID);
 			} else {
-				$(thisInputElement).attr("course-id", "");
+				//$(thisInputElement).attr("course-id", "");
 			}
 		});
 	});
