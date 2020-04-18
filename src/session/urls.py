@@ -10,4 +10,6 @@ urlpatterns = [
 	path('removeInactiveUser/', views.removeInactiveUser, name='removeInactiveUser'),
 	path('checkUserExistence/', views.checkUserExistence, name='checkUserExistence'),
 	path('getSessionData/', views.getSessionData, name='getSessionData'),
+	path('updateSessionData/', views.updateSessionData, name='updateSessionData'),
+
 ]

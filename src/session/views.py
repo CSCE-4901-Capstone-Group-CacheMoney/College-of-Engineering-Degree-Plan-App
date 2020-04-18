@@ -104,16 +104,10 @@ def getSessionData(request):
 	print('Received sessionid: ',sessionid, ' and pin: ', pin)
 	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
 	content = {} 
-	# content = Session.objects.filter(sessionID = str(sessionid), sessionPIN = pin)
-	# content["uDegreeName"] 		= 	str(c.degreeName)
-	# content["uCompletedCourses"] = 	str(json.dumps(c.completedCourses))
-	# str(json.dumps(d.degreeInfo))
-	# data = {}
 
 	for data in Session.objects.filter(sessionID = str(sessionid), sessionPIN = pin):
 		content = {
 			"degreeName"		: str(data.degreeName),
-		# 	"completedCourses"	: str(json.dumps(data.completedCourses)),
 		}	
 
 		courseList = json.dumps(data.completedCourses)
@@ -134,33 +128,89 @@ def getSessionData(request):
 		print(category.get('courses')[item])
 	
 		courseItem.append(singleClassItem)
-	# print("courseItem: ",courseItem)
+	
 	courses = {}
 	# courses["courses"] = courseItem
 	courses.update({"courses" : courseItem})
-	# print("courses: ",courses)
 
-	# categories = {}
-	# categories["Categories"] = courses
-	# print("Categ: ",categories)
 	content.update({"Categories" : courses})
 	return JsonResponse(content)
 
+# updateSessionData updates sessionPIN and degreeNameif changed and update completedCourses along with new date stamp in last_visit
+@csrf_exempt
+def updateSessionData(request):
+	sessionid	= request.POST.get('sessionid', '')
+	pin 		= request.POST.get('pin', '')
+	sessionInfo = json.loads(request.POST.get('sessionInfo', ''))
+
+	print('Received sessionid: ',sessionid, ' and pin: ', pin, '\nsessionInfo:', sessionInfo)
+	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
+
+	#check User Existence
+	s = Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin)
+	status = s.count()
+	if status == 0:
+		jsResponse = { 	
+			'success': 'False',
+				'message': 'The combination of sessionID ' + str(sessionid) + ' and pin '+ pin + " doesn't exist!"
+		}	
+		return JsonResponse(jsResponse)
+
+	newPin = sessionInfo['sessionPIN']
+	degree = sessionInfo['degreeName']
+	courseList = sessionInfo['completedCourses']
+	print('newPin:', newPin)
+	print('degree:', degree)
+	print("item inside courses: ", courseList)
+	s = Session.objects.get(sessionID= str(sessionid), sessionPIN = pin)
+	updatePin = 0
+	updateDegreeName = 0
+	#Change pin if new pin doesn't match
+	if int(pin) != newPin:
+		s.sessionPIN = newPin 						#update( sessionPIN = newPin )
+		updatePin = 1
+		# print('pin: ', pin, ' vs. newPin:', newPin)
+
+	#change degree if it doesn't match w the DB
+	if degree != s.degreeName: 						#s.values_list('degreeName', flat = True).get():
+		# s.update( degreeName = str(degree) )
+		s.degreeName = degree
+		updateDegreeName = 1
+		
+	# print('status pin:', updatePin, 'degree:', updateDegreeName)
+	s.completedCourses = courseList
+	s.save()
+	message = ""
+	if updatePin == 1:
+		message += " Updated Pin,"
+	if updateDegreeName == 1:
+		message += " Updated degreeName,"
+	message += " Updated sessionInfo"
+	jsResponse = { 	
+			'success': 'True',
+			'message': 'Sucessfully:'+ message
+		}
+	return JsonResponse(jsResponse)
+# {
+#    "sessionPIN":1234,
+#    "degreeName":"Data Science -2019",
+#    "completedCourses":{
+#       "Categories":{
+#          "courses":[
+#             12,
+#             22,
+#             32,
+#             1
+#          ]
+#       }
+#    }
+# }
 
 
 # {
-#    "Categories":{
-#       "courses":[
-#          {
-#             "id":12,
-#             "courseDept":"CSCE",
-#             "courseID":1030
-#          },
-#          {
-#             "id":4,
-#             "courseDept":"MATH",
-#             "courseID":1700
-#          }
-#       ]
-#    }
+#    "sessionPIN": 1234,
+#    "degreeName": "Data Science -2019",
+#	 "completedCourses": "{"Categories": {"courses": [12, 22, 32, 1]}}"
+# 		
+#    
 # }
