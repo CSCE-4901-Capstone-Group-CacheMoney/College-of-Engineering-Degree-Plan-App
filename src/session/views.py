@@ -29,6 +29,9 @@ def sessionLoginView(request):
 	return render(request, 'student/login-session.html', {})
 
 def sessionViewDegreePlan(request):
+	return render(request, 'student/view-degree-plan-session.html', {})
+
+def sessionViewTranscript(request):
 	return render(request, 'student/view-transcript-session.html', {})
 
 @csrf_exempt
