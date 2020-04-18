@@ -117,7 +117,7 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".remove-course", function(e) {
-    	$(this).parent().parent().parent().remove();
+    	$(this).parent().parent().parent().parent().parent().remove();
     });
 
 	  // force uppercase letters only
@@ -217,6 +217,8 @@ $(document).ready(function() {
 				});
 				create_cookie("uniqueid", sanatize($("#create-session-id").val().trim()));
 				create_cookie("uniquepin", parseInt(sanatize($("#create-session-pin").val().trim())));
+				create_cookie("degreename", $("#search-degree").val().split("-")[0].trim());
+				create_cookie("degreeyear", $("#search-degree").val().split("-")[1].trim());
 				window.location.replace("/session/edit/");
    			} else {
    				$("#add-degree-submit-alert").removeClass("alert-success");
@@ -242,6 +244,15 @@ $(document).ready(function() {
 				$("#session-login-submit-alert").removeClass("d-none");
 				create_cookie("uniqueid", sanatize($("#login-session-id").val().trim()));
 				create_cookie("uniquepin", parseInt(sanatize($("#login-session-pin").val().trim())));
+				$.post("/session/getSessionData/",
+		   		{
+		   			sessionid: sanatize(getCookie("uniqueid")),
+		   			pin: parseInt(getCookie("uniquepin"))
+				},   
+		   		function(data,status) {
+		   			create_cookie("degreename", data.degreeName.split("-")[0].trim());
+		   			create_cookie("degreeyear", data.degreeName.split("-")[1].trim());
+		   		});
 				window.location.replace("/session/edit/");
    			} else {
    				$("#session-login-submit-alert").removeClass("alert-success");
@@ -256,6 +267,9 @@ $(document).ready(function() {
 	/*-----------------------logout session js----------------------------------------- */
 	$(document).on("click", ".session-logout_lnk", function(e) {
 		erase_cookie("uniqueid");
+		erase_cookie("uniquepin");
+		erase_cookie("degreename");
+		erase_cookie("degreeyear");
 		window.location.replace("/session/login/");
 	});
 
@@ -295,6 +309,18 @@ $(document).ready(function() {
 	}
 
 	$(document).on("click", "#session-update-btn", function(e) {
+		var jsonResponse = {};
+		jsonResponse["sessionPIN"] = parseInt(sanatize($("#edit-session-pin").val().trim()));
+		jsonResponse["degreeName"] = sanatize($("#search-degree").val().trim());
+		jsonResponse["completedCourses"] = {};
+		jsonResponse["completedCourses"]["Categories"] = {};
+		jsonResponse["completedCourses"]["Categories"]["courses"] = [];
+		for(var i = 0; i < $("#completed-courses").children().length; i++){
+			jsonResponse["completedCourses"]["Categories"]["courses"][i] = parseInt(sanatize($("#completed-courses").children().eq(i).children().children().children(".add-course-input").attr("course-id").trim()));
+		}
+		create_cookie("degreename", jsonResponse["degreeName"].split("-")[0].trim());
+		create_cookie("degreeyear", jsonResponse["degreeName"].split("-")[1].trim());
+		console.log(JSON.stringify(jsonResponse));
 		// TODO: back-end connection for updating session variables
 		$("#edit-session-update-alert").removeClass("alert-danger");
 		$("#edit-session-update-alert").addClass("alert-success");
@@ -312,7 +338,7 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/view-degree-detailed/js/",
    		{
-			degreeSearchText: sanatize("Computer Science")
+			degreeSearchText: sanatize(getCookie("degreename"))
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {
