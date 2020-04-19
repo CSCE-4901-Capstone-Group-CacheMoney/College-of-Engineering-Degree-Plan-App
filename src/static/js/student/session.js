@@ -56,7 +56,8 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName + "-" + data[i].ID;
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+							suggestions[k]["courseid"] = data[i].ID;
 							k++;
 						}
 
@@ -70,8 +71,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split("-")[0].trim());
-		        $(this).attr("course-id", suggestion["value"].split("-")[2].trim());
+		        $(this).val(suggestion["value"].split(":")[0].trim());
+		    	$(this).attr("course-id", parseInt(suggestion["courseid"]));
 		    }
 		});
 	});
@@ -82,17 +83,19 @@ $(document).ready(function() {
     	$(this).val(sanatize($(this).val().toUpperCase()));
      	var searchText = sanatize($(this).val().trim());
      	var thisInputElement = $(this);
-     	$.post("/administration/view-course/js/", //need to change later to have student have their own url path
-	    {
-	      courseSearchText: sanatize(searchText)
-		},
-	    function(data,status) {
-			if(!$.isEmptyObject(data)) {
-				$(thisInputElement).attr("course-id", data.ID);
-			} else {
-				$(thisInputElement).attr("course-id", "");
-			}
-		});
+     	// temp turning this off as it is causing issues
+	    // with adding course IDs to json
+  //    	$.post("/administration/view-course/js/", //need to change later to have student have their own url path
+	 //    {
+	 //      courseSearchText: sanatize(searchText)
+		// },
+	 //    function(data,status) {
+		// 	if(!$.isEmptyObject(data)) {
+		// 		$(thisInputElement).attr("course-id", data.ID);
+		// 	} else {
+		// 		$(thisInputElement).attr("course-id", "");
+		// 	}
+		// });
 	});
 
     // also capture enter key to trigger above function
@@ -136,13 +139,16 @@ $(document).ready(function() {
 			   {
 				   degreeSearchText: sanatize(searchText)
 			   },
-			   function(data,status) {
+			   function(data,status) { console.log(data);
 				   if(data.length > 1) {
 					   suggestions = [];
 					   var k = 0;
 					   for(var i = 1; i < data.length; i++){
 						   suggestions[k] = {};
 						   suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+						   suggestions[k]["degreeid"] = data[i].ID;
+						   suggestions[k]["degreename"] = data[i].DegreeName;
+						   suggestions[k]["catalogyear"] = data[i].CatalogYear;
 						   k++;
 					   }
 
@@ -156,8 +162,11 @@ $(document).ready(function() {
 			   });
 		   },
 		   onSelect: function (suggestion) {
-			   $("#view-degree-search-input").val(suggestion["value"].split("-")[0].trim());
-			   $("#view-degree-search-btn").click();
+		   		$("#search-degree").val(suggestion["value"]);
+		        $("#search-degree").attr("degree-id", parseInt(suggestion["degreeid"]));
+		        $("#search-degree").attr("degree-name", suggestion["degreename"]);
+		        $("#search-degree").attr("catalog-year", suggestion["catalogyear"]);
+			   	$("#view-degree-search-btn").click();
 		   }
 	   });
 	});
@@ -168,21 +177,7 @@ $(document).ready(function() {
 		jsonResponse["Categories"]["courses"] = [];
 
 		$('.add-course').each(function(catIndex) {
-			//var category = sanatize($(this).children("input").eq(0).val().trim());
-			//var requireNumCourses = parseInt(sanatize($(this).children("input").eq(1).val().trim()));
-
-			//jsonResponse["Categories"][catIndex] = {};
-			//jsonResponse["Categories"][catIndex]["name"] = category;
-			//jsonResponse["Categories"][catIndex]["courses"] = [];
-
-			// $(this).children(".add-course-input").children("tr").each(function(couIndex) {
-			// 	var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
-			// 	jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
-			// });
-
-			//jsonResponse["Categories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
 			jsonResponse["Categories"]["courses"][catIndex] = parseInt(sanatize($(this).children(".add-course-input").attr("course-id").trim()));
-
 		});
 
 		var hi = document.getElementById("create-session-id").value;
@@ -217,8 +212,9 @@ $(document).ready(function() {
 				});
 				create_cookie("uniqueid", sanatize($("#create-session-id").val().trim()));
 				create_cookie("uniquepin", parseInt(sanatize($("#create-session-pin").val().trim())));
-				create_cookie("degreename", $("#search-degree").val().split("-")[0].trim());
-				create_cookie("degreeyear", $("#search-degree").val().split("-")[1].trim());
+				create_cookie("degreeid", $("#search-degree").attr("degree-id"));
+				create_cookie("degreename", $("#search-degree").attr("degree-name"));
+				create_cookie("degreeyear", $("#search-degree").attr("catalog-year"));
 				window.location.replace("/session/edit/");
    			} else {
    				$("#add-degree-submit-alert").removeClass("alert-success");
@@ -268,6 +264,7 @@ $(document).ready(function() {
 	$(document).on("click", ".session-logout_lnk", function(e) {
 		erase_cookie("uniqueid");
 		erase_cookie("uniquepin");
+		create_cookie("degreeid");
 		erase_cookie("degreename");
 		erase_cookie("degreeyear");
 		window.location.replace("/session/login/");
@@ -338,7 +335,7 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/view-degree-detailed/js/",
    		{
-			degreeSearchText: sanatize(getCookie("degreename"))
+			degreeSearchText: sanatize(getCookie("degreeid"))
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {
@@ -359,7 +356,7 @@ $(document).ready(function() {
 				});
 
 				// grab info from back-end, start populating fields
-				var jsonResponse =JSON.parse(data.ndegreeInfo);
+				var jsonResponse = JSON.parse(data.ndegreeInfo);
 
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 

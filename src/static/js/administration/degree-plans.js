@@ -36,7 +36,8 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName + "-" + data[i].ID;
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+							suggestions[k]["courseid"] = data[i].ID;
 							k++;
 						}
 
@@ -50,8 +51,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split("-")[0].trim());
-		        $(this).attr("course-id", suggestion["value"].split("-")[2].trim());
+		        $(this).val(suggestion["value"].split(":")[0].trim());
+		        $(this).attr("course-id", parseInt(suggestion["courseid"]));
 		    }
 		});
 	});
@@ -62,19 +63,20 @@ $(document).ready(function() {
     	$(this).val(sanatize($(this).val().toUpperCase()));
      	var searchText = sanatize($(this).val().trim());
      	var thisInputElement = $(this);
-     	$.post("/administration/view-course/js/",
-	    {
-	      courseSearchText: sanatize(searchText)
-		},
-	    function(data,status) {
-	    	// temp turning this off as it is causing issues
-	    	// with adding course IDs to json
-			if(!$.isEmptyObject(data)) {
-				//$(thisInputElement).attr("course-id", data.ID);
-			} else {
-				//$(thisInputElement).attr("course-id", "");
-			}
-		});
+
+     	// temp turning this off as it is causing issues
+	    // with adding course IDs to json
+  //    	$.post("/administration/view-course/js/",
+	 //    {
+	 //      courseSearchText: sanatize(searchText)
+		// },
+	 //    function(data,status) {
+		// 	if(!$.isEmptyObject(data)) {
+		// 		$(thisInputElement).attr("course-id", data.ID);
+		// 	} else {
+		// 		$(thisInputElement).attr("course-id", "");
+		// 	}
+		// });
 	});
 	
 	$(document).on("click", "#add-degree-submit-btn", function(e) {
@@ -201,6 +203,7 @@ $(document).ready(function() {
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
 							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							suggestions[k]["degreeid"] = data[i].ID;
 							k++;
 						}
 
@@ -214,7 +217,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-				$("#remove-degree-search-input").val(suggestion["value"].split("-")[0].trim());
+				$("#remove-degree-search-input").val(suggestion["value"]);
+				$("#remove-degree-search-input").attr("degree-id", parseInt(suggestion["degreeid"]));
 				$("#remove-degree-search-btn").click();
 		    }
 		});
@@ -222,9 +226,9 @@ $(document).ready(function() {
 
 	$(document).on("click", "#remove-degree-search-btn", function(e) {
     	// send request to the back-end...
-		$.post("/administration/view-degree/js/",
+		$.post("/administration/view-degree-detailed/js/",
    		{
-			degreeSearchText: sanatize($("#remove-degree-search-input").val().trim())
+			degreeSearchText: sanatize($("#remove-degree-search-input").attr("degree-id").trim())
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {
@@ -313,6 +317,7 @@ $(document).ready(function() {
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
 							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							suggestions[k]["degreeid"] = data[i].ID;
 							k++;
 						}
 
@@ -326,7 +331,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-				$("#edit-degree-search-input").val(suggestion["value"].split("-")[0].trim());
+				$("#edit-degree-search-input").val(suggestion["value"]);
+				$("#edit-degree-search-input").attr("degree-id", parseInt(suggestion["degreeid"]));
 				$("#edit-degree-search-btn").click();
 		    }
 		});
@@ -336,7 +342,7 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/view-degree-detailed/js/",
    		{
-			degreeSearchText: sanatize($("#edit-degree-search-input").val().trim())
+			degreeSearchText: sanatize($("#edit-degree-search-input").attr("degree-id").trim())
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {
@@ -364,7 +370,7 @@ $(document).ready(function() {
 				});
 
 				// grab info from back-end, start populating fields
-				var jsonResponse =JSON.parse(data.ndegreeInfo);
+				var jsonResponse = JSON.parse(data.ndegreeInfo);
 
 				for(var i = 0; i < jsonResponse.Categories.length; i++){
 
@@ -492,6 +498,7 @@ $(document).ready(function() {
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
 							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							suggestions[k]["degreeid"] = data[i].ID;
 							k++;
 						}
 
@@ -505,7 +512,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-				$("#view-degree-search-input").val(suggestion["value"].split("-")[0].trim());
+				$("#view-degree-search-input").val(suggestion["value"]);
+				$("#view-degree-search-input").attr("degree-id", parseInt(suggestion["degreeid"]));
 				$("#view-degree-search-btn").click();
 		    }
 		});
@@ -515,7 +523,7 @@ $(document).ready(function() {
     	// send request to the back-end...
 		$.post("/administration/view-degree-detailed/js/",
    		{
-			degreeSearchText: sanatize($("#view-degree-search-input").val().trim())
+			degreeSearchText: sanatize($("#view-degree-search-input").attr("degree-id").trim())
    		},
    		function(data,status) {
 			if(!$.isEmptyObject(data)) {

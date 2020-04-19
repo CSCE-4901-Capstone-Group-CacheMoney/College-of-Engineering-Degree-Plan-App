@@ -30,7 +30,8 @@ $(document).ready(function() {
 					var k = 0;
 					for(var i = 1; i < data.length; i++){
 						suggestions[k] = {};
-						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName;
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+						suggestions[k]["courseid"] = data[i].ID;
 						k++;
 					}
 
@@ -44,7 +45,8 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#view-course-search-input").val(suggestion["value"].split("-")[0].trim());
+	        $("#view-course-search-input").val(suggestion["value"].split(":")[0].trim());
+		    $("#view-course-search-input").attr("course-id", parseInt(suggestion["courseid"]));
 	        $("#view-course-search-btn").click();
 	    }
 	});
@@ -182,7 +184,8 @@ $(document).ready(function() {
 					var k = 0;
 					for(var i = 1; i < data.length; i++){
 						suggestions[k] = {};
-						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName;
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+						suggestions[k]["courseid"] = data[i].ID;
 						k++;
 					}
 
@@ -196,7 +199,8 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#edit-course-search-input").val(suggestion["value"].split("-")[0].trim());
+	        $("#edit-course-search-input").val(suggestion["value"].split(":")[0].trim());
+		    $("#edit-course-search-input").attr("course-id", parseInt(suggestion["courseid"]));
 	        $("#edit-course-search-btn").click();
 	    }
 	});
@@ -324,7 +328,7 @@ $(document).ready(function() {
     	if($("#add-course-degree-spec-reqs").children().length > 0){
     		for(var i = 0; i < $("#add-course-degree-spec-reqs").children().length; i++){
     			jsonResponse["Categories"][i] = {};
-    			var degreeName = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").val().trim());
+    			var degreeName = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("degree-name").trim());
     			var catalogYear = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("catalog-year").trim());
     			var college = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("college").trim());
     			var specialty = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("specialty").trim());
@@ -410,6 +414,9 @@ $(document).ready(function() {
 				    scrollTop: $("#edit-course-update-btn").offset().top -20,
 				    scrollLeft: $("#edit-course-update-btn").offset().left -20
 				});
+				setTimeout(function() {
+			        location.reload(true);
+			    }, 1000);
    			} else {
    				$("#edit-course-update-alert").removeClass("alert-success");
 				$("#edit-course-update-alert").addClass("alert-danger");
@@ -441,7 +448,7 @@ $(document).ready(function() {
     	if($("#add-course-degree-spec-reqs").children().length > 0){
     		for(var i = 0; i < $("#add-course-degree-spec-reqs").children().length; i++){
     			jsonResponse["Categories"][i] = {};
-    			var degreeName = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").val().trim());
+    			var degreeName = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("degree-name").trim());
     			var catalogYear = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("catalog-year").trim());
     			var college = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("college").trim());
     			var specialty = sanatize($("#add-course-degree-spec-reqs").children().eq(i).children("input").attr("specialty").trim());
@@ -600,7 +607,8 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName + "-" + data[i].ID;
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+							suggestions[k]["courseid"] = data[i].ID;
 							k++;
 						}
 
@@ -614,8 +622,8 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split("-")[0].trim());
-		        $(this).attr("course-id", suggestion["value"].split("-")[2].trim());
+		        $(this).val(suggestion["value"].split(":")[0].trim());
+		    	$(this).attr("course-id", parseInt(suggestion["courseid"]));
 		    }
 		});
 	});
@@ -626,19 +634,19 @@ $(document).ready(function() {
     	$(this).val(sanatize($(this).val().toUpperCase()));
      	var searchText = sanatize($(this).val().trim());
      	var thisInputElement = $(this);
-     	$.post("/administration/view-course/js/",
-	    {
-	      courseSearchText: sanatize(searchText)
-		},
-	    function(data,status) {
-	    	// temp turning this off as it is causing issues
-	    	// with adding course IDs to json
-			if(!$.isEmptyObject(data)) {
-				//$(thisInputElement).attr("course-id", data.ID);
-			} else {
-				//$(thisInputElement).attr("course-id", "");
-			}
-		});
+     	// temp turning this off as it is causing issues
+	    // with adding course IDs to json
+  //    	$.post("/administration/view-course/js/",
+	 //    {
+	 //      courseSearchText: sanatize(searchText)
+		// },
+	 //    function(data,status) {
+		// 	if(!$.isEmptyObject(data)) {
+		// 		$(thisInputElement).attr("course-id", data.ID);
+		// 	} else {
+		// 		$(thisInputElement).attr("course-id", "");
+		// 	}
+		// });
 	});
 
 
@@ -653,7 +661,7 @@ $(document).ready(function() {
 				var result;
 		        $.post("/administration/autoSearchDegree/js/",
 			    {
-			      courseSearchText: sanatize(searchText)
+			      degreeSearchText: sanatize(searchText)
 				},
 			    function(data,status) {
 					if(data.length > 1) {
@@ -661,7 +669,12 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear + " - " + data[i].CollegeName + " - " + data[i].Specialty;
+							suggestions[k]["value"] = data[i].DegreeName + " - " + data[i].CatalogYear;
+							suggestions[k]["degreeid"] = data[i].ID;
+							suggestions[k]["degreename"] = data[i].DegreeName;
+							suggestions[k]["catalogyear"] = data[i].CatalogYear;
+							suggestions[k]["collegename"] = data[i].CollegeName;
+							suggestions[k]["specialty"] = data[i].Specialty;
 							k++;
 						}
 
@@ -675,10 +688,12 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split("-")[0].trim());
-		        $(this).attr("catalog-year", suggestion["value"].split("-")[1].trim());
-		        $(this).attr("college", suggestion["value"].split("-")[2].trim());
-		        $(this).attr("specialty", suggestion["value"].split("-")[3].trim());
+		        $(this).val(suggestion["value"]);
+		        $(this).attr("degree-id", parseInt(suggestion["degreeid"]));
+		        $(this).attr("degree-name", suggestion["degreename"]);
+		        $(this).attr("catalog-year", suggestion["catalogyear"]);
+		        $(this).attr("college", suggestion["collegename"]);
+		        $(this).attr("specialty", suggestion["specialty"]);
 		    }
 		});
 	});
@@ -689,17 +704,19 @@ $(document).ready(function() {
     	$(this).val(sanatize($(this).val().toUpperCase()));
      	var searchText = sanatize($(this).val().trim());
      	var thisInputElement = $(this);
-     	$.post("/administration/view-degree/js/",
-	    {
-	      degreeSearchText: sanatize(searchText)
-		},
-	    function(data,status) {
-			if(!$.isEmptyObject(data) && !data.nDegreeName.toLowerCase().indexOf("none")) {
-				$(thisInputElement).attr("catalog-year", data.ncatalogYear);
-				$(thisInputElement).attr("college", data.nCollegeName);
-				$(thisInputElement).attr("specialty", data.nspecialty);
-			}
-		});
+     	// temp turning this off as it is causing issues
+	    // with adding degree attributes to json
+  //    	$.post("/administration/view-degree/js/",
+	 //    {
+	 //      degreeSearchText: sanatize(searchText)
+		// },
+	 //    function(data,status) {
+		// 	if(!$.isEmptyObject(data) && !data.nDegreeName.toLowerCase().indexOf("none")) {
+		// 		$(thisInputElement).attr("catalog-year", data.ncatalogYear);
+		// 		$(thisInputElement).attr("college", data.nCollegeName);
+		// 		$(thisInputElement).attr("specialty", data.nspecialty);
+		// 	}
+		// });
 	});
 
     /*-----------------------remove course js----------------------------------------- */
@@ -723,7 +740,8 @@ $(document).ready(function() {
 					var k = 0;
 					for(var i = 1; i < data.length; i++){
 						suggestions[k] = {};
-						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + "-"+ data[i].CourseName;
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+						suggestions[k]["courseid"] = data[i].ID;
 						k++;
 					}
 
@@ -737,7 +755,8 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#remove-course-search-input").val(suggestion["value"].split("-")[0].trim());
+	        $("#remove-course-search-input").val(suggestion["value"].split(":")[0].trim());
+		    $("#remove-course-search-input").attr("course-id", parseInt(suggestion["courseid"]));
 	        $("#remove-course-search-btn").click();
 	    }
 	});
