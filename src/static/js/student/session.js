@@ -269,7 +269,7 @@ $(document).ready(function() {
 	$(document).on("click", ".session-logout_lnk", function(e) {
 		erase_cookie("uniqueid");
 		erase_cookie("uniquepin");
-		create_cookie("degreeid");
+		erase_cookie("degreeid");
 		erase_cookie("degreename");
 		erase_cookie("degreeyear");
 	    window.location.replace("/session/login/");
@@ -348,8 +348,8 @@ $(document).ready(function() {
 	    		$("#degree-categories").children().remove();
 	    		
 	    		// add data to fields below...
-		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
-				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);
+	    		$("#degreeaddinputGroupSelect-1").val(data.nCollegeName);
+		    	$("#degreeaddinputGroupSelect-2").val(data.nDegreeName);
 				$("#degreeaddinputGroupSelect-3").val(data.ncatalogYear);
 				$("#degreeaddinputGroupSelect-4").val(data.nspecialty);
 			

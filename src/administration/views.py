@@ -585,7 +585,7 @@ def administrationEditDegreeJS(request):
 	if nspecialty=='':
 		nspecialty='None'
 
-	NbrOfRow = Degree.objects.filter(name=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).update(degreeInfo=ndegreeInfo)
+	NbrOfRow = Degree.objects.filter(name=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).update(degreeInfo=json.loads(ndegreeInfo))
 	#print(c)			
 	if NbrOfRow==1:
 		jsResponse = {

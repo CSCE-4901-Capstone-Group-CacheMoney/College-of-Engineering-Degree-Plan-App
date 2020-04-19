@@ -279,7 +279,7 @@ $(document).ready(function() {
 			   nspecialty: sanatize($("#remove-specialization").val().trim())
    		},
    		function(data,status) {
-   			if(data.success.toLowerCase().indexOf("success") != -1) {
+   			if(data.success.toLowerCase().indexOf("true") != -1) {
    				$("#remove-degeee-submit-alert").removeClass("alert-danger");
 				$("#remove-degree-submit-alert").addClass("alert-success");
 				$("#remove-degree-submit-alert").text(data.message);
@@ -289,6 +289,9 @@ $(document).ready(function() {
 				    scrollTop: $("#remove-degree-submit-btn").offset().top -20,
 				    scrollLeft: $("#remove-degree-submit-btn").offset().left -20
 				});
+				setTimeout(function() { 
+			        location.reload(true);
+			    }, 1200);
    			} else {
    				$("#remove-degree-submit-alert").removeClass("alert-success");
 				$("#remove-degree-submit-alert").addClass("alert-danger");
@@ -351,8 +354,8 @@ $(document).ready(function() {
 	    		$("#degree-categories").children().remove();
 
 	    		// add data to fields below...
-		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
-				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);
+		    	$("#degreeaddinputGroupSelect-1").val(data.nCollegeName);
+		    	$("#degreeaddinputGroupSelect-2").val(data.nDegreeName);
 				$("#degreeaddinputGroupSelect-3").val(data.ncatalogYear);
 				$("#degreeaddinputGroupSelect-4").val(data.nspecialty);
 
@@ -443,19 +446,26 @@ $(document).ready(function() {
 			jsonResponse["Categories"][catIndex]["name"] = category;
 			jsonResponse["Categories"][catIndex]["courses"] = [];
 
-			$(this).children(".category-courses").children().children("tr").each(function(couIndex) {
-				var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
-				jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
-			});
+			if($(this).children(".category-courses").children().children("tr").length > 0){
+				$(this).children(".category-courses").children().children("tr").each(function(couIndex) {
+					var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
+					jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
+				});
+			}
+			else {
+				$(this).children(".category-courses").children("tr").each(function(couIndex) {
+					var coursePKID = sanatize($(this).children().children().children("input").attr("course-id").trim());
+					jsonResponse["Categories"][catIndex]["courses"][couIndex] = parseInt(coursePKID);
+				});
+			}
 
 			jsonResponse["Categories"][catIndex]["coursesRequired"] = parseInt(requireNumCourses);
 		});
-
     	// send request to the back-end...
 		$.post("/administration/edit-degree/js/",
    		{
    			nCollegeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
-   			nDegreeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
+   			nDegreeName: sanatize($("#degreeaddinputGroupSelect-2").val().trim()),
 			ncatalogYear: sanatize($("#degreeaddinputGroupSelect-3").val().trim()),
 			nspecialty: sanatize($("#degreeaddinputGroupSelect-4").val().trim()),
 			ndegreeInfo: JSON.stringify(jsonResponse)
@@ -535,8 +545,8 @@ $(document).ready(function() {
 	    		$("#degree-categories").children().remove();
 	    		
 	    		// add data to fields below...
-		    	$("#degreeaddinputGroupSelect-1").val(data.nDegreeName);
-				$("#degreeaddinputGroupSelect-2").val(data.nCollegeName);
+	    		$("#degreeaddinputGroupSelect-1").val(data.nCollegeName);
+		    	$("#degreeaddinputGroupSelect-2").val(data.nDegreeName);
 				$("#degreeaddinputGroupSelect-3").val(data.ncatalogYear);
 				$("#degreeaddinputGroupSelect-4").val(data.nspecialty);
 
