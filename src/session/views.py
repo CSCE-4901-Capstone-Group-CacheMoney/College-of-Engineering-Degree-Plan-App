@@ -39,16 +39,20 @@ def studentCreateSession(request):
 	sessionid	= request.POST.get('sessionID', '')
 	pin 		= request.POST.get('sessionPIN', '')
 	degree 		= request.POST.get('sessionDegree', '')
+	degreeYear	= request.POST.get('sessionDegreeYear', '')
+	sessionDegreeID 	= request.POST.get('sessionDegreeID', '')
 	completed 	= json.loads(request.POST.get('sessionInfo', ''))
 	# degreeSearchText = degreeSearchText.replace(' ','')
-	#print (degreeSearchText)
+	print ('Received:', sessionid, pin, degree, degreeYear, sessionDegreeID)
 	# content={}
 	print('completed: ', completed)
 	Session.objects.create(
-		sessionID = str(sessionid),
+		sessionID  = str(sessionid),
 		sessionPIN = pin,
 		degreeName = str(degree),
-		completedCourses =  completed
+		degreeYear = int(degreeYear),
+		degreeID   = int(sessionDegreeID),
+		completedCourses =  completed,
 		)
 	jsResponse = {
 		'success': 'True',
@@ -107,10 +111,12 @@ def getSessionData(request):
 	print('Received sessionid: ',sessionid, ' and pin: ', pin)
 	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
 	content = {} 
-
+	
 	for data in Session.objects.filter(sessionID = str(sessionid), sessionPIN = pin):
 		content = {
-			"degreeName"		: str(data.degreeName),
+			"degreeName"	: str(data.degreeName),
+			"degreeYear"	: data.degreeYear,
+			"degreeID"		: data.degreeID
 		}	
 
 		courseList = json.dumps(data.completedCourses)
@@ -155,12 +161,14 @@ def updateSessionData(request):
 	if status == 0:
 		jsResponse = { 	
 			'success': 'False',
-				'message': 'The combination of sessionID ' + str(sessionid) + ' and pin '+ pin + " doesn't exist!"
+			'message': 'The combination of sessionID ' + str(sessionid) + ' and pin '+ pin + " doesn't exist!"
 		}	
 		return JsonResponse(jsResponse)
 
 	newPin = sessionInfo['sessionPIN']
 	degree = sessionInfo['degreeName']
+	degreeYear = sessionInfo['degreeYear']
+	degreeID = sessionInfo['degreeID']
 	courseList = sessionInfo['completedCourses']
 	print('newPin:', newPin)
 	print('degree:', degree)
@@ -175,8 +183,9 @@ def updateSessionData(request):
 		# print('pin: ', pin, ' vs. newPin:', newPin)
 
 	#change degree if it doesn't match w the DB
-	if degree != s.degreeName: 						#s.values_list('degreeName', flat = True).get():
+	if degreeID != s.degreeID: 						#s.values_list('degreeName', flat = True).get():
 		# s.update( degreeName = str(degree) )
+		s.degreeID = degreeID
 		s.degreeName = degree
 		updateDegreeName = 1
 		

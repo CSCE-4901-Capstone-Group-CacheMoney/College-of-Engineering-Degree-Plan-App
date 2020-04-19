@@ -11,7 +11,9 @@ class Session(models.Model):
 	degreeName = models.CharField(max_length=100)
 	completedCourses = JSONField(default=dict)
 	last_visit = models.DateField(auto_now = True)
-
+	degreeYear = models.SmallIntegerField(default = 0)
+	degreeID = models.SmallIntegerField(default = 0)
+	
 	def str(self):
 		return str(self.sessionID) + ' ' + str(self.degreeName) + ' ' + str(self.completedCourse)  
 
