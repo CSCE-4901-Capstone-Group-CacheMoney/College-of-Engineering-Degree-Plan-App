@@ -56,7 +56,8 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " " + data[i].CourseName;
+							suggestions[k]["fullcoursecode"] = data[i].CourseDept + " " +  data[i].CourseID;
 							suggestions[k]["courseid"] = data[i].ID;
 							k++;
 						}
@@ -71,7 +72,7 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split(":")[0].trim());
+		        $(this).val(suggestion["fullcoursecode"]);
 		    	$(this).attr("course-id", parseInt(suggestion["courseid"]));
 		    }
 		});
@@ -139,7 +140,7 @@ $(document).ready(function() {
 			   {
 				   degreeSearchText: sanatize(searchText)
 			   },
-			   function(data,status) { console.log(data);
+			   function(data,status) {
 				   if(data.length > 1) {
 					   suggestions = [];
 					   var k = 0;
@@ -215,7 +216,9 @@ $(document).ready(function() {
 				create_cookie("degreeid", $("#search-degree").attr("degree-id"));
 				create_cookie("degreename", $("#search-degree").attr("degree-name"));
 				create_cookie("degreeyear", $("#search-degree").attr("catalog-year"));
-				window.location.replace("/session/edit/");
+				setTimeout(function() {
+			        window.location.replace("/session/edit/");
+			    }, 1200);
    			} else {
    				$("#add-degree-submit-alert").removeClass("alert-success");
 				$("#add-degree-submit-alert").addClass("alert-danger");
@@ -249,7 +252,9 @@ $(document).ready(function() {
 		   			create_cookie("degreename", data.degreeName.split("-")[0].trim());
 		   			create_cookie("degreeyear", data.degreeName.split("-")[1].trim());
 		   		});
-				window.location.replace("/session/edit/");
+				setTimeout(function() {
+			        window.location.replace("/session/edit/");
+			    }, 1200);
    			} else {
    				$("#session-login-submit-alert").removeClass("alert-success");
 				$("#session-login-submit-alert").addClass("alert-danger");
@@ -267,7 +272,7 @@ $(document).ready(function() {
 		create_cookie("degreeid");
 		erase_cookie("degreename");
 		erase_cookie("degreeyear");
-		window.location.replace("/session/login/");
+	    window.location.replace("/session/login/");
 	});
 
 	/*-----------------------edit session js----------------------------------------- */

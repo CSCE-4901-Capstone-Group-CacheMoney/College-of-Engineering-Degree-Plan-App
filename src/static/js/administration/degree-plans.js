@@ -36,7 +36,8 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " " + data[i].CourseName;
+							suggestions[k]["fullcoursecode"] = data[i].CourseDept + " " +  data[i].CourseID;
 							suggestions[k]["courseid"] = data[i].ID;
 							k++;
 						}
@@ -51,7 +52,7 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split(":")[0].trim());
+		        $(this).val(suggestion["fullcoursecode"]);
 		        $(this).attr("course-id", parseInt(suggestion["courseid"]));
 		    }
 		});
@@ -123,7 +124,7 @@ $(document).ready(function() {
 				});
 				setTimeout(function() { 
 			        location.reload(true);
-			    }, 1000);
+			    }, 1200);
    			} else {
    				$("#add-degree-submit-alert").removeClass("alert-success");
 				$("#add-degree-submit-alert").addClass("alert-danger");
@@ -451,7 +452,7 @@ $(document).ready(function() {
 		});
 
     	// send request to the back-end...
-		$.post("/administration/add-degree/js/",
+		$.post("/administration/edit-degree/js/",
    		{
    			nCollegeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
    			nDegreeName: sanatize($("#degreeaddinputGroupSelect-1").val().trim()),
@@ -470,6 +471,9 @@ $(document).ready(function() {
 				    scrollTop: $("#edit-degree-submit-btn").offset().top -20,
 				    scrollLeft: $("#edit-degree-submit-btn").offset().left -20
 				});
+				setTimeout(function() {
+			        location.reload(true);
+			    }, 1200);
    			} else {
    				$("#edit-degree-submit-alert").removeClass("alert-success");
 				$("#edit-degree-submit-alert").addClass("alert-danger");

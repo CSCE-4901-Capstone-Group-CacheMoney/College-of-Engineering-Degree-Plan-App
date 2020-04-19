@@ -30,7 +30,8 @@ $(document).ready(function() {
 					var k = 0;
 					for(var i = 1; i < data.length; i++){
 						suggestions[k] = {};
-						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " " + data[i].CourseName;
+						suggestions[k]["fullcoursecode"] = data[i].CourseDept + " " +  data[i].CourseID;
 						suggestions[k]["courseid"] = data[i].ID;
 						k++;
 					}
@@ -45,7 +46,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#view-course-search-input").val(suggestion["value"].split(":")[0].trim());
+	        $("#view-course-search-input").val(suggestion["fullcoursecode"]);
 		    $("#view-course-search-input").attr("course-id", parseInt(suggestion["courseid"]));
 	        $("#view-course-search-btn").click();
 	    }
@@ -184,7 +185,8 @@ $(document).ready(function() {
 					var k = 0;
 					for(var i = 1; i < data.length; i++){
 						suggestions[k] = {};
-						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " " + data[i].CourseName;
+						suggestions[k]["fullcoursecode"] = data[i].CourseDept + " " +  data[i].CourseID;
 						suggestions[k]["courseid"] = data[i].ID;
 						k++;
 					}
@@ -199,7 +201,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#edit-course-search-input").val(suggestion["value"].split(":")[0].trim());
+	        $("#edit-course-search-input").val(suggestion["fullcoursecode"]);
 		    $("#edit-course-search-input").attr("course-id", parseInt(suggestion["courseid"]));
 	        $("#edit-course-search-btn").click();
 	    }
@@ -416,7 +418,7 @@ $(document).ready(function() {
 				});
 				setTimeout(function() {
 			        location.reload(true);
-			    }, 1000);
+			    }, 1200);
    			} else {
    				$("#edit-course-update-alert").removeClass("alert-success");
 				$("#edit-course-update-alert").addClass("alert-danger");
@@ -515,7 +517,7 @@ $(document).ready(function() {
 				});
 				setTimeout(function() {
 			        location.reload(true);
-			    }, 1000);
+			    }, 1200);
    			} else {
    				$("#add-course-submit-alert").removeClass("alert-success");
 				$("#add-course-submit-alert").addClass("alert-danger");
@@ -607,7 +609,8 @@ $(document).ready(function() {
 						var k = 0;
 						for(var i = 1; i < data.length; i++){
 							suggestions[k] = {};
-							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+							suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " " + data[i].CourseName;
+							suggestions[k]["fullcoursecode"] = data[i].CourseDept + " " +  data[i].CourseID;
 							suggestions[k]["courseid"] = data[i].ID;
 							k++;
 						}
@@ -622,7 +625,7 @@ $(document).ready(function() {
 				});
 		    },
 		    onSelect: function (suggestion) {
-		        $(this).val(suggestion["value"].split(":")[0].trim());
+		        $(this).val(suggestion["fullcoursecode"]);
 		    	$(this).attr("course-id", parseInt(suggestion["courseid"]));
 		    }
 		});
@@ -740,7 +743,8 @@ $(document).ready(function() {
 					var k = 0;
 					for(var i = 1; i < data.length; i++){
 						suggestions[k] = {};
-						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " : "+ data[i].CourseName;
+						suggestions[k]["value"] = data[i].CourseDept + " " +  data[i].CourseID + " " + data[i].CourseName;
+						suggestions[k]["fullcoursecode"] = data[i].CourseDept + " " +  data[i].CourseID;
 						suggestions[k]["courseid"] = data[i].ID;
 						k++;
 					}
@@ -755,7 +759,7 @@ $(document).ready(function() {
 			});
 	    },
 	    onSelect: function (suggestion) {
-	        $("#remove-course-search-input").val(suggestion["value"].split(":")[0].trim());
+	        $("#remove-course-search-input").val(suggestion["fullcoursecode"]);
 		    $("#remove-course-search-input").attr("course-id", parseInt(suggestion["courseid"]));
 	        $("#remove-course-search-btn").click();
 	    }
