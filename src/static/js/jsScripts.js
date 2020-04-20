@@ -180,3 +180,23 @@ function checkIfMobileDevice() {
     }
     return isMobile;
 }
+
+// function to capture all blank fields and alert the user, halting further exec
+$(document).ready(function() {
+    $(document).on('click', 'button.btn-block', function(e) {
+        if($(this).text().toLowerCase().trim().indexOf("search") != -1){
+            if($("input").eq(0).val().trim().length == 0){
+                $("input").eq(0).attr("placeholder", "Field Required");
+                 e.stopImmediatePropagation(); // halt other events from exec
+            }
+        }
+        else {
+            $("input").each(function(inputIndex) {
+                if($(this).val().trim().length == 0){
+                    $(this).attr("placeholder", "Field Required");
+                    e.stopImmediatePropagation();
+                }
+            });
+        }
+    });
+});

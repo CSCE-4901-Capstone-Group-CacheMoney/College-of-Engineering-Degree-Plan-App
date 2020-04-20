@@ -251,3 +251,42 @@ footer a {
 	background-color: green;
 	color: #fff!important;
 }
+
+/*
+	changes placeholder text color for field input alerts to user
+	credit: https://stackoverflow.com/users/414385/hitautodestruct
+	credit: https://stackoverflow.com/users/299509/fuxia
+*/
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+     color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+     opacity:  1;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+     color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+     opacity:  1;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+     color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  ::-ms-input-placeholder { /* Microsoft Edge */
+     color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+  ::placeholder { /* Most modern browsers support this now. */
+     color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
