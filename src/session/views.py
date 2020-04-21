@@ -40,7 +40,7 @@ def studentCreateSession(request):
 	pin 		= request.POST.get('sessionPIN', '')
 	degree 		= request.POST.get('sessionDegree', '')
 	degreeYear	= request.POST.get('sessionDegreeYear', '')
-	sessionDegreeID 	= request.POST.get('sessionDegreeID', '')
+	sessionDegreeID = request.POST.get('sessionDegreeID', '')
 	completed 	= json.loads(request.POST.get('sessionInfo', ''))
 	# degreeSearchText = degreeSearchText.replace(' ','')
 	print ('Received:', sessionid, pin, degree, degreeYear, sessionDegreeID)
@@ -48,7 +48,7 @@ def studentCreateSession(request):
 	print('completed: ', completed)
 	Session.objects.create(
 		sessionID  = str(sessionid),
-		sessionPIN = pin,
+		sessionPIN = str(pin),
 		degreeName = str(degree),
 		degreeYear = int(degreeYear),
 		degreeID   = int(sessionDegreeID),
@@ -88,8 +88,8 @@ def checkUserExistence(request):
 	sessionid	= request.POST.get('sessionid', '')
 	pin 		= request.POST.get('pin', '')
 	print('sessionid: ',sessionid, ' and pin: ', pin)
-	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
-	status = Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin).count()
+	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)))
+	status = Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)).count()
 	
 	if status != 0:											#if successful
 		jsResponse = {
@@ -109,10 +109,10 @@ def getSessionData(request):
 	sessionid	= request.POST.get('sessionid', '')
 	pin 		= request.POST.get('pin', '')
 	print('Received sessionid: ',sessionid, ' and pin: ', pin)
-	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
+	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)))
 	content = {} 
 	
-	for data in Session.objects.filter(sessionID = str(sessionid), sessionPIN = pin):
+	for data in Session.objects.filter(sessionID = str(sessionid), sessionPIN = str(pin)):
 		content = {
 			"degreeName"	: str(data.degreeName),
 			"degreeYear"	: data.degreeYear,
@@ -153,10 +153,10 @@ def updateSessionData(request):
 	sessionInfo = json.loads(request.POST.get('sessionInfo', ''))
 
 	print('Received sessionid: ',sessionid, ' and pin: ', pin, '\nsessionInfo:', sessionInfo)
-	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin))
+	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)))
 
 	#check User Existence
-	s = Session.objects.filter(sessionID= str(sessionid), sessionPIN = pin)
+	s = Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin))
 	status = s.count()
 	if status == 0:
 		jsResponse = { 	
@@ -173,12 +173,12 @@ def updateSessionData(request):
 	print('newPin:', newPin)
 	print('degree:', degree)
 	print("item inside courses: ", courseList)
-	s = Session.objects.get(sessionID= str(sessionid), sessionPIN = pin)
+	s = Session.objects.get(sessionID= str(sessionid), sessionPIN = str(pin))
 	updatePin = 0
 	updateDegreeName = 0
 	#Change pin if new pin doesn't match
 	if int(pin) != newPin:
-		s.sessionPIN = newPin 						#update( sessionPIN = newPin )
+		s.sessionPIN = str(newPin) 						#update( sessionPIN = newPin )
 		updatePin = 1
 		# print('pin: ', pin, ' vs. newPin:', newPin)
 
