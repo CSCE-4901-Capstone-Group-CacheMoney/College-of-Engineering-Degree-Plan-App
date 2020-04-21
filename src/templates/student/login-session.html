@@ -19,7 +19,8 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" style="padding-right: 1.8em;" id="inputGroup-sizing-default-2">Pin Number</span>
                   </div>
-                  <input id="login-session-pin" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4">
+                  <input id="login-session-pin" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
                 </div>
 
                 <button id="session-login-btn" type="button" class="btn btn-outline-success btn-block mt-3">Login</button>
