@@ -20,8 +20,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" style="padding-right: 4.04em;" id="inputGroup-sizing-default-2">Pin Number</span>
                   </div>
-                  <input id="create-session-pin" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
+                  <input id="create-session-pin" type="password" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4" inputmode="numeric"> <!--only allows 4 digit, only digit, pins-->
                 </div>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
@@ -37,6 +36,11 @@
 
                 <button id="session-submit-btn" type="button" class="btn btn-outline-success btn-block mt-4">Submit</button>
                 <div id="add-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
+                <div id="message">
+                  <h2>PIN must contain the following:</h2>
+                    <p id="number" class="fa fa-times invalid">Only Numbers </p>
+                    <p id="length" class="fa fa-times invalid">Minimum 4 Characters </p>
+                </div>
               </div>
               </div>
           </div>
