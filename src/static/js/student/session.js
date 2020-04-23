@@ -163,11 +163,12 @@ $(document).ready(function() {
 			   });
 		   },
 		   onSelect: function (suggestion) {
-		   		$("#search-degree").val(suggestion["value"]);
+				$('#session-submit-btn').prop('disabled', false);
+				$("#search-degree").val(suggestion["value"]);
+				$("#search-degree").attr("verify", suggestion["value"]);
 		        $("#search-degree").attr("degree-id", parseInt(suggestion["degreeid"]));
 		        $("#search-degree").attr("degree-name", suggestion["degreename"]);
 		        $("#search-degree").attr("catalog-year", parseInt(suggestion["catalogyear"]));
-			   	$("#view-degree-search-btn").click();
 		   }
 	   });
 	});
@@ -176,6 +177,8 @@ $(document).ready(function() {
 		var jsonResponse = {};
 		jsonResponse["Categories"] = {};
 		jsonResponse["Categories"]["courses"] = [];
+
+
 
 		$('.add-course').each(function(catIndex) {
 			jsonResponse["Categories"]["courses"][catIndex] = parseInt(sanatize($(this).children(".add-course-input").attr("course-id").trim()));
