@@ -7,7 +7,7 @@ from django.utils import timezone
 # Create your models here.
 class Session(models.Model):
 	sessionID = models.CharField(max_length = 8)		#PositiveSmallIntegerField()
-	sessionPIN = models.PositiveSmallIntegerField()
+	sessionPIN = models.CharField(max_length = 4)
 	degreeName = models.CharField(max_length=100)
 	completedCourses = JSONField(default=dict)
 	last_visit = models.DateField(auto_now = True)
