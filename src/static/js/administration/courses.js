@@ -104,14 +104,14 @@ $(document).ready(function() {
 				    			   '<div class="input-group-prepend">' +
 				    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Degree Name</span>' +
 				    			   '</div>' + 
-				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" readonly>' + 
+				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" readonly autocomplete="off">' + 
 				    			   '<table class="degree-spec-course-reqs w-100 mt-3">';
 				    			   for(var j = 0; j < jsonResponse.Categories[i].PreReqs.length; j++){
 				    			   		html += '<tr><td><div class="input-group mb-3 ml-5">';
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
+								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly autocomplete="off">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    			   for(var j = 0; j < jsonResponse.Categories[i].CoReqs.length; j++){
@@ -119,7 +119,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly>' + 
+								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly autocomplete="off">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    		html +=	'</table>' +
@@ -132,7 +132,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
+							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly autocomplete="off">' + 
 							    			'</div>';
 							    $("#course-prerequisites").append(html);
 		    			   }
@@ -141,7 +141,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly>' + 
+							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly autocomplete="off">' + 
 							    			'</div>';
 							    $("#course-corequisites").append(html);
 		    			   }
@@ -260,14 +260,14 @@ $(document).ready(function() {
 				    			   '<div class="input-group-prepend">' +
 				    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Degree Name</span>' +
 				    			   '</div>' + 
-				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'">' + 
+				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" autocomplete="off">' + 
 				    			   '<table class="degree-spec-course-reqs w-100 mt-3">';
 				    			   for(var j = 0; j < jsonResponse.Categories[i].PreReqs.length; j++){
 				    			   		html += '<tr><td><div class="input-group mb-3 ml-5">';
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Prerequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'">' + 
+								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" autocomplete="off">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    			   for(var j = 0; j < jsonResponse.Categories[i].CoReqs.length; j++){
@@ -275,7 +275,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Corequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'">' + 
+								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" autocomplete="off">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    		html +=	'</table>' +
@@ -290,7 +290,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Prerequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'">' + 
+							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" autocomplete="off">' + 
 							    			'</div>';
 							    $("#course-prerequisites").append(html);
 		    			   }
@@ -299,7 +299,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Corequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'">' + 
+							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" autocomplete="off">' + 
 							    			'</div>';
 							    $("#course-corequisites").append(html);
 		    			   }
@@ -544,7 +544,7 @@ $(document).ready(function() {
     		html += '<div class="input-group-prepend">' +
     			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Prerequisite</span>' +
     			   '</div>' + 
-    			   '<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+    			   '<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" autocomplete="off">' + 
     			   '</div>';
     	
     	if($(this).hasClass("add-degree-course-prerequisite"))
@@ -564,7 +564,7 @@ $(document).ready(function() {
     		html += '<div class="input-group-prepend">' +
     			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Corequisite</span>' +
     			   '</div>' + 
-    			   '<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+    			   '<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" autocomplete="off">' + 
     			   '</div>';
 
     	if($(this).hasClass("add-degree-course-corequisite"))
@@ -580,7 +580,7 @@ $(document).ready(function() {
     			   '<div class="input-group-prepend">' +
     			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4"><i class="fa fa-trash remove-category mr-1"></i>Degree Name</span>' +
     			   '</div>' + 
-    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4">' + 
+    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" autocomplete="off">' + 
     			   '<table class="degree-spec-course-reqs w-100 mt-3">' + 
     			   '</table>' +
     			   '<button type="button" class="add-degree-course-prerequisite btn btn-outline-success mb-1 mt-1 ml-5">Add Prerequisite</button>' +
@@ -818,14 +818,14 @@ $(document).ready(function() {
 				    			   '<div class="input-group-prepend">' +
 				    			   '<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Degree Name</span>' +
 				    			   '</div>' + 
-				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" readonly>' + 
+				    			   '<input type="text" class="course-degree-name-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" college="'+jsonResponse.Categories[i].College+'" catalog-year="'+jsonResponse.Categories[i].DegreeYear+'" specialty="'+jsonResponse.Categories[i].Specialty+'" value="'+jsonResponse.Categories[i].DegreeName+'" readonly autocomplete="off">' + 
 				    			   '<table class="degree-spec-course-reqs w-100 mt-3">';
 				    			   for(var j = 0; j < jsonResponse.Categories[i].PreReqs.length; j++){
 				    			   		html += '<tr><td><div class="input-group mb-3 ml-5">';
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
+								    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly autocomplete="off">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    			   for(var j = 0; j < jsonResponse.Categories[i].CoReqs.length; j++){
@@ -833,7 +833,7 @@ $(document).ready(function() {
 				    			   		html += '<div class="input-group-prepend">' +
 								    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 								    			'</div>' + 
-								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly>' + 
+								    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly autocomplete="off">' + 
 								    			'</div></tr></td>';
 				    			   }
 				    		html +=	'</table>' +
@@ -846,7 +846,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Prerequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly>' + 
+							    			'<input type="text" class="course-prerequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].PreReqs[j].id+'" value="'+jsonResponse.Categories[i].PreReqs[j].courseDept+ ' '+jsonResponse.Categories[i].PreReqs[j].courseID+'" readonly autocomplete="off">' + 
 							    			'</div>';
 							    $("#course-prerequisites").append(html);
 		    			   }
@@ -855,7 +855,7 @@ $(document).ready(function() {
 		    			   			html += '<div class="input-group-prepend">' +
 							    			'<span class="input-group-text" style="padding-right: 3.3em;" id="inputGroup-sizing-default-4">Corequisite</span>' +
 							    			'</div>' + 
-							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly>' + 
+							    			'<input type="text" class="course-corequisite-input form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-4" course-id="'+jsonResponse.Categories[i].CoReqs[j].id+'" value="'+jsonResponse.Categories[i].CoReqs[j].courseDept+ ' '+jsonResponse.Categories[i].CoReqs[j].courseID+'" readonly autocomplete="off">' + 
 							    			'</div>';
 							    $("#course-corequisites").append(html);
 		    			   }
