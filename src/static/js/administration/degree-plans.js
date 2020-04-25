@@ -146,7 +146,7 @@ $(document).ready(function() {
     			   '<span class="input-group-text" style="padding-right: .5em;">' +
     			   '<i class="fa fa-trash remove-category mr-1"></i>category Name</span>' +
     			   '</div>' +
-    			   '<input type="text" class="form-control">' +
+    			   '<input type="text" class="form-control" autocomplete="off">' +
     			   '<div class="w-100">' +
     			   '</div>' +
     			   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
@@ -173,7 +173,7 @@ $(document).ready(function() {
     			   '<span class="input-group-text" style="padding-right: .5em;">' +
     			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
     			   '</div>' +
-    			   '<input type="text" class="form-control add-course-input">' +
+    			   '<input type="text" class="form-control add-course-input" autocomplete="off">' +
     			   '</div>' +
     			   '</td>' +
     	           '</tr>';
@@ -227,7 +227,7 @@ $(document).ready(function() {
 
 	$(document).on("click", "#remove-degree-search-btn", function(e) {
     	// send request to the back-end...
-		$.post("/administration/view-degree-detailed/js/",
+		$.post("/administration/view-degree/js/",
    		{
 			degreeSearchText: sanatize($("#remove-degree-search-input").attr("degree-id").trim())
    		},
@@ -383,14 +383,14 @@ $(document).ready(function() {
 							   '<span class="input-group-text" style="padding-right: .5em;">' +
 							   '<i class="fa fa-trash remove-category mr-1"></i>category Name</span>' +
 							   '</div>' +
-							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'">' +
+							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'" autocomplete="off">' +
 							   '<div class="w-100">' +
 							   '</div>' +
 							   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
 							   '<span class="input-group-text" style="padding-right: 1.0em;">' +
 							   'Required # of Courses</span>' +
 							   '</div>' +
-							   '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2">' +
+							   '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" autocomplete="off">' +
 							   '<table class="category-courses w-100">';
 
 							   for(var j = 0; j < jsonResponse.Categories[i].courses.length; j++){
@@ -401,7 +401,7 @@ $(document).ready(function() {
 						    			   '<span class="input-group-text" style="padding-right: .5em;">' +
 						    			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
 						    			   '</div>' +
-						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input">' +
+						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input" autocomplete="off">' +
 						    			   '</div>' +
 						    			   '</td>' +
 						    	           '</tr>';
@@ -574,7 +574,7 @@ $(document).ready(function() {
 							   '<span class="input-group-text" style="padding-right: .5em;">' +
 							   '<i class="mr-1"></i>category Name</span>' +
 							   '</div>' +
-							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'" disabled>' +
+							   '<input type="text" class="form-control" value="'+ jsonResponse.Categories[i].name +'" disabled autocomplete="off">' +
 							   '<div class="w-100">' +
 							   '</div>' +
 							   '<div class="input-group-prepend mt-2 mb-1 ml-3">' +
@@ -585,7 +585,7 @@ $(document).ready(function() {
 							   if(parseInt(jsonResponse.Categories[i].coursesRequired) == 0)
 							   		html += '<input type="text" value="All" class="form-control mt-2" disabled>';
 							   	else
-							   		html += '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" disabled>';
+							   		html += '<input type="text" value="'+ jsonResponse.Categories[i].coursesRequired +'" class="form-control mt-2" disabled autocomplete="off">';
 
 							   html += '<table class="category-courses w-100">';
 
@@ -597,7 +597,7 @@ $(document).ready(function() {
 						    			   '<span class="input-group-text" style="padding-right: .5em;">' +
 						    			   '<i class="mr-1"></i>Course Name</span>' +
 						    			   '</div>' +
-						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input" disabled>' +
+						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input" disabled autocomplete="off">' +
 						    			   '</div>' +
 						    			   '</td>' +
 						    	           '</tr>';

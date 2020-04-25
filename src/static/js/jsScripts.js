@@ -181,8 +181,8 @@ function checkIfMobileDevice() {
     return isMobile;
 }
 
-// function to capture all blank fields and alert the user, halting further exec
-$(document).ready(function() {
+$(document).ready(function(data) {
+    /*
     $(document).on('click', 'button.btn-block', function(e) {
         if($(this).text().toLowerCase().trim().indexOf("search") != -1){
             if($("input").eq(0).val().trim().length == 0){
@@ -194,9 +194,90 @@ $(document).ready(function() {
             $("input").each(function(inputIndex) {
                 if($(this).val().trim().length == 0){
                     $(this).attr("placeholder", "Field Required");
-                    e.stopImmediatePropagation();
+                 e.stopImmediatePropagation();
                 }
             });
         }
     });
+    */
+
+    // code specific to the create session page
+    if($("#search-degree").length){
+        $('#search-degree').val('');
+        $('#session-submit-btn').prop('disabled', true);; //by default, disable the submit button
+        var myInput = document.getElementById("create-session-pin");
+        var mySearch = document.getElementById("search-degree");
+        var isSearchSatisfied = false;
+        var isPinFilled = false;
+        var isPinSatisfied = false;
+        //when the user clicks off the input for colleges, display field required if left empty AND disable the button
+        //TODO: have backend check if the college the user enters actually exists
+        mySearch.onkeyup = function() {
+            $(mySearch).each(function() {  
+                if($(this).val().trim().length == 0){
+                    $(this).attr("placeholder", "Field Required");
+                    isSearchSatisfied = false;
+                }
+                else{
+                    isSearchSatisfied= true;
+                }
+            })
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied)
+            console.log("hey")
+        }
+        // when the user clicks on the password field, show the message
+        myInput.onfocus = function() {
+          document.getElementById("message").style.display = "block";
+        }
+        
+        // when the user clicks outside of the password field, hide the message. if it is empty, display field requried AND disable the button
+        myInput.onblur = function() {
+            document.getElementById("message").style.display = "none";
+            $(myInput).each(function() {  
+                if($(this).val().trim().length == 0){
+                    $(this).attr("placeholder", "Field Required");
+                    isPinFilled = false;
+                }
+            })
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied)
+        }
+        myInput.onkeyup = function() {
+            // validate length
+            if(myInput.value.length == 4) {
+                $("#length").removeClass("fa fa-times invalid");
+                $("#length").addClass("fa fa-check valid");
+                isPinFilled = true;
+            } 
+            else{
+                $("#length").removeClass("fa fa-check valid");
+                $("#length").addClass("fa fa-times invalid");
+                isPinFilled = false;
+            }   
+            // validate numbers
+            if(myInput.value.match(/^[0-9]+$/) != null) { //checks at all points if the entire string has no alphas, will fail if alphas are included
+                $("#number").removeClass("fa fa-times invalid");
+                $("#number").addClass("fa fa-check valid");
+                isPinSatisfied = true;
+            } 
+            else {
+                $("#number").removeClass("fa fa-check valid");
+                $("#number").addClass("fa fa-times invalid");
+                isPinSatisfied = false;
+            }
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied);
+
+        }
+        function check(isPinSatisfied,isPinFilled,isSearchSatisfied) //a non-elegant way of checking the conditions every user action
+        {
+            if((isPinSatisfied && isPinFilled && isSearchSatisfied) == true){
+                $('#session-submit-btn').prop('disabled', false);
+            }
+            else{
+                $('#session-submit-btn').prop('disabled', true);
+            }
+            console.log("pinsat " + isPinSatisfied)
+            console.log("pinfilled " + isPinFilled)
+            console.log("search " + isSearchSatisfied)
+        }
+    }
 });

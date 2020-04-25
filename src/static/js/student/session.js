@@ -113,7 +113,7 @@ $(document).ready(function() {
     			   '<span class="input-group-text" style="padding-right: .5em;">' +
     			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
     			   '</div>' +
-    			   '<input type="text" class="form-control add-course-input">' +
+    			   '<input type="text" class="form-control add-course-input" autocomplete="off">' +
     			   '</div>' +
     			   '</td>' +
     	           '</tr>';
@@ -163,11 +163,12 @@ $(document).ready(function() {
 			   });
 		   },
 		   onSelect: function (suggestion) {
-		   		$("#search-degree").val(suggestion["value"]);
+				$('#session-submit-btn').prop('disabled', false);
+				$("#search-degree").val(suggestion["value"]);
+				$("#search-degree").attr("verify", suggestion["value"]);
 		        $("#search-degree").attr("degree-id", parseInt(suggestion["degreeid"]));
 		        $("#search-degree").attr("degree-name", suggestion["degreename"]);
 		        $("#search-degree").attr("catalog-year", parseInt(suggestion["catalogyear"]));
-			   	$("#view-degree-search-btn").click();
 		   }
 	   });
 	});
@@ -176,6 +177,8 @@ $(document).ready(function() {
 		var jsonResponse = {};
 		jsonResponse["Categories"] = {};
 		jsonResponse["Categories"]["courses"] = [];
+
+
 
 		$('.add-course').each(function(catIndex) {
 			jsonResponse["Categories"]["courses"][catIndex] = parseInt(sanatize($(this).children(".add-course-input").attr("course-id").trim()));
@@ -299,7 +302,7 @@ $(document).ready(function() {
 	    			   '<span class="input-group-text" style="padding-right: .5em;">' +
 	    			   '<i class="fa fa-trash remove-course mr-1"></i>Course Name</span>' +
 	    			   '</div>' +
-	    			   '<input type="text" class="form-control add-course-input" course-id="'+data.Categories.courses[i].id+'" value="'+data.Categories.courses[i].courseDept+" "+data.Categories.courses[i].courseID+'">' +
+	    			   '<input type="text" class="form-control add-course-input" course-id="'+data.Categories.courses[i].id+'" value="'+data.Categories.courses[i].courseDept+" "+data.Categories.courses[i].courseID+'" autocomplete="off">' +
 	    			   '</div>' +
 	    			   '</td>' +
 	    	           '</tr>';
@@ -413,7 +416,7 @@ $(document).ready(function() {
 						    			   '<span class="input-group-text" style="padding-right: .5em;">' +
 						    			   '<i class="mr-1"></i>Course Name</span>' +
 						    			   '</div>' +
-						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input" disabled>' +
+						    			   '<input type="text" course-id="' + jsonResponse.Categories[i].courses[j].id + '" value="'+ jsonResponse.Categories[i].courses[j].courseDept + " " + jsonResponse.Categories[i].courses[j].courseID +'" class="form-control add-course-input" autocomplete="off" disabled>' +
 						    			   '</div>' +
 						    			   '</td>' +
 						    	           '</tr>';

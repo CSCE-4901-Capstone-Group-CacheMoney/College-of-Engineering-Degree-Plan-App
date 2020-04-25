@@ -42,12 +42,12 @@ INSTALLED_APPS = [
     # our apps
     'courses',
     'transferCredits',
-    'untBSCore',
+    #'untBSCore',
     'degrees',
     'home',
     'bootstrap4',
-    'tecmCore',
-    'mathCore',
+    #'tecmCore',
+    #'mathCore',
     'administration',
     'session',
     # any third party apps we use

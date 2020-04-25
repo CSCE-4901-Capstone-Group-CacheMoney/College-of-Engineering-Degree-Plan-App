@@ -10,8 +10,8 @@ from .forms import DegreeSelectionForm, CoursesSelectionForm
 
 # import the courses model; allows us to query DB
 from courses.models import Course
-from tecmCore.models import TechClasses
-from mathCore.models import MathClasses
+#from tecmCore.models import TechClasses
+#from mathCore.models import MathClasses
 from session.models import Session
 
 
