@@ -24,7 +24,7 @@
 
     </head>
     <body style="background-image: url({{static('img/background.png')}});">
-        <div class="alert alert-danger text-center d-none" role="alert">
+        <div id="no-js-banner" class="alert alert-danger text-center" role="alert">
           Please enable JavaScript in order to use this site.
         </div>
 
@@ -38,7 +38,7 @@
         {% include 'footer.html' %}
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalDisclaimer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -51,7 +51,7 @@
                 <h6>We use cookies and similar technologies to recognize your repeat visits and preferences.</h6>
               </div>
               <div class="modal-footer">
-                <button id="exampleModalAccept" type="button" class="btn btn-success btn-block text-light" style="background-color: #28a745">I Accept</button>
+                <button id="modalDisclaimerAccept" type="button" class="btn btn-success btn-block text-light" style="background-color: #28a745">I Accept</button>
               </div>
             </div>
           </div>

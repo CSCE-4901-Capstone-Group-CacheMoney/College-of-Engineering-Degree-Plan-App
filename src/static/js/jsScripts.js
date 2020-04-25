@@ -81,11 +81,29 @@ $(document).ready(function(){
     });
 
 });
+// controls the hero video on the home page
 $(document).ready(function(){
     if($("#hero-feature").length != 0){
         $("#hero-feature").parent().removeClass("container");
     }
 });
+
+// hides need js banner unless js is disabled by the user
+$(document).ready(function(){
+        $("#no-js-banner").addClass("d-none");
+});
+// controls the site disclaimer for the home page
+$(document).ready(function(){
+    if(getCookie("sitedisclaimeraccept") != "True"){
+    $("#modalDisclaimer").modal();
+    }
+
+    $(document).on("click", "#modalDisclaimerAccept", function(e){
+        $("#modalDisclaimer").modal("toggle");
+        create_cookie("sitedisclaimeraccept", "True");
+    })
+});
+
 $(document).on("click", ".remover", function(e){
     e.preventDefault();
     console.log("removing");
