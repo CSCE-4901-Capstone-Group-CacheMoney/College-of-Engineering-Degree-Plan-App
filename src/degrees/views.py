@@ -304,7 +304,7 @@ def solve(s):
 
 def degreeTimeline2(request):	
 
-  uniqueID = request.POST.get('uniqueID', '')
+  sessionID = request.POST.get('sessionID', '')
 
   #{"Categories": [{"College": "None", "DegreeName": "BIOMEDICAL ENGINEERING", "DegreeYear": null, "Specialty": "None", "PreReqs": [12, 18], "CoReqs": [19]}, {"College": "", "DegreeName": "", "DegreeYear": "", "Specialty": "", "PreReqs": [23, 22], "CoReqs": [2, 1]}]}
   
@@ -319,7 +319,7 @@ def degreeTimeline2(request):
 
   #Computer Science - 2020
 
-  for d in session.objects.filter(name__istartswith=str(yOHu7BAD)):
+  for d in session.objects.filter(name__istartswith=str(sessionID)):
     courses = session.objects.filter(name="completedCourses")
     degree = session.objects.filter(name="degreeName")
   courses = solve(courses)
@@ -341,14 +341,17 @@ def degreeTimeline2(request):
 @csrf_exempt
 def timelineTest(request):
     #grabbing the session
-    #sessionid = request.POST.get('sessionid')
-    #print("Sessionid: " + str(sessionid))
-    #degree = '{"Categories":[{"name":"Major Requirements","courses":[22,23,24,25,26,27,115,28,29,30],"coursesRequired":0},{"name":"Capstone/Senior Thesis","courses":[32,33],"coursesRequired":1},{"name":"CSCE Core","courses":[34,35,36,91,92],"coursesRequired":2},{"name":"CSCE Breadth","courses":[37,38,98,42,99,41],"coursesRequired":2},{"name":"Other required","courses":[2,1,6,7,21,4],"coursesRequired":0},{"name":"Physics Laboratory Science","courses":[8,9,10,11],"coursesRequired":0},{"name":"General Laboratory Science","courses":[12,14,16,18,19],"coursesRequired":2}]}'
-    #obj = Session.objects.get(sessionID = str(sessionid))
-    #coursesTaken = obj.completedCourses
-    #degreeName = obj.degreeName
+    sessionid = request.POST.get('sessionID', 'UeVgN3db')
 
-    classArr = (timelineGenerator2())#coursesTaken, degreeName))
+    print("Sessionid: " + str(sessionid))
+    #degree = '{"Categories":[{"name":"Major Requirements","courses":[22,23,24,25,26,27,115,28,29,30],"coursesRequired":0},{"name":"Capstone/Senior Thesis","courses":[32,33],"coursesRequired":1},{"name":"CSCE Core","courses":[34,35,36,91,92],"coursesRequired":2},{"name":"CSCE Breadth","courses":[37,38,98,42,99,41],"coursesRequired":2},{"name":"Other required","courses":[2,1,6,7,21,4],"coursesRequired":0},{"name":"Physics Laboratory Science","courses":[8,9,10,11],"coursesRequired":0},{"name":"General Laboratory Science","courses":[12,14,16,18,19],"coursesRequired":2}]}'
+    obj = Session.objects.get(sessionID = str(sessionid))
+    coursesTaken = obj.completedCourses
+    degreeID = obj.degreeID
+    degreeYear = obj.degreeYear
+    degreeName = obj.degreeName
+    #print(degreeName)
+    classArr = (timelineGenerator2(coursesTaken, degreeID, degreeYear, degreeName))
     
     jsonResponse = {}
     jsonResponse["Courses"] = []

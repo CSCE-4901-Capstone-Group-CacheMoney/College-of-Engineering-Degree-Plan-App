@@ -196,9 +196,12 @@ class SerialScheduler(object):
 
             task_name = self.choose_runnable_task()
 
+            #print(ordered_tasks)
+
 
 
             if task_name is None:
+
 
                 print("It was impossible to pick a suitable task for running. Check dependencies.")
 
@@ -209,6 +212,8 @@ class SerialScheduler(object):
                 # Run a process
 
                 ordered_tasks.append(self.tasks[task_name])
+
+                print("Current task: " + str(task_name))
 
                 self.lock_task(task_name)
 
@@ -231,13 +236,17 @@ class SerialScheduler(object):
         @return: The task name.
 
         """
-
+        #print("Incomplete tasks: " + str(self.not_completed) + " Type: " + str(type(self.not_completed)))
+        #print("List of dependencies: " + str(self.dependencies))
         for task_name in self.not_completed:
+            #print("All tasks have dependencies, task self: " + str(self.tasks))
+            #print("Task name: " + str(task_name) + " dependencies: " + str(self.dependencies[task_name]))
+            if len(self.dependencies[str(task_name)]) == 0: # This process has no dependencies
+                #print("Found no dependencies for this task, passing this on")
+                return task_name
 
-            if len(self.dependencies[task_name]) == 0: # This process has no dependencies
-
-                return task_name;
-
+        
+        #print("Found no tasks without dependencies")
         return None # All task have dependencies (circular dependencies for instance)
 
 
@@ -292,6 +301,9 @@ class SerialScheduler(object):
 
         """
 
+        #print("Removing " + str(task_name) + " from dependencies: " + str(self.dependencies))
+
+
         for tn in self.dependencies:
 
             if task_name in self.dependencies[tn]:
@@ -301,7 +313,12 @@ class SerialScheduler(object):
 
 
     def add_task(self, task_name, dependencies, target_function, function_kwargs, description):
+        """
+        print("Self: " + str(self.dependencies) + str(self.functions) + str(self.tasks) + str(self.not_completed))
 
+        print("Task name: " + str(task_name) + "Dependences: " + str(dependencies) + "Target function: " + str(target_function))
+        print("Function kwargs: " + str(function_kwargs) + "Description" + str(description))
+        """
         """
 
         Adds a task to the scheduler. The task will be executed along with the other tasks when the 'run' function is called.
@@ -329,17 +346,25 @@ class SerialScheduler(object):
 
 
         if not task_name in self.tasks:
+            """print()
+            print("Task name: " + str(task_name) + "dep type: " + str(type(dependencies)) + "actual deps: " + str(dependencies))
 
-            task = Task( name = task_name, description = description, function = target_function, kwargs=function_kwargs)
+            print("All dependencies before insert" + str(self.dependencies))
+            """
+            task = Task( name = str(task_name), description = description, function = target_function, kwargs=function_kwargs)
 
             task.description = description
 
-            self.tasks[task_name] = task
+            self.tasks[str(task_name)] = task
 
-            self.not_completed.append(task_name)
+            self.not_completed.append(str(task_name))
 
-            self.dependencies[task_name] = dependencies
+            self.dependencies[str(task_name)] = dependencies
 
+            print("Task name: " + str(task_name) + "  actual deps: " + str(dependencies))
+
+            #print("All dependencies after insert: " + str(self.dependencies))
+            
         else:
 
             print("[Error SerialScheduler::add_task] Task " + str(task_name) + " already exists. Task name must be unique.")

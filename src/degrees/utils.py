@@ -663,16 +663,17 @@ def add_tasks(scheduler, test_function, courses, coursedeps):
     print(coursedeps)
     for i, course in enumerate(courses):
         print(course)
-        temparr.clear()
+        temparr.append([])
         #if course in coursedeps.keys():
             #print("Course with dep: " + str(course) + " dep: " + str(coursedeps[course]))
         for dep in coursedeps[course]:
-            temparr.append(str(dep))
+            temparr[i].append(str(dep))
             
-        print("Dependencies: " + str(temparr))
-        if len(temparr)==1:
-            scheduler.add_task(task_name = str(course), dependencies = [str(temparr[0])], description ="",target_function = test_function ,function_kwargs={"this":int(course)})
-        #scheduler.add_task(task_name = "22", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":22})
+        print("Dependencies: " + str(temparr[i]))
+        #if len(temparr)>=1:
+        scheduler.add_task(task_name = str(course), dependencies = temparr[i], description ="",target_function = test_function ,function_kwargs={"this":int(course)})
+        #else:
+        #    scheduler.add_task(task_name = str(course), dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":int(course)})
 
         #else:
         #    print(course)
@@ -713,6 +714,7 @@ def add_testtasks(scheduler, test_function):
     scheduler.add_task(task_name = "181", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":181})
     scheduler.add_task(task_name = "185", dependencies = ["184"], description ="",target_function = test_function ,function_kwargs={"this":185})
     scheduler.add_task(task_name = "184", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":184})
+    
     #scheduler.add_task(task_name = "43", dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":43})
 
 class TaskScheduler():
@@ -745,24 +747,26 @@ class TaskScheduler():
 
         return results
 
-def timelineGenerator2(classesTaken=[], degreeName=""):
+def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     print("Test")
-    print(degreeName)
+    print(degreeID)
     print(classesTaken)
     degreeYear = ""
     new = ""
-    """for i, letter in enumerate(degreeName):
+    
+    """
+    for i, letter in enumerate(degreeName):
         if (letter == "-"):
             degreeYear = int(degreeName[i:])
             new = 
         elif (letter.isalpha() or letter == " "):
             new+=letterletter == "-"
     """
-    """
-    new, degreeYear = degreeName.split(" - ")
+    
+    #new, degreeYear = degreeName.split(" - ")
     #{"Categories": [{"College": "None", "DegreeName": "BIOMEDICAL ENGINEERING", "DegreeYear": null, "Specialty": "None", "PreReqs": [12, 18], "CoReqs": [19]}, {"College": "", "DegreeName": "", "DegreeYear": "", "Specialty": "", "PreReqs": [23, 22], "CoReqs": [2, 1]}]}
-    print("Degree year: " + str(degreeYear) + " Degree name: " + str(new))
-    tobj = Degree.objects.get(name=new, catalogYear=int(degreeYear))
+    #print("Degree year: " + str(degreeYear) + " Degree name: " + str(new))
+    tobj = Degree.objects.get(id = degreeID)
     degree = tobj.degreeInfo
     degreeLoad = tobj.degreeInfo
     classLoad = classesTaken
@@ -776,8 +780,8 @@ def timelineGenerator2(classesTaken=[], degreeName=""):
     print(degreeLoad)
     for reqs in degreeLoad["Categories"]:
         for courses in reqs["courses"]:
-            print(courses)
-            i=0
+            print("Printed courses: " + str(courses))
+            i=1
             if courses in classLoad["Categories"]["courses"]:
                 if (int(reqs["coursesRequired"])>0):
                     print("Only some required")
@@ -789,7 +793,7 @@ def timelineGenerator2(classesTaken=[], degreeName=""):
                 classes.append(currcourse)
             tempclasses.clear()
         else:
-            while(i<int(reqs["coursesRequired"])):
+            while(i<=int(reqs["coursesRequired"])):
                 classes.append(tempclasses[i])
                 varclasses.append(tempclasses[i])
                 i+=1
@@ -803,7 +807,7 @@ def timelineGenerator2(classesTaken=[], degreeName=""):
         print(str(json.dumps(obj.preCoReq)))
         deps = json.loads(str(json.dumps(obj.preCoReq)))
         for currDeg in deps["Categories"]:
-            if currDeg["DegreeName"]==new and currDeg["Categories"]==degreeYear:
+            if currDeg["DegreeName"]==degreeName and currDeg["Categories"]==degreeYear:
                 print("Found specific degree reqs")
                 classdeps[currclass].append(currDeg["PreReqs"])
                 classdeps[currclass].append(currDeg["CoReqs"])
@@ -812,13 +816,24 @@ def timelineGenerator2(classesTaken=[], degreeName=""):
                 classdeps[currclass] = (deps["Categories"][0]["PreReqs"])
                 #classdeps[currclass].update((deps["Categories"][0]["CoReqs"]))
 
+    print(classdeps)
+    tempdeps = []
     for cdep in classdeps:
-        print(cdep)
-        if cdep in classes:
-            continue
-        else:
-            classes.append(str(cdep))
-    """
+        for adep in classdeps[cdep]:
+            if adep in classes:
+                print("cdep already exists: " + str(adep))
+            else:
+                print("class list")
+                classes.append(str(adep))
+                tempdeps.append(str(adep))
+
+    for cdeps in tempdeps:
+        obj = Course.objects.get(id=cdeps)
+        deps = json.loads(str(json.dumps(obj.preCoReq)))
+        classdeps[cdeps] = (deps["Categories"][0]["PreReqs"])
+        #classdeps[cdeps] = []
+    
+
     #for currcourse in classdeps            
 
     #print("All classes: " + str(classes))
@@ -828,10 +843,11 @@ def timelineGenerator2(classesTaken=[], degreeName=""):
 
 
     schedule = TaskScheduler()
-    #print(schedule.testSerialScheduling(classes, classdeps))
+    print(schedule.testSerialScheduling(classes, classdeps))
 
     #print(schedule.TestParallelScheduling())
     print()
     print()
     #print(schedule.testSerialScheduling(classes, classdeps))
-    return schedule.TestParallelScheduling() #schedule.ParallelScheduling(classes, classdeps)
+
+    return schedule.ParallelScheduling(classes, classdeps)
