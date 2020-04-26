@@ -220,7 +220,7 @@ $(document).ready(function(data) {
     */
 
     // code specific to the create session page
-    if($("#search-degree").length){
+    if($("#search-degree").length && !$("#edit-session-title").length){
         $('#search-degree').val('');
         $('#session-submit-btn').prop('disabled', true);; //by default, disable the submit button
         var myInput = document.getElementById("create-session-pin");

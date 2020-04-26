@@ -341,7 +341,7 @@ def degreeTimeline2(request):
 @csrf_exempt
 def timelineTest(request):
     #grabbing the session
-    sessionid = request.POST.get('sessionID', 'UeVgN3db')
+    sessionid = request.POST.get('sessionID', '')
 
     print("Sessionid: " + str(sessionid))
     #degree = '{"Categories":[{"name":"Major Requirements","courses":[22,23,24,25,26,27,115,28,29,30],"coursesRequired":0},{"name":"Capstone/Senior Thesis","courses":[32,33],"coursesRequired":1},{"name":"CSCE Core","courses":[34,35,36,91,92],"coursesRequired":2},{"name":"CSCE Breadth","courses":[37,38,98,42,99,41],"coursesRequired":2},{"name":"Other required","courses":[2,1,6,7,21,4],"coursesRequired":0},{"name":"Physics Laboratory Science","courses":[8,9,10,11],"coursesRequired":0},{"name":"General Laboratory Science","courses":[12,14,16,18,19],"coursesRequired":2}]}'
@@ -360,7 +360,7 @@ def timelineTest(request):
       print(course)
       item = Course.objects.get(id=course)
       #JsonResponse["Courses"].append({"id": item.id, "CourseDept": item.courseDept, "CourseID": item.courseID, "Optional": 3, "Course List": ["CSCE 1030", "CSCE 1040"]})
-      jsonResponse["Courses"].append({"id": item.id, "CourseDept": item.courseDept, "CourseID": item.courseID})
+      jsonResponse["Courses"].append({"id": item.id, "CourseDept": item.courseDept, "CourseID": item.courseID, "Hours": item.hours})
       j+=1
 
     jsonResponse = (json.dumps(jsonResponse))

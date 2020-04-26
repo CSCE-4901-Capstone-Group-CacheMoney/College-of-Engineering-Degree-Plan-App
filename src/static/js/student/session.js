@@ -439,4 +439,59 @@ $(document).ready(function() {
 	}
 
 
+	/*-----------------------view transcript js----------------------------------------- */
+	if($("#view-transcript-title").length){
+		// call the back-end function which returns a json of the ordered set of classes to take
+		$.post("/session/view/transcript/js/",
+   		{
+			sessionID: sanatize(getCookie("uniqueid"))
+   		},
+   		function(data,status) {
+   			$("#timeline-loading-alert").remove(); // remove loading gif to display results to the user
+   			var jsonResponse = JSON.parse(data);
+   			// break a part data into the amount of years necessary (for creating rows)
+   			var numYears =  Math.ceil(Math.ceil(jsonResponse.Courses.length/4)/2);
+   			var numCoursesLeft = jsonResponse.Courses.length;
+   			var semesterIndex = 0;
+   			var courseIndex = 0;
+   			// iterate through each year and its semester in order to print out tables of class sets
+   			for(var i = 0; i < numYears; i++){
+   				var html = '<div class="row">';
+   				var numSemesters = numCoursesLeft > 4? 2:1;
+   				for(var j = 0; j < numSemesters; j++){
+   					html += '<div class="col-md-6">'+
+   							'<table class="table table-sm">'+
+   							'<h5>Semester '+(++semesterIndex)+'</h5>'+
+	   						'<thead>'+
+	   						'<tr>'+
+	   						'<th scope="col">Department ID</th>'+
+	   						'<th scope="col">Course ID</th>'+
+	   						'<th scope="col">Hours</th>'+
+	   						'</tr>'+
+	   						'</thead>'+
+	   						'<tbody>';
+	   					// print out only up to 4 courses per semester
+	   					var k = 0;
+	   					while(k < 4 && courseIndex < jsonResponse.Courses.length){
+	   						html += '<tr>'+
+	   								'<td>'+jsonResponse.Courses[courseIndex].CourseDept+'</td>'+
+	   								'<td>'+jsonResponse.Courses[courseIndex].CourseID+'</td>'+
+	   								'<td>'+jsonResponse.Courses[courseIndex].Hours+'</td>'+
+	   								'</tr>';
+	   						k++;
+	   						courseIndex++;
+	   						numCoursesLeft--;
+	   					}
+
+	   				html += '</tbody>'+
+	   						'</table>'+
+	   						'</div>';
+   				}
+   				html += '</div>';
+   				// add the newly created html to the page
+   				$("#transcript-results").append(html);
+   			}
+   		});
+	}
+
 });

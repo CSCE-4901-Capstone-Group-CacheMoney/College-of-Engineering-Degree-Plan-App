@@ -9,9 +9,9 @@
   }
 </style>
 
-<div>
+
   <div class="page-header text-center">
-    <h4>View Transcript</h4>
+    <h4 id="view-transcript-title">View Transcript</h4>
   </div>
     <div class="row">
       <div class="col-md-3"></div>
@@ -63,114 +63,20 @@
               </div>
 
               <h4 class="text-center text-light pt-1 pb-1" style="background-color: green;">Degree Timeline</h4>
-              <!-- <div id="degree-Categories"></div>
-              <div id="view-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div> -->
+
+              <div id="timeline-loading-alert">
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Transcript Loading Please Wait...</span>
+                  </div>
+                </div>
+                <h5 class="text-center">Transcript Loading Please Wait</h5>
+              </div>
+
             </div>
         </div>
     </div>
 
-
-    <div class="row">
-      <div class="col-md-6">
-        <table class="table table-sm">
-          <h4>Semester 1</h4>
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Department ID</th>
-              <th scope="col">Course ID</th>
-              <th scope="col">Hours</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Math</td>
-              <td>1710</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>CHEM</td>
-              <td>1410</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>CHEM</td>
-              <td>1415</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>CSCE</td>
-              <td>1030</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>TECM</td>
-              <td>2700</td>
-              <td>3</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-
-
-
-      <div class="col-md-6">
-        <table class="table table-sm">
-          <h4>Semester 2</h4>
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Department ID</th>
-              <th scope="col">Course ID</th>
-              <th scope="col">Hours</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Math</td>
-              <td>1720</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>CSCE</td>
-              <td>1040</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>TECM</td>
-              <td>4180</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>BIOL</td>
-              <td>1710</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>BIOL</td>
-              <td>1760</td>
-              <td>2</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-
-
-
-
-    </div>
-</div>
+    <div id="transcript-results"></div>
 
 {% endblock %}
