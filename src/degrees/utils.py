@@ -872,47 +872,52 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     cloadSize = 4
     temparr = []
     semarr = []
+    """
     j=0
-
+    k=0
+    tarr = []
     for x in classArr:
-        temparr.append(x)
-        if j == cloadSize:
-            semarr.append(temparr)
-            temparr.clear()
+        tarr.append(x)
+        if j == cloadSize+1:
+            temparr.append([])
+            for t in tarr:
+                temparr[k].append(t)
             j=0
+            k+=1
         j+=1
         
     currSem = "Fall"
     classNotFound = True
-    i = 0
-    """
-    for course in classArr:
-      if i == cloadSize:
+    #i = 0
+    print(semarr)
+    semarr.reverse()
+    print(semarr)
+    for i, semester in enumerate(semarr):
+        currindex = len(semarr)
+        for j, course in enumerate(semester):
+            if semesters[course] == "Both" or semesters[course] == currSem:
+                continue
+            else:
+                print("Course: " + str(course) + " is in wrong semester" )
+                semindex = currindex -1
+                while(classNotFound):
+                    print("semindex: " + str(semindex))
+                    for tcourse in semarr[semindex]:
+                        print("Current course :" + str(tcourse) + " current semester: " + str(semarr[semindex]))
+                        if semesters[tcourse] == currSem or semesters[tcourse] == "Both":
+                            print("Course can be taken that semester")
+                            if tcourse not in tempdeps:
+                                print("Course does not have dependencies")
+                                if len(classdeps[tcourse])<1: 
+                                    print("Course is not dependent on other classes")
+                                    classArr[classArr.index(tcourse)], classArr[classArr.index(course)] = classArr[classArr.index(course)], classArr[classArr.index(tcourse)]          
+                                    print("Switching classes... " + str(classArr[index]) + "index: " + str(index))
+                                    print("Class that was switched... " + str(classArr[orindex]) + "orindex: " + str(orindex))
+                                    classNotFound=False
+                    semindex-=1    
         if currSem == "Fall":
-          currSem = "Spring"
+            currSem = "Spring"
         else: currSem = "Fall"
-        i =0
-      #obj1 = Course.objects.get(id = course)
-      if semesters[course] == "Both" or semesters[course] == currSem:
-        continue
-      else:
-        orindex = classArr.index(course)
-        index = classArr.index(course) - cloadSize
-        maxindex = classArr.index(course)
-        while(classNotFound):
-            if (maxindex) == index:
-                index = orindex - cloadSize
-                maxindex -= cloadSize
-            print("orindex: " + str(orindex) + "   index: " + str(index))
-            if semesters[classArr[index]] != currSem:
-                if course not in tempdeps:
-                    if len(classdeps[course])<1: 
-                        classArr[index], classArr[orindex] = classArr[orindex], classArr[index]          
-                        print("Switching classes... " + str(classArr[index]) + "index: " + str(index))
-                        print("Class that was switched... " + str(classArr[orindex]) + "orindex: " + str(orindex))
-                        break
-            else: 
-                index+=1
-      i+=1
+        i-=1
     """
     return classArr
