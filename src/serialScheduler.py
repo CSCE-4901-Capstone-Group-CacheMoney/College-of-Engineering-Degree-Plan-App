@@ -100,6 +100,8 @@ class SerialScheduler(object):
 
         self.functions = functions
 
+        self.semester = "Fall"
+
         self.tasks = {}
 
         self.dependencies = {}
@@ -175,7 +177,6 @@ class SerialScheduler(object):
         return self.results
 
 
-
     def get_ordered_tasks(self):
 
         """
@@ -187,12 +188,19 @@ class SerialScheduler(object):
         @return: A list of task names.
 
         """
+        classcount = 0
 
         ordered_tasks = []
-
         while len( self.not_completed) > 0:
 
             #Choose an available process
+            #classcount+=1 
+            if classcount == 4:
+                if self.semester== "Fall":
+                    self.semester="Spring"
+                else:
+                    self.semester="Fall"
+                classcount=0
 
             task_name = self.choose_runnable_task()
 
@@ -214,6 +222,8 @@ class SerialScheduler(object):
                 ordered_tasks.append(self.tasks[task_name])
 
                 print("Current task: " + str(task_name))
+
+                classcount+=1
 
                 self.lock_task(task_name)
 
@@ -240,9 +250,10 @@ class SerialScheduler(object):
         #print("List of dependencies: " + str(self.dependencies))
         for task_name in self.not_completed:
             #print("All tasks have dependencies, task self: " + str(self.tasks))
-            #print("Task name: " + str(task_name) + " dependencies: " + str(self.dependencies[task_name]))
-            if len(self.dependencies[str(task_name)]) == 0: # This process has no dependencies
+            
+            if len(self.dependencies[str(task_name)]) == 0:         # and (self.tasks[str(task_name)].description== "Both" or self.tasks[str(task_name)].description == self.semester): # This process has no dependencies
                 #print("Found no dependencies for this task, passing this on")
+                print("Task name: " + str(task_name) + " semesters available: " + str(self.tasks[str(task_name)].description) + " current semester: " + str(self.semester))
                 return task_name
 
         

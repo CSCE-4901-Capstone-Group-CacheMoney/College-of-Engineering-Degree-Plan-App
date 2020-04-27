@@ -657,7 +657,7 @@ def sleep(this):
 
     return this
 
-def add_tasks(scheduler, test_function, courses, coursedeps):
+def add_tasks(scheduler, test_function, courses, coursedeps, semesters):
     temparr = []
     print(courses)
     print(coursedeps)
@@ -671,7 +671,7 @@ def add_tasks(scheduler, test_function, courses, coursedeps):
             
         print("Dependencies: " + str(temparr[i]))
         #if len(temparr)>=1:
-        scheduler.add_task(task_name = str(course), dependencies = temparr[i], description ="",target_function = test_function ,function_kwargs={"this":int(course)})
+        scheduler.add_task(task_name = str(course), dependencies = temparr[i], description =semesters[course],target_function = test_function ,function_kwargs={"this":int(course)})
         #else:
         #    scheduler.add_task(task_name = str(course), dependencies = [], description ="",target_function = test_function ,function_kwargs={"this":int(course)})
 
@@ -719,19 +719,19 @@ def add_testtasks(scheduler, test_function):
 
 class TaskScheduler():
 
-    def testSerialScheduling(self, courses, coursedeps):
+    def testSerialScheduling(self, courses, coursedeps, semesters):
 
         serial = SerialScheduler()
 
-        add_tasks(serial, echo, courses, coursedeps)
+        add_tasks(serial, echo, courses, coursedeps, semesters)
 
         return (serial.run())
 
-    def ParallelScheduling(self, courses, coursedeps):
+    def ParallelScheduling(self, courses, coursedeps, semesters):
 
         parallel = ProcessParallelScheduler(5)
 
-        add_tasks(parallel, sleep, courses, coursedeps)
+        add_tasks(parallel, sleep, courses, coursedeps, semesters)
 
         results = parallel.run()
 
@@ -776,10 +776,10 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     varclassescat = []
     tempclasses = []
     classdeps = {}
-    print(degreeLoad)
+    #print(degreeLoad)
     for reqs in degreeLoad["Categories"]:
         for courses in reqs["courses"]:
-            print("Printed courses: " + str(courses))
+            #print("Printed courses: " + str(courses))
             i=1
             if courses in classLoad["Categories"]["courses"]:
                 """if (int(reqs["coursesRequired"])>0):
@@ -801,12 +801,16 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
                 i+=1
             tempclasses.clear()
             varclassescat.append(reqs["name"])
-    deps = {}
 
+
+    deps = {}
+    semesters = {}
     for currclass in classes:
         #print(currclass)
         obj = Course.objects.get(id=currclass)
-        #print(str(json.dumps(obj.preCoReq)))
+        #print("Pre co reqs for " + str(obj.name) + ": " + str(json.dumps(obj.preCoReq)) + ",  ID: " + str(obj.id))
+        #print("Available in " + str(obj.semester) + " semesters")
+        #semesters[currclass] = obj.semester
         deps = json.loads(str(json.dumps(obj.preCoReq)))
         for currDeg in deps["Categories"]:
             if currDeg["DegreeName"]==degreeName and currDeg["Categories"]==degreeYear:
@@ -819,7 +823,7 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
                 #classdeps[currclass].update((deps["Categories"][0]["CoReqs"]))
 
     print(classdeps)
-
+    
     tempdeps = []
     for cdep in classdeps:
         for adep in classdeps[cdep]:
@@ -829,9 +833,14 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
                 classdeps[cdep].remove(adep)
             else:
                 print("class being added:")
-                classes.append(str(adep))
-                tempdeps.append(str(adep))
+                classes.append((adep))
+                tempdeps.append((adep))
             
+    for currclass in classes:
+        obj = Course.objects.get(id=currclass)
+        semesters[currclass] = obj.semester
+
+    print(tempdeps)
 
     for cdeps in tempdeps:
         obj = Course.objects.get(id=cdeps)
@@ -849,11 +858,61 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
 
 
     schedule = TaskScheduler()
-    print(schedule.testSerialScheduling(classes, classdeps))
+    print(schedule.testSerialScheduling(classes, classdeps, semesters))
 
     #print(schedule.TestParallelScheduling())
     print()
     print()
     #print(schedule.testSerialScheduling(classes, classdeps))
     print("Classes: " + str(classes) + " Class deps: " + str(classdeps))
-    return schedule.ParallelScheduling(classes, classdeps)
+    print("Assuming start in fall")
+
+    classArr = schedule.ParallelScheduling(classes, classdeps, semesters)
+    print(classArr)
+    cloadSize = 4
+    temparr = []
+    semarr = []
+    j=0
+
+    for x in classArr:
+        temparr.append(x)
+        if j == cloadSize:
+            semarr.append(temparr)
+            temparr.clear()
+            j=0
+        j+=1
+        
+    currSem = "Fall"
+    classNotFound = True
+    i = 0
+    """
+    for course in classArr:
+      if i == cloadSize:
+        if currSem == "Fall":
+          currSem = "Spring"
+        else: currSem = "Fall"
+        i =0
+      #obj1 = Course.objects.get(id = course)
+      if semesters[course] == "Both" or semesters[course] == currSem:
+        continue
+      else:
+        orindex = classArr.index(course)
+        index = classArr.index(course) - cloadSize
+        maxindex = classArr.index(course)
+        while(classNotFound):
+            if (maxindex) == index:
+                index = orindex - cloadSize
+                maxindex -= cloadSize
+            print("orindex: " + str(orindex) + "   index: " + str(index))
+            if semesters[classArr[index]] != currSem:
+                if course not in tempdeps:
+                    if len(classdeps[course])<1: 
+                        classArr[index], classArr[orindex] = classArr[orindex], classArr[index]          
+                        print("Switching classes... " + str(classArr[index]) + "index: " + str(index))
+                        print("Class that was switched... " + str(classArr[orindex]) + "orindex: " + str(orindex))
+                        break
+            else: 
+                index+=1
+      i+=1
+    """
+    return classArr
