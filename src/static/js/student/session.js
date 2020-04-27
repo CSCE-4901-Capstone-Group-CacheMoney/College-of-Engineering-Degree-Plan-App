@@ -441,12 +441,21 @@ $(document).ready(function() {
 
 	/*-----------------------view transcript js----------------------------------------- */
 	if($("#view-transcript-title").length){
+		// code for progress bar animation
+		var timelineProgress = 0;
+		var progressTimeout = setInterval(function(){
+			timelineProgress++;
+			if(timelineProgress < 100){
+				$("#transcript-progress-bar").attr('aria-valuenow', timelineProgress).css('width', timelineProgress.toString()+'%').text(timelineProgress+"%");
+			}
+		}, 350);
 		// call the back-end function which returns a json of the ordered set of classes to take
 		$.post("/session/view/transcript/js/",
    		{
 			sessionID: sanatize(getCookie("uniqueid"))
    		},
    		function(data,status) {
+   			clearInterval(progressTimeout);
    			$("#timeline-loading-alert").remove(); // remove loading gif to display results to the user
    			var jsonResponse = JSON.parse(data);
    			// break a part data into the amount of years necessary (for creating rows)

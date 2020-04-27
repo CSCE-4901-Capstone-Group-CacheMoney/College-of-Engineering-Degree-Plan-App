@@ -85,7 +85,6 @@ nav li {display:inline-block;}
 
 body{
 	width: 100%;
-	
 }
 .btn-outline-success:active:focus{
 background-color: rgba(85,198,87,.6); 
@@ -107,6 +106,16 @@ background-color: rgba(85,198,87,.6);
 .timeline-course{
 	list-style-type:circle;
 	margin-left: 8px;
+}
+
+.progress {
+	height: 1.3rem !important;
+	font-size: 1.0rem !important;
+	font-weight: 600;
+}
+
+.progress-bar {
+	background-color: #28a745 !important;
 }
 
 .semester{
