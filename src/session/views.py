@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from session.models import Session
 from courses.models import Course
 from degrees.models import Degree
-
+import datetime
 
 import re 										#for spliting string and number in courseSearchText
 import copy 
@@ -91,7 +91,9 @@ def checkUserExistence(request):
 	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)))
 	status = Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)).count()
 	
-	if status != 0:											#if successful
+	if status != 0:		#if successful
+		s = Session.objects.get(sessionID= str(sessionid), sessionPIN = str(pin))
+		s.save()
 		jsResponse = {
 			'success': 'True',
 			'message': 'The combination of sessionID ' + str(sessionid) + ' and pin '+ pin +' exists!' 
