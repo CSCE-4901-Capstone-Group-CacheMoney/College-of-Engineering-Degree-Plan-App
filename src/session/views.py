@@ -42,6 +42,7 @@ def studentCreateSession(request):
 	degreeYear	= request.POST.get('sessionDegreeYear', '')
 	sessionDegreeID = request.POST.get('sessionDegreeID', '')
 	completed 	= json.loads(request.POST.get('sessionInfo', ''))
+	semesterOption = request.POST.get('semesterOption', '')
 	# degreeSearchText = degreeSearchText.replace(' ','')
 	print ('Received:', sessionid, pin, degree, degreeYear, sessionDegreeID)
 	# content={}
@@ -53,6 +54,9 @@ def studentCreateSession(request):
 		degreeYear = int(degreeYear),
 		degreeID   = int(sessionDegreeID),
 		completedCourses =  completed,
+	    semesterOption = str(semesterOption),
+
+
 		)
 	jsResponse = {
 		'success': 'True',
@@ -119,6 +123,7 @@ def getSessionData(request):
 			"degreeName"	: str(data.degreeName),
 			"degreeYear"	: data.degreeYear,
 			"degreeID"		: data.degreeID
+			#"semesterOption": data.semesterOption
 		}	
 
 		courseList = json.dumps(data.completedCourses)
@@ -152,6 +157,7 @@ def getSessionData(request):
 def updateSessionData(request):
 	sessionid	= request.POST.get('sessionid', '')
 	pin 		= request.POST.get('pin', '')
+	#semesterOption = request.POST.get('sessionSemester', '')
 	sessionInfo = json.loads(request.POST.get('sessionInfo', ''))
 
 	print('Received sessionid: ',sessionid, ' and pin: ', pin, '\nsessionInfo:', sessionInfo)
@@ -172,6 +178,7 @@ def updateSessionData(request):
 	degreeYear = sessionInfo['degreeYear']
 	degreeID = sessionInfo['degreeID']
 	courseList = sessionInfo['completedCourses']
+	#semesterOption =sessionInfo['semesterOption']
 	print('newPin:', newPin)
 	print('degree:', degree)
 	print("item inside courses: ", courseList)
