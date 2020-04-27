@@ -748,7 +748,6 @@ class TaskScheduler():
         return results
 
 def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
-    print("Test")
     print(degreeID)
     print(classesTaken)
     degreeYear = ""
@@ -783,9 +782,12 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
             print("Printed courses: " + str(courses))
             i=1
             if courses in classLoad["Categories"]["courses"]:
-                if (int(reqs["coursesRequired"])>0):
+                """if (int(reqs["coursesRequired"])>0):
                     print("Only some required")
                     i+=1
+                """
+                print("Course removed: " + str(courses))
+                #del degreeLoad["Categories"]["courses"][int(courses)]
                 continue
             tempclasses.append(int(courses))
         if reqs["coursesRequired"]==0:
@@ -793,7 +795,7 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
                 classes.append(currcourse)
             tempclasses.clear()
         else:
-            while(i<=int(reqs["coursesRequired"])):
+            while(i<int(reqs["coursesRequired"])):
                 classes.append(tempclasses[i])
                 varclasses.append(tempclasses[i])
                 i+=1
@@ -802,9 +804,9 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     deps = {}
 
     for currclass in classes:
-        print(currclass)
+        #print(currclass)
         obj = Course.objects.get(id=currclass)
-        print(str(json.dumps(obj.preCoReq)))
+        #print(str(json.dumps(obj.preCoReq)))
         deps = json.loads(str(json.dumps(obj.preCoReq)))
         for currDeg in deps["Categories"]:
             if currDeg["DegreeName"]==degreeName and currDeg["Categories"]==degreeYear:
@@ -817,15 +819,19 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
                 #classdeps[currclass].update((deps["Categories"][0]["CoReqs"]))
 
     print(classdeps)
+
     tempdeps = []
     for cdep in classdeps:
         for adep in classdeps[cdep]:
             if adep in classes:
                 print("cdep already exists: " + str(adep))
+            elif adep in classLoad["Categories"]["courses"]:
+                classdeps[cdep].remove(adep)
             else:
-                print("class list")
+                print("class being added:")
                 classes.append(str(adep))
                 tempdeps.append(str(adep))
+            
 
     for cdeps in tempdeps:
         obj = Course.objects.get(id=cdeps)
@@ -849,5 +855,5 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     print()
     print()
     #print(schedule.testSerialScheduling(classes, classdeps))
-
+    print("Classes: " + str(classes) + " Class deps: " + str(classdeps))
     return schedule.ParallelScheduling(classes, classdeps)
