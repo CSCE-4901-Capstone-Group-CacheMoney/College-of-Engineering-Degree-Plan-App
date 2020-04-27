@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from courses.models import Course
 from degrees.models import Degree
+from session.models import Session
+
 import re 										#for spliting string and number in courseSearchText
 import copy 
 import json
@@ -605,6 +607,82 @@ def administrationEditDegreeJS(request):
 		}
 	return JsonResponse(jsResponse)
 
+
+@csrf_exempt
+def scheduler(request):
+	sessionid = request.POST.get('sessionID', '')
+	print("Sessionid: " + str(sessionid))
+
+	sessionObject = Session.objects.get(sessionID = str(sessionid))
+	tempCoursesTaken = sessionObject.completedCourses
+	degreeID = sessionObject.degreeID
+
+	degreeObject = Degree.objects.get(id = degreeID)
+	degreeInfo = degreeObject.degreeInfo
+	degreeYear = degreeObject.catalogYear
+	degreeName = degreeObject.name
+	collegeName = degreeObject.CollegeName
+	specialty = degreeObject.specialty
+
+	print("Degree: " + str(degreeName) + " - " + str(degreeID))
+
+	content={}
+	
+
+	jsonString={}
+	jsonValue=[]
+
+	classesToTake = []
+	coursesTaken = []
+
+	classDeps = {}
+
+	#Adding courses taken to list
+	for currentCourse in tempCoursesTaken["Categories"]["courses"]:
+		print("Taken course: " + str(currentCourse))
+		coursesTaken.append(currentCourse)
+
+	#Addind courses in Degree Plan to list
+	i=0
+	for currentCat in degreeInfo["Categories"]:
+		for currentCourse in currentCat["courses"]:
+			if currentCourse not in coursesTaken:
+				if currentCat["coursesRequired"]==0:
+					classesToTake.append(currentCourse)
+					print("Added course: " + str(currentCourse))
+
+				else:
+					if i < int(currentCat["coursesRequired"]):
+						classesToTake.append(currentCourse)
+						i+=1
+						print("Added course: " + str(currentCourse))
+					else:
+						break
+			else:
+				print("Course not added: " + str(currentCourse))
+
+	
+
+
+
+	for currentClass in classesToTake:
+		classObject = Course.objects.get(id=currentClass)
+		deps = json.loads(str(json.dumps(classObject.preCoReq)))
+
+		for currDeg in deps["Categories"]:
+			if currDeg["DegreeName"]==degreeName and currDeg["DegreeYear"]==degreeYear:
+				print("Found specific degree reqs")
+				classDeps[currentClass].append(currDeg["PreReqs"])
+				classDeps[currentClass].append(currDeg["CoReqs"])
+			elif(deps["Categories"][0]["DegreeName"]==""):
+				print("Using no specific degree")
+				classDeps[currentClass] = (deps["Categories"][0]["PreReqs"])
+				#classdeps[currentClass].update((deps["Categories"][0]["CoReqs"]))
+
+
+
+
+	return JsonResponse(content)
 
 
 # TODO back-end code for resources

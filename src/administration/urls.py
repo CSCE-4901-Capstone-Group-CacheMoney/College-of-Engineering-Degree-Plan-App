@@ -18,6 +18,9 @@ urlpatterns = [
 
 	path('view-degree-detailed/js/', views.administrationViewDegreeDetailedJS, name='administrationViewDegreeDetailedJS'),
 
+	path('scheduler/js/', views.scheduler, name='scheduler'),
+
+
 
 	path('view-course/', views.administrationViewCourse, name='administrationViewCourse'),
 	path('edit-course/', views.administrationEditCourse, name='administrationEditCourse'),
