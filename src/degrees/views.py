@@ -48,16 +48,16 @@ def allDegreesView(request):
           degreeName = request.session.get("degree")['name']
 
           # get the technical communications courses
-          techcourses = TechClasses.objects.filter(name="Engineering TECM")
-          techcourses = model_to_dict(techcourses[0])
-          tecm = generateDictEntry(techcourses, degreeName, "Technical Communications", "tecmCoreInfo")
-          request.session.get('degree')['degreeInfo'][tecm[0]] = tecm[1]
+          #techcourses = TechClasses.objects.filter(name="Engineering TECM")
+          #techcourses = model_to_dict(techcourses[0])
+          #tecm = generateDictEntry(techcourses, degreeName, "Technical Communications", "tecmCoreInfo")
+          #request.session.get('degree')['degreeInfo'][tecm[0]] = tecm[1]
 
           # get the mathematics courses 
-          mathcourses = MathClasses.objects.filter(name="Engineering MATH")
-          mathcourses = model_to_dict(mathcourses[0])
-          math = generateDictEntry(mathcourses, degreeName, "Mathematics", "mathCoreInfo")
-          request.session.get('degree')['degreeInfo'][math[0]] = math[1]
+          #mathcourses = MathClasses.objects.filter(name="Engineering MATH")
+          #mathcourses = model_to_dict(mathcourses[0])
+          #math = generateDictEntry(mathcourses, degreeName, "Mathematics", "mathCoreInfo")
+          #request.session.get('degree')['degreeInfo'][math[0]] = math[1]
 
           classes = extractInfo(request.session.get('degree')['degreeInfo'])
           print(classes[0])
