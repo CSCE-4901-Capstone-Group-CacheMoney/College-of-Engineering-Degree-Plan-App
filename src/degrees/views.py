@@ -348,10 +348,11 @@ def timelineTest(request):
     obj = Session.objects.get(sessionID = str(sessionid))
     coursesTaken = obj.completedCourses
     degreeID = obj.degreeID
-    degreeYear = obj.degreeYear
-    degreeName = obj.degreeName
+    obj2 = Degree.objects.get(id = str(degreeID))
+    degreeYear = obj2.catalogYear
+    degreeName = obj2.name
     #print(degreeName)
-    classArr = (timelineGenerator2(coursesTaken, degreeID, degreeYear, degreeName))
+    classArr = (timelineGenerator2(coursesTaken, degreeID, int(degreeYear), str(degreeName)))
     
     jsonResponse = {}
     jsonResponse["Courses"] = []
