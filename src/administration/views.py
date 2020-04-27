@@ -430,6 +430,12 @@ def administrationAddCourseJS(request):
 			'message': 'Error adding course. Course Department and Number must be 4 characters!'
 		}
 
+	elif len(str(nCourseHours)) == 0:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error adding course. You must specify the credit hours!'
+		}
+
 	else:
 		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
 		#print(c)			
