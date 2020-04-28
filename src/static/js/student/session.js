@@ -163,7 +163,6 @@ $(document).ready(function() {
 			   });
 		   },
 		   onSelect: function (suggestion) {
-				$('#session-submit-btn').prop('disabled', false);
 				$("#search-degree").val(suggestion["value"]);
 				$("#search-degree").attr("verify", suggestion["value"]);
 		        $("#search-degree").attr("degree-id", parseInt(suggestion["degreeid"]));
