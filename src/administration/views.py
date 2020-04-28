@@ -702,8 +702,9 @@ def scheduler(request):
 		return findCriticalStart(tempDict, 1)
 
 	#Adding courses in Degree Plan to list
-	i=0
+
 	for currentCat in degreeInfo["Categories"]:
+		i=0
 		for currentCourse in currentCat["courses"]:
 			if currentCat["coursesRequired"]==0:
 				addClassAndPreReqs(classDeps, currentCourse)
