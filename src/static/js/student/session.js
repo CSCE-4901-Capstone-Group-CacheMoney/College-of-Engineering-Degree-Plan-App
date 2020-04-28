@@ -445,14 +445,14 @@ $(document).ready(function() {
 			}
 		}, 350);
 		// call the back-end function which returns a json of the ordered set of classes to take
-		$.post("/session/view/transcript/js/",
+		$.post("/administration/scheduler/js/",
    		{
 			sessionID: sanatize(getCookie("uniqueid"))
    		},
-   		function(data,status) {
+   		function(data,status) { console.log(data);
    			clearInterval(progressTimeout);
    			$("#timeline-loading-alert").remove(); // remove loading gif to display results to the user
-   			var jsonResponse = JSON.parse(data);
+   			var jsonResponse = data;
    			// break a part data into the amount of years necessary (for creating rows)
    			var numYears =  Math.ceil(Math.ceil(jsonResponse.Courses.length/4)/2);
    			var numCoursesLeft = jsonResponse.Courses.length;

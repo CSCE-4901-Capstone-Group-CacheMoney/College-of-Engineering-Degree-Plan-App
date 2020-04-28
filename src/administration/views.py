@@ -629,8 +629,7 @@ def scheduler(request):
 	content={}
 	
 
-	jsonString={}
-	jsonValue=[]
+	
 
 	coursesTaken = []
 	classDeps = {}
@@ -749,7 +748,8 @@ def scheduler(request):
 		for preReq in masterDeps[selectedClass]:
 			for i in range(len(plan)):
 				if preReq in plan[i]:
-					earliest = max(earliest, i)
+					earliest = max(earliest, i+1)
+				break
 		#print("Earliest is", earliest)
 
 		for i in range(earliest, len(plan)):
@@ -757,27 +757,26 @@ def scheduler(request):
 				plan[i].append(selectedClass)
 				break
 		
-
-	print("Class List Emptyyyy")
-
-	
+	print("All Classes Processed")
 
 	for semester in plan:
 		print(semester)
 	
+	content["Courses"] = []
+	for row in range(len(plan)):
+		for column in range(len(plan[row])):
+			courseObject = Course.objects.get(id=plan[row][column])
 
+			content["Courses"].append({
+				"id": plan[row][column],
+				"CourseDept": courseObject.courseDept,
+				"CourseID": courseObject.courseID,
+				"Hours": courseObject.hours,
+				"Name": courseObject.name,
+				"Description": courseObject.description
+			})
 
-	
-
-
-
-
-
-
-
-
-
-	#print(str(findDepth(161)))
+	print(json.dumps(content))
 
 	return JsonResponse(content)
 

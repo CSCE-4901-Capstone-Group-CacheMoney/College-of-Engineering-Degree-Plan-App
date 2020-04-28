@@ -858,7 +858,7 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     print("Classes: " + str(classes) + " Class deps: " + str(classdeps))
     print("Assuming start in fall")
 
-    classArr = schedule.ParallelScheduling(classes, classdeps, semesters)
+    classArr = schedule.ParallelScheduling(classes, classdeps)
     print(classArr)
     cloadSize = 4
     temparr = []
