@@ -632,55 +632,152 @@ def scheduler(request):
 	jsonString={}
 	jsonValue=[]
 
-	classesToTake = []
 	coursesTaken = []
-
 	classDeps = {}
+	masterDeps = {}
 
-	#Adding courses taken to list
+	#Adding courses already taken to list
 	for currentCourse in tempCoursesTaken["Categories"]["courses"]:
-		print("Taken course: " + str(currentCourse))
 		coursesTaken.append(currentCourse)
+	print("Taken courses: " + str(coursesTaken))
 
-	#Addind courses in Degree Plan to list
+
+	#Add a course and recursively add its prereqs
+	def addClassAndPreReqs(courseDict, currentClass):
+		if currentClass not in coursesTaken and currentClass not in courseDict:
+			#print("Processing " + str(currentClass))
+			courseDict.setdefault(currentClass, [])
+			courseObject = Course.objects.get(id=currentClass)
+			deps = json.loads(str(json.dumps(courseObject.preCoReq)))
+
+			for currDeg in deps["Categories"]:
+				if str(currDeg["DegreeName"])!=str("") and str(currDeg["DegreeName"])!=str(degreeName) and str(currDeg["DegreeYear"])!=str(degreeYear):
+					continue
+				for preReq in currDeg["PreReqs"]:
+					if preReq not in coursesTaken:
+						#print("Prereq of " + str(preReq) + " for " + str(currentClass) + " added")
+						courseDict.setdefault(currentClass, []).append(preReq)
+						addClassAndPreReqs(courseDict, preReq)
+					#else:
+						#print("PreReq of " + str(preReq) + " not needed")
+				for coReq in currDeg["CoReqs"]:
+					if coReq not in coursesTaken:
+						#print("Coreq of " + str(coReq) + " for " + str(currentClass) + " added")
+						courseDict.setdefault(currentClass, []).append(coReq)
+						addClassAndPreReqs(courseDict, coReq)
+					#else:
+						#print("Coreq of " + str(preReq) + " not needed")
+		#else:
+			#print("Course was already taken - " + str(currentClass))
+
+	def findDepth(courseDict, currentClass):
+		total = 0
+		for preReq in courseDict[currentClass]:
+			total = max(findDepth(courseDict, preReq), total)
+		return total + 1
+	
+	def findCriticalStart(courseDict, target):
+		tempDict = {}
+		depthChart = {}
+		targetClass = list(courseDict)[0]
+		targetDepth = findDepth(courseDict, targetClass)
+
+		for key in courseDict:
+			depthChart.setdefault(key, findDepth(courseDict, key))
+			if target == 1:
+				if depthChart[key] > targetDepth:
+					targetDepth = depthChart[key]
+					targetClass = key
+			else:
+				if depthChart[key] < targetDepth:
+					targetDepth = depthChart[key]
+					targetClass = key
+		#print (str(targetClass) + "(" + str(depthChart[targetClass]) + ")", "needs to be scheduled")
+
+		if targetDepth == 1:
+			return targetClass
+
+		for key in classDeps[targetClass]:
+			addClassAndPreReqs(tempDict, key)
+		
+		return findCriticalStart(tempDict, 1)
+
+	#Adding courses in Degree Plan to list
 	i=0
 	for currentCat in degreeInfo["Categories"]:
 		for currentCourse in currentCat["courses"]:
-			if currentCourse not in coursesTaken:
-				if currentCat["coursesRequired"]==0:
-					classesToTake.append(currentCourse)
-					print("Added course: " + str(currentCourse))
+			if currentCat["coursesRequired"]==0:
+				addClassAndPreReqs(classDeps, currentCourse)
 
-				else:
-					if i < int(currentCat["coursesRequired"]):
-						classesToTake.append(currentCourse)
-						i+=1
-						print("Added course: " + str(currentCourse))
-					else:
-						break
 			else:
-				print("Course not added: " + str(currentCourse))
+				if i < int(currentCat["coursesRequired"]):
+					addClassAndPreReqs(classDeps, currentCourse)
+					i+=1
+				else:
+					break
+
+
+	#print dependency list
+	for x, y in classDeps.items():
+		print(x, y)
+
+	masterDeps = copy.deepcopy(classDeps)
+	selectedClasses = []
+	classesPerSemester = 4
+	semesterCount = 8
+	plan = [([] * classesPerSemester) for semesterCount in range(semesterCount)]
+
+	while classDeps:
+		selectedClass = findCriticalStart(classDeps, 1)
+		#print(selectedClass,"needs to be scheduled")
+		selectedClasses.append(selectedClass)
+		#print(selectedClasses)
+
+		del classDeps[selectedClass]
+		coursesTaken.append(selectedClass)
+
+		for value in classDeps.values():
+			try:
+				value.remove(selectedClass)
+				#print("Removed an instance of", selectedClass)
+			except:
+				pass
+
+		earliest = 0
+		print("Trying to slot", selectedClass)
+		#print(masterDeps[selectedClass])
+		for preReq in masterDeps[selectedClass]:
+			for i in range(len(plan)):
+				if preReq in plan[i]:
+					earliest = max(earliest, i)
+		#print("Earliest is", earliest)
+
+		for i in range(earliest, len(plan)):
+			if len(plan[i]) < 4:
+				plan[i].append(selectedClass)
+				break
+		
+
+	print("Class List Emptyyyy")
+
+	
+
+	for semester in plan:
+		print(semester)
+	
+
 
 	
 
 
 
-	for currentClass in classesToTake:
-		classObject = Course.objects.get(id=currentClass)
-		deps = json.loads(str(json.dumps(classObject.preCoReq)))
-
-		for currDeg in deps["Categories"]:
-			if currDeg["DegreeName"]==degreeName and currDeg["DegreeYear"]==degreeYear:
-				print("Found specific degree reqs")
-				classDeps[currentClass].append(currDeg["PreReqs"])
-				classDeps[currentClass].append(currDeg["CoReqs"])
-			elif(deps["Categories"][0]["DegreeName"]==""):
-				print("Using no specific degree")
-				classDeps[currentClass] = (deps["Categories"][0]["PreReqs"])
-				#classdeps[currentClass].update((deps["Categories"][0]["CoReqs"]))
 
 
 
+
+
+
+	#print(str(findDepth(161)))
 
 	return JsonResponse(content)
 
