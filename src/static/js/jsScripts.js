@@ -241,7 +241,7 @@ $(document).ready(function(data) {
                 }
             })
             check(isPinSatisfied,isPinFilled,isSearchSatisfied)
-            console.log("hey")
+            //console.log("hey")
         }
         // when the user clicks on the password field, show the message
         myInput.onfocus = function() {
@@ -293,9 +293,9 @@ $(document).ready(function(data) {
             else{
                 $('#session-submit-btn').prop('disabled', true);
             }
-            console.log("pinsat " + isPinSatisfied)
-            console.log("pinfilled " + isPinFilled)
-            console.log("search " + isSearchSatisfied)
+            //console.log("pinsat " + isPinSatisfied)
+            //console.log("pinfilled " + isPinFilled)
+            //console.log("search " + isSearchSatisfied)
         }
     }
 });

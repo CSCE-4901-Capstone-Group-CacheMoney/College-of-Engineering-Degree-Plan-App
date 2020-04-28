@@ -16,7 +16,7 @@ class Session(models.Model):
 	last_visit = models.DateField(auto_now = True)
 	degreeYear = models.SmallIntegerField(default = 0)
 	degreeID = models.SmallIntegerField(default = 0)
-	semesterOption = models.CharField(max_length=10,default=SEMESTER_CHOICES)
+	semesterOption = models.CharField(max_length=10, choices=SEMESTER_CHOICES, default=FALL)
 
 	
 	def str(self):

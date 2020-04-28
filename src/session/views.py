@@ -122,8 +122,8 @@ def getSessionData(request):
 		content = {
 			"degreeName"	: str(data.degreeName),
 			"degreeYear"	: data.degreeYear,
-			"degreeID"		: data.degreeID
-			#"semesterOption": data.semesterOption
+			"degreeID"		: data.degreeID,
+			"semesterOption": str(data.semesterOption)
 		}	
 
 		courseList = json.dumps(data.completedCourses)
@@ -157,7 +157,7 @@ def getSessionData(request):
 def updateSessionData(request):
 	sessionid	= request.POST.get('sessionid', '')
 	pin 		= request.POST.get('pin', '')
-	#semesterOption = request.POST.get('sessionSemester', '')
+	semesterOption = request.POST.get('semesterOption', '')
 	sessionInfo = json.loads(request.POST.get('sessionInfo', ''))
 
 	print('Received sessionid: ',sessionid, ' and pin: ', pin, '\nsessionInfo:', sessionInfo)
@@ -165,6 +165,7 @@ def updateSessionData(request):
 
 	#check User Existence
 	s = Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin))
+	s.update(semesterOption = str(semesterOption)) #add this to sessionInfo as cookie?
 	status = s.count()
 	if status == 0:
 		jsResponse = { 	
@@ -178,13 +179,14 @@ def updateSessionData(request):
 	degreeYear = sessionInfo['degreeYear']
 	degreeID = sessionInfo['degreeID']
 	courseList = sessionInfo['completedCourses']
-	#semesterOption =sessionInfo['semesterOption']
+	
 	print('newPin:', newPin)
 	print('degree:', degree)
 	print("item inside courses: ", courseList)
 	s = Session.objects.get(sessionID= str(sessionid), sessionPIN = str(pin))
 	updatePin = 0
 	updateDegreeName = 0
+	updateSemester = 0
 	#Change pin if new pin doesn't match
 	if int(pin) != newPin:
 		s.sessionPIN = str(newPin) 						#update( sessionPIN = newPin )

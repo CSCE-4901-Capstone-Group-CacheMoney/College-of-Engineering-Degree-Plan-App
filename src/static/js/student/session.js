@@ -179,7 +179,7 @@ $(document).ready(function() {
 		jsonResponse["Categories"]["courses"] = [];
 
 
-
+/*-----------------------create session js----------------------------------------- */
 		$('.add-course').each(function(catIndex) {
 			jsonResponse["Categories"]["courses"][catIndex] = parseInt(sanatize($(this).children(".add-course-input").attr("course-id").trim()));
 		});
@@ -203,7 +203,8 @@ $(document).ready(function() {
 			sessionDegree: sanatize($("#search-degree").attr("degree-name")),
 			sessionDegreeYear: parseInt(sanatize($("#search-degree").attr("catalog-year"))),
 			sessionDegreeID: parseInt(sanatize($("#search-degree").attr("degree-id"))),
-			sessionInfo: JSON.stringify(jsonResponse)
+			sessionInfo: JSON.stringify(jsonResponse),
+			semesterOption: sanatize($("input[name='inlineRadioOptions2']:checked").val()),
 		},   
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("true") != -1) {
@@ -283,7 +284,8 @@ $(document).ready(function() {
 			$.post("/session/getSessionData/",
 	   		{
 	   			sessionid: sanatize(getCookie("uniqueid")),
-	   			pin: parseInt(getCookie("uniquepin"))
+				pin: parseInt(getCookie("uniquepin")),
+				   
 			},   
 	   		function(data,status) {
 	   			$("#edit-session-pin").val(parseInt(getCookie("uniquepin")));
@@ -294,6 +296,10 @@ $(document).ready(function() {
 	   			create_cookie("degreeid", $("#search-degree").attr("degree-id"));
 				create_cookie("degreename", $("#search-degree").attr("degree-name"));
 				create_cookie("degreeyear", $("#search-degree").attr("catalog-year"));
+				if(data.semesterOption.toLowerCase().trim().indexOf("spring") != -1)
+					$("#radio-spring").attr('checked', true);
+				else if (data.semesterOption.toLowerCase().trim().indexOf("fall") != -1)
+					$("#radio-fall").attr('checked', true);
 	   			for (var i = 0; i < data.Categories.courses.length; i++){
 					var html = '<tr>'+
 	    	           '<td>' +
@@ -329,7 +335,8 @@ $(document).ready(function() {
    		{
    			sessionid: sanatize(getCookie("uniqueid")),
    			pin: parseInt(getCookie("uniquepin")),
-			sessionInfo: JSON.stringify(jsonResponse)
+			sessionInfo: JSON.stringify(jsonResponse),
+			semesterOption: sanatize($("input[name='inlineRadioOptions2']:checked").val()),
 		},   
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("true") != -1) {
