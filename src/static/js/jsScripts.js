@@ -221,6 +221,7 @@ $(document).ready(function(data) {
 
     // code specific to the create session page
     if($("#search-degree").length && !$("#edit-session-title").length){
+        $('#search-degree').val('');
         document.getElementById("radio-spring").checked = false;
         document.getElementById("radio-fall").checked = false; //ensure that all fields are deleted on page refresh
         $('#session-submit-btn').prop('disabled', true);; //by default, disable the submit button
@@ -297,10 +298,10 @@ $(document).ready(function(data) {
             else{
                 $('#session-submit-btn').prop('disabled', true);
             }
-            console.log("pinsat " + isPinSatisfied)
-            console.log("pinfilled " + isPinFilled)
-            console.log("search " + isSearchSatisfied)
-            console.log("radio " + isSemesterSatisfied)
+            //console.log("pinsat " + isPinSatisfied)
+            //console.log("pinfilled " + isPinFilled)
+            //onsole.log("search " + isSearchSatisfied)
+            //console.log("radio " + isSemesterSatisfied)
         }
     }
 });
