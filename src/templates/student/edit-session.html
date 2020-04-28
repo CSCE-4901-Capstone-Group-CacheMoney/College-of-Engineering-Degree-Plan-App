@@ -11,9 +11,16 @@
               <div id="edit-session-form" class="mb-3 d-nont">
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
+                    <span class="input-group-text" style="padding-right: 4.95em;" type="text" id="inputGroup-sizing-default-1">Unique ID</span>
+                  </div>
+                  <input id="edit-session-id" type="text" class="form-control" readonly="" aria-label="Default" aria-describedby="inputGroup-sizing-default-1">
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
                     <span class="input-group-text" style="padding-right: 4.836em;" id="inputGroup-sizing-default-2">Pin Number</span>
                   </div>
-                  <input id="edit-session-pin" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4">
+                  <input id="edit-session-pin" type="password" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" maxlength="4">
                 </div>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
@@ -21,7 +28,21 @@
                   </div>
                   <input id="search-degree" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" autocomplete="off">
                 </div>
-  
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="semesterEntry">Plan Start Semester</label>
+                  </div>
+                   <div class=" form-control">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input ml-2" type="radio" name="inlineRadioOptions2" id="radio-spring" value="Spring">
+                      <label class="form-check-label" style="color: #495057;" for="inlineRadio1">Spring</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="radio-fall" value="Fall">
+                      <label class="form-check-label" style="color: #495057;" for="inlineRadio2">Fall</label>
+                    </div>
+                  </div>
+                </div>
                 <h4 class="text-center text-light pt-1 pb-1" style="background-color: green;">Completed Courses</h4>
                 <div id="completed-courses"></div>
   

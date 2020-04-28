@@ -222,12 +222,15 @@ $(document).ready(function(data) {
     // code specific to the create session page
     if($("#search-degree").length && !$("#edit-session-title").length){
         $('#search-degree').val('');
+        document.getElementById("radio-spring").checked = false;
+        document.getElementById("radio-fall").checked = false; //ensure that all fields are deleted on page refresh
         $('#session-submit-btn').prop('disabled', true);; //by default, disable the submit button
         var myInput = document.getElementById("create-session-pin");
         var mySearch = document.getElementById("search-degree");
         var isSearchSatisfied = false;
         var isPinFilled = false;
         var isPinSatisfied = false;
+        var isSemesterSatisfied = false;
         //when the user clicks off the input for colleges, display field required if left empty AND disable the button
         //TODO: have backend check if the college the user enters actually exists
         mySearch.onkeyup = function() {
@@ -240,8 +243,7 @@ $(document).ready(function(data) {
                     isSearchSatisfied= true;
                 }
             })
-            check(isPinSatisfied,isPinFilled,isSearchSatisfied)
-            console.log("hey")
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied)
         }
         // when the user clicks on the password field, show the message
         myInput.onfocus = function() {
@@ -257,7 +259,7 @@ $(document).ready(function(data) {
                     isPinFilled = false;
                 }
             })
-            check(isPinSatisfied,isPinFilled,isSearchSatisfied)
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied)
         }
         myInput.onkeyup = function() {
             // validate length
@@ -282,20 +284,24 @@ $(document).ready(function(data) {
                 $("#number").addClass("fa fa-times invalid");
                 isPinSatisfied = false;
             }
-            check(isPinSatisfied,isPinFilled,isSearchSatisfied);
-
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied)
         }
-        function check(isPinSatisfied,isPinFilled,isSearchSatisfied) //a non-elegant way of checking the conditions every user action
+        $('#radio-spring,#radio-fall').click(function () { //if a user clicks a button, the restriction for the statment is lifted
+            isSemesterSatisfied = true;
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied)
+        })
+        function check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied) //a non-elegant way of checking the conditions every user action
         {
-            if((isPinSatisfied && isPinFilled && isSearchSatisfied) == true){
+            if((isPinSatisfied && isPinFilled && isSearchSatisfied && isSemesterSatisfied) == true){
                 $('#session-submit-btn').prop('disabled', false);
             }
             else{
                 $('#session-submit-btn').prop('disabled', true);
             }
-            console.log("pinsat " + isPinSatisfied)
-            console.log("pinfilled " + isPinFilled)
-            console.log("search " + isSearchSatisfied)
+            //console.log("pinsat " + isPinSatisfied)
+            //console.log("pinfilled " + isPinFilled)
+            //onsole.log("search " + isSearchSatisfied)
+            //console.log("radio " + isSemesterSatisfied)
         }
     }
 });

@@ -856,6 +856,7 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
     print()
     #print(schedule.testSerialScheduling(classes, classdeps))
     print("Classes: " + str(classes) + " Class deps: " + str(classdeps))
+<<<<<<< HEAD
     print("Assuming start in fall")
 
     classArr = schedule.ParallelScheduling(classes, classdeps, semesters)
@@ -912,3 +913,6 @@ def timelineGenerator2(classesTaken, degreeID, degreeYear, degreeName):
         i-=1
     """
     return classArr
+=======
+    return schedule.ParallelScheduling(classes, classdeps)
+>>>>>>> 18b3e40a4d784150c8d4e7c7c8ea1821776eb5d6

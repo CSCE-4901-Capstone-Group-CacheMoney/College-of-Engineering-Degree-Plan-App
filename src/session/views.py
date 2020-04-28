@@ -38,21 +38,21 @@ def sessionViewTranscript(request):
 def studentCreateSession(request):
 	sessionid	= request.POST.get('sessionID', '')
 	pin 		= request.POST.get('sessionPIN', '')
-	degree 		= request.POST.get('sessionDegree', '')
-	degreeYear	= request.POST.get('sessionDegreeYear', '')
+	# degree 		= request.POST.get('sessionDegree', '')
+	# degreeYear	= request.POST.get('sessionDegreeYear', '')
 	sessionDegreeID = request.POST.get('sessionDegreeID', '')
 	completed 	= json.loads(request.POST.get('sessionInfo', ''))
+	semesterOption = request.POST.get('semesterOption', '')
 	# degreeSearchText = degreeSearchText.replace(' ','')
-	print ('Received:', sessionid, pin, degree, degreeYear, sessionDegreeID)
+	print ('Received:', sessionid, pin, sessionDegreeID)
 	# content={}
 	print('completed: ', completed)
 	Session.objects.create(
 		sessionID  = str(sessionid),
 		sessionPIN = str(pin),
-		degreeName = str(degree),
-		degreeYear = int(degreeYear),
 		degreeID   = int(sessionDegreeID),
 		completedCourses =  completed,
+	    semesterOption = str(semesterOption),
 		)
 	jsResponse = {
 		'success': 'True',
@@ -116,14 +116,16 @@ def getSessionData(request):
 	
 	for data in Session.objects.filter(sessionID = str(sessionid), sessionPIN = str(pin)):
 		content = {
-			"degreeName"	: str(data.degreeName),
-			"degreeYear"	: data.degreeYear,
-			"degreeID"		: data.degreeID
+			# "degreeName"	: str(data.degreeName),
+			# "degreeYear"	: data.degreeYear,
+			"degreeID"		: data.degreeID,
+			"semesterOption": str(data.semesterOption)
 		}	
 
 		courseList = json.dumps(data.completedCourses)
-	
-	courseList_dict = json.loads(courseList)
+	print("CourseList length is:", len(courseList))
+	if len(courseList) != 0:
+		courseList_dict = json.loads(courseList)
 	category = courseList_dict['Categories']
 	print('\ncourseList_dict:', courseList_dict)
 	print("item inside courses:")
@@ -152,6 +154,7 @@ def getSessionData(request):
 def updateSessionData(request):
 	sessionid	= request.POST.get('sessionid', '')
 	pin 		= request.POST.get('pin', '')
+	semesterOption = request.POST.get('semesterOption', '')
 	sessionInfo = json.loads(request.POST.get('sessionInfo', ''))
 
 	print('Received sessionid: ',sessionid, ' and pin: ', pin, '\nsessionInfo:', sessionInfo)
@@ -159,6 +162,7 @@ def updateSessionData(request):
 
 	#check User Existence
 	s = Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin))
+	s.update(semesterOption = str(semesterOption)) #add this to sessionInfo as cookie?
 	status = s.count()
 	if status == 0:
 		jsResponse = { 	
@@ -168,16 +172,17 @@ def updateSessionData(request):
 		return JsonResponse(jsResponse)
 
 	newPin = sessionInfo['sessionPIN']
-	degree = sessionInfo['degreeName']
-	degreeYear = sessionInfo['degreeYear']
+	# degree = sessionInfo['degreeName']
+	# degreeYear = sessionInfo['degreeYear']
 	degreeID = sessionInfo['degreeID']
 	courseList = sessionInfo['completedCourses']
+	
 	print('newPin:', newPin)
-	print('degree:', degree)
 	print("item inside courses: ", courseList)
 	s = Session.objects.get(sessionID= str(sessionid), sessionPIN = str(pin))
 	updatePin = 0
 	updateDegreeName = 0
+	updateSemester = 0
 	#Change pin if new pin doesn't match
 	if int(pin) != newPin:
 		s.sessionPIN = str(newPin) 						#update( sessionPIN = newPin )
@@ -186,9 +191,8 @@ def updateSessionData(request):
 
 	#change degree if it doesn't match w the DB
 	if degreeID != s.degreeID: 						#s.values_list('degreeName', flat = True).get():
-		# s.update( degreeName = str(degree) )
 		s.degreeID = degreeID
-		s.degreeName = degree
+		# s.degreeName = degree
 		updateDegreeName = 1
 		
 	# print('status pin:', updatePin, 'degree:', updateDegreeName)
