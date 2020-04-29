@@ -443,58 +443,79 @@ $(document).ready(function() {
 			if(timelineProgress < 100){
 				$("#transcript-progress-bar").attr('aria-valuenow', timelineProgress).css('width', timelineProgress.toString()+'%').text(timelineProgress+"%");
 			}
-		}, 350);
+		}, 100);
 		// call the back-end function which returns a json of the ordered set of classes to take
 		$.post("/administration/scheduler/js/",
    		{
 			sessionID: sanatize(getCookie("uniqueid"))
    		},
-   		function(data,status) { console.log(data);
+   		function(data,status) {
    			clearInterval(progressTimeout);
    			$("#timeline-loading-alert").remove(); // remove loading gif to display results to the user
-   			var jsonResponse = data;
-   			// break a part data into the amount of years necessary (for creating rows)
-   			var numYears =  Math.ceil(Math.ceil(jsonResponse.Courses.length/4)/2);
-   			var numCoursesLeft = jsonResponse.Courses.length;
-   			var semesterIndex = 0;
-   			var courseIndex = 0;
-   			// iterate through each year and its semester in order to print out tables of class sets
-   			for(var i = 0; i < numYears; i++){
-   				var html = '<div class="row">';
-   				var numSemesters = numCoursesLeft > 4? 2:1;
-   				for(var j = 0; j < numSemesters; j++){
-   					html += '<div class="col-md-6">'+
+
+   			for(var i = 1; i <= Math.ceil(data.numSemesters/2); i++){
+   				var html = '<div class="row academic-year"></div>';
+   				$("#transcript-results").append(html);
+   			}
+
+   			semesterIndex = 0;
+   			numSemestersLeft = data.numSemesters;
+   			$(".academic-year").each(function(acaIndex) {
+   				var html = '<div class="col-md-6">'+
    							'<table class="table table-sm">'+
    							'<h5>Semester '+(++semesterIndex)+'</h5>'+
 	   						'<thead>'+
 	   						'<tr>'+
-	   						'<th scope="col">Department ID</th>'+
-	   						'<th scope="col">Course ID</th>'+
+	   						'<th scope="col">Course</th>'+
+	   						'<th scope="col">Name</th>'+
 	   						'<th scope="col">Hours</th>'+
 	   						'</tr>'+
 	   						'</thead>'+
 	   						'<tbody>';
-	   					// print out only up to 4 courses per semester
-	   					var k = 0;
-	   					while(k < 4 && courseIndex < jsonResponse.Courses.length){
-	   						html += '<tr>'+
-	   								'<td>'+jsonResponse.Courses[courseIndex].CourseDept+'</td>'+
-	   								'<td>'+jsonResponse.Courses[courseIndex].CourseID+'</td>'+
-	   								'<td>'+jsonResponse.Courses[courseIndex].Hours+'</td>'+
-	   								'</tr>';
-	   						k++;
-	   						courseIndex++;
-	   						numCoursesLeft--;
-	   					}
 
-	   				html += '</tbody>'+
-	   						'</table>'+
-	   						'</div>';
-   				}
-   				html += '</div>';
-   				// add the newly created html to the page
-   				$("#transcript-results").append(html);
-   			}
+	   				for(var i = 0; i < data[semesterIndex].length; i++){
+						html += '<tr>'+
+								'<td>'+data[semesterIndex][i].CourseDept+' '+data[semesterIndex][i].CourseID+'</td>'+
+								'<td>'+data[semesterIndex][i].Name+'</td>'+
+								'<td>'+data[semesterIndex][i].Hours+'</td>'+
+								'</tr>';
+					}
+
+					html += '</tbody>'+
+							'</table>'+
+							'</div>';
+
+					$(this).append(html);
+					numSemestersLeft--;
+					if(numSemestersLeft > 0){
+						var html = '<div class="col-md-6">'+
+   							'<table class="table table-sm">'+
+   							'<h5>Semester '+(++semesterIndex)+'</h5>'+
+	   						'<thead>'+
+	   						'<tr>'+
+	   						'<th scope="col">Course</th>'+
+	   						'<th scope="col">Name</th>'+
+	   						'<th scope="col">Hours</th>'+
+	   						'</tr>'+
+	   						'</thead>'+
+	   						'<tbody>';
+
+		   				for(var i = 0; i < data[semesterIndex].length; i++){
+							html += '<tr>'+
+									'<td>'+data[semesterIndex][i].CourseDept+' '+data[semesterIndex][i].CourseID+'</td>'+
+									'<td>'+data[semesterIndex][i].Name+'</td>'+
+									'<td>'+data[semesterIndex][i].Hours+'</td>'+
+									'</tr>';
+						}
+
+						html += '</tbody>'+
+								'</table>'+
+								'</div>';
+
+						$(this).append(html);
+					}
+   			});
+
    		});
 	}
 

@@ -814,19 +814,19 @@ def scheduler(request):
 
 #					OLD OUTPUT WAY WITH BLOCK OF ALL CLASSES
 ############################################################################
-	content["Courses"] = []
-	for row in range(len(plan)):
-		for column in range(len(plan[row])):
-			courseObject = Course.objects.get(id=plan[row][column])
+	# content["Courses"] = []
+	# for row in range(len(plan)):
+	# 	for column in range(len(plan[row])):
+	# 		courseObject = Course.objects.get(id=plan[row][column])
 
-			content["Courses"].append({
-				"id": plan[row][column],
-				"CourseDept": courseObject.courseDept,
-				"CourseID": courseObject.courseID,
-				"Hours": courseObject.hours,
-				"Name": courseObject.name,
-				"Description": courseObject.description
-			})
+	# 		content["Courses"].append({
+	# 			"id": plan[row][column],
+	# 			"CourseDept": courseObject.courseDept,
+	# 			"CourseID": courseObject.courseID,
+	# 			"Hours": courseObject.hours,
+	# 			"Name": courseObject.name,
+	# 			"Description": courseObject.description
+	# 		})
 ###############################################################################
 
 
@@ -834,7 +834,6 @@ def scheduler(request):
 
 #					NEW INPUT WITH CLASSES DIVIDED BY SEMESTER
 ###################################################################################
-	"""
 	for row in range(len(plan)):
 		if len(plan[row]) != 0:
 			content[row+1] = []
@@ -849,9 +848,8 @@ def scheduler(request):
 					"Name": courseObject.name,
 					"Description": courseObject.description
 				})
-	"""
 #####################################################################################
-	
+	content["numSemesters"] = len(content)
 	content["success"] = "True"
 
 	print(json.dumps(content))
