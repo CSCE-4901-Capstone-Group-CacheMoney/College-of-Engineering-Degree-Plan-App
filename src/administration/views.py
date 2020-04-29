@@ -756,8 +756,8 @@ def scheduler(request):
 
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
-	classesPerSemester = 3
-	semesterCount = 8
+	classesPerSemester = 4
+	semesterCount = 12
 	plan = [([] * classesPerSemester) for semesterCount in range(semesterCount)]
 
 	while classDeps:
