@@ -10,8 +10,6 @@ from .forms import DegreeSelectionForm, CoursesSelectionForm
 
 # import the courses model; allows us to query DB
 from courses.models import Course
-#from tecmCore.models import TechClasses
-#from mathCore.models import MathClasses
 from session.models import Session
 
 
@@ -46,18 +44,6 @@ def allDegreesView(request):
           choice = Degree.objects.filter(name=cleanedChoice['degreeChoices'])
           request.session['degree']=model_to_dict(choice[0])
           degreeName = request.session.get("degree")['name']
-
-          # get the technical communications courses
-          #techcourses = TechClasses.objects.filter(name="Engineering TECM")
-          #techcourses = model_to_dict(techcourses[0])
-          #tecm = generateDictEntry(techcourses, degreeName, "Technical Communications", "tecmCoreInfo")
-          #request.session.get('degree')['degreeInfo'][tecm[0]] = tecm[1]
-
-          # get the mathematics courses 
-          #mathcourses = MathClasses.objects.filter(name="Engineering MATH")
-          #mathcourses = model_to_dict(mathcourses[0])
-          #math = generateDictEntry(mathcourses, degreeName, "Mathematics", "mathCoreInfo")
-          #request.session.get('degree')['degreeInfo'][math[0]] = math[1]
 
           classes = extractInfo(request.session.get('degree')['degreeInfo'])
           print(classes[0])
