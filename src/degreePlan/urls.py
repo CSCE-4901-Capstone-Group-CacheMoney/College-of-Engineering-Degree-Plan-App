@@ -38,7 +38,6 @@ urlpatterns = [
     path('transferCreditList/', transferCreditView, name='transferCreditList'),
     path('addDegree/', addADegree, name="addDegree"),
     path('editDegree/', editDegree, name="editDegree"),
-    #path('degrees/', allDegreesView, name='transferCreditList')
     path('addTransferCredit/', addTransferCredit, name="addTransferCredit"),
     path('administration/', administrationHomeView, name="administrationHomeView"),
     path('administration/', include('administration.urls')),
