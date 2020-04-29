@@ -608,21 +608,34 @@ def administrationEditDegreeJS(request):
 	return JsonResponse(jsResponse)
 
 
+
+
+
 @csrf_exempt
 def scheduler(request):
 	sessionid = request.POST.get('sessionID', '')
 	print("Sessionid: " + str(sessionid))
 
-	sessionObject = Session.objects.get(sessionID = str(sessionid))
-	tempCoursesTaken = sessionObject.completedCourses
-	degreeID = sessionObject.degreeID
+	if sessionid == "DegreePlanTester":
+		tempCoursesTaken = []
+		semesterOption = "Fall"
+		degreeInfo = request.POST.get('degreeInfo', '')
+		degreeYear = request.POST.get('degreeYear', '')
+		degreeName = request.POST.get('degreeName', '')
+		degreeYear = request.POST.get('degreeInfo', '')
 
-	degreeObject = Degree.objects.get(id = degreeID)
-	degreeInfo = degreeObject.degreeInfo
-	degreeYear = degreeObject.catalogYear
-	degreeName = degreeObject.name
-	collegeName = degreeObject.CollegeName
-	specialty = degreeObject.specialty
+	else:
+		sessionObject = Session.objects.get(sessionID = str(sessionid))
+		tempCoursesTaken = sessionObject.completedCourses
+		degreeID = sessionObject.degreeID
+		semesterOption = sessionObject.semesterOption
+
+		degreeObject = Degree.objects.get(id = degreeID)
+		degreeInfo = degreeObject.degreeInfo
+		degreeYear = degreeObject.catalogYear
+		degreeName = degreeObject.name
+		collegeName = degreeObject.CollegeName
+		specialty = degreeObject.specialty
 
 	print("Degree: " + str(degreeName) + " - " + str(degreeID))
 
@@ -634,6 +647,7 @@ def scheduler(request):
 	coursesTaken = []
 	classDeps = {}
 	masterDeps = {}
+	coReqList = {}
 
 	#Adding courses already taken to list
 	for currentCourse in tempCoursesTaken["Categories"]["courses"]:
@@ -663,6 +677,7 @@ def scheduler(request):
 					if coReq not in coursesTaken:
 						#print("Coreq of " + str(coReq) + " for " + str(currentClass) + " added")
 						courseDict.setdefault(currentClass, []).append(coReq)
+						coReqList.setdefault(currentClass, []).append(coReq)
 						addClassAndPreReqs(courseDict, coReq)
 					#else:
 						#print("Coreq of " + str(preReq) + " not needed")
@@ -672,7 +687,13 @@ def scheduler(request):
 	def findDepth(courseDict, currentClass):
 		total = 0
 		for preReq in courseDict[currentClass]:
-			total = max(findDepth(courseDict, preReq), total)
+			try:
+				temp = findDepth(courseDict, preReq)
+				if temp < 0:
+					return -1
+				total = max(findDepth(courseDict, preReq), total)
+			except RecursionError as re:
+				return -1
 		return total + 1
 	
 	def findCriticalStart(courseDict, target):
@@ -681,8 +702,16 @@ def scheduler(request):
 		targetClass = list(courseDict)[0]
 		targetDepth = findDepth(courseDict, targetClass)
 
+		if targetDepth < 0:
+			return -targetClass
+
 		for key in courseDict:
 			depthChart.setdefault(key, findDepth(courseDict, key))
+			if depthChart[key] < 0:
+				return -key
+			#if type(depthChart[key]) != int:
+			#	return depthChart[key]
+			
 			if target == 1:
 				if depthChart[key] > targetDepth:
 					targetDepth = depthChart[key]
@@ -721,14 +750,24 @@ def scheduler(request):
 	for x, y in classDeps.items():
 		print(x, y)
 
+	print("COREQ TABLE")
+	for x, y in coReqList.items():
+		print(x, y)
+
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
-	classesPerSemester = 4
+	classesPerSemester = 3
 	semesterCount = 8
 	plan = [([] * classesPerSemester) for semesterCount in range(semesterCount)]
 
 	while classDeps:
 		selectedClass = findCriticalStart(classDeps, 1)
+
+		if selectedClass < 0:
+			print("Recursive PreReqs or CoReqs found for class", -selectedClass)
+			content["success"] = "False"
+			content["class"] = -selectedClass
+			return JsonResponse(content)
 		#print(selectedClass,"needs to be scheduled")
 		selectedClasses.append(selectedClass)
 		#print(selectedClasses)
@@ -745,16 +784,25 @@ def scheduler(request):
 
 		earliest = 0
 		print("Trying to slot", selectedClass)
-		#print(masterDeps[selectedClass])
 		for preReq in masterDeps[selectedClass]:
 			for i in range(len(plan)):
 				if preReq in plan[i]:
-					earliest = max(earliest, i+1)
-				break
+					if (selectedClass not in coReqList) or (preReq not in coReqList[selectedClass]):
+						earliest = max(earliest, i+1)
+					else:
+						earliest = max(earliest, i)
+					break
 		#print("Earliest is", earliest)
 
+
+		classAvailability = Course.objects.get(id=selectedClass).semester
+
 		for i in range(earliest, len(plan)):
-			if len(plan[i]) < 4:
+			if semesterOption != "Both":
+				if semesterOption == classAvailability:
+					if i % 2 != 0:
+						continue
+			if len(plan[i]) < classesPerSemester:
 				plan[i].append(selectedClass)
 				break
 		
@@ -763,6 +811,9 @@ def scheduler(request):
 	for semester in plan:
 		print(semester)
 	
+
+#					OLD OUTPUT WAY WITH BLOCK OF ALL CLASSES
+############################################################################
 	content["Courses"] = []
 	for row in range(len(plan)):
 		for column in range(len(plan[row])):
@@ -776,6 +827,32 @@ def scheduler(request):
 				"Name": courseObject.name,
 				"Description": courseObject.description
 			})
+###############################################################################
+
+
+
+
+#					NEW INPUT WITH CLASSES DIVIDED BY SEMESTER
+###################################################################################
+	"""
+	for row in range(len(plan)):
+		if len(plan[row]) != 0:
+			content[row+1] = []
+			for column in range(len(plan[row])):
+				courseObject = Course.objects.get(id=plan[row][column])
+
+				content[row+1].append({
+					"id": plan[row][column],
+					"CourseDept": courseObject.courseDept,
+					"CourseID": courseObject.courseID,
+					"Hours": courseObject.hours,
+					"Name": courseObject.name,
+					"Description": courseObject.description
+				})
+	"""
+#####################################################################################
+	
+	content["success"] = "True"
 
 	print(json.dumps(content))
 
