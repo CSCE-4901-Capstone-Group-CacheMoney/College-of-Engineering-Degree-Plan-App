@@ -16,7 +16,7 @@
 	 	</li>
  	</ul>
 
-
+	 <!--Navbar displayed in the upper right corner. Should be used by administrators only.-->
  	<ul class="navbar-nav ml-auto">
 	{% if request.user.is_authenticated %}
 		{% if request.user.is_superuser %}
@@ -37,13 +37,13 @@
 
 </nav>
 
-<!--Start menu -->
+<!--Administration Navigation Bar for Admins-->
 {% if request.user.is_superuser %}
 	<br>
 	<nav>
     	<ul class="nav justify-content-center">
 
-    		<!-- Dropdown -->
+    		<!-- Degree Plan Dropdown -->
 		    <li class="menu-item dropdown">
 		      <a class="btn btn-outline-success dropdown-toggle" href="#" data-toggle="dropdown" role="button">Degree Plans</a>
 		      <div class="dropdown-menu">
@@ -54,7 +54,7 @@
 		      </div>
 		    </li>
 
-		    <!-- Dropdown -->
+		    <!-- Course Dropdown -->
 		    <li class="menu-item dropdown">
 		      <a class="btn btn-outline-success dropdown-toggle" href="#" data-toggle="dropdown" role="button">Courses</a>
 		      <div class="dropdown-menu">
@@ -65,14 +65,17 @@
 		      </div>
 		    </li>
 
+			<!--Resources Button: Redirect to Resources Page-->
 			<li class="menu-item"><a class="btn btn-outline-success" href="/administration/view-resource/" role="button">Resources</a></li>
+
+			<!--Tutorials Button: Redirect to Turials Page-->
 			<li class="menu-item"><a class="btn btn-outline-success" role="button">Tutorials</a></li>
 
 
 		</ul>
 	</nav>
 	<br>
-<!--Start menu -->
+<!--Student Navigation Bar for admins-->
 {% else %}
 	<br>
 	<nav>

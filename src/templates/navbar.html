@@ -16,17 +16,17 @@
 	 	</li>
  	</ul>
 
-
+	<!--Navbar displayed in the upper right corner. Should be used by administrators only.-->
  	<ul class="navbar-nav ml-auto">
-	 {% if request.user.is_authenticated %}
-		 {% if request.user.is_superuser %}
-		 	<li class="menu-item"><a class="btn btn-outline-success" href="/administration/" role="button">Administration</a></li>
-		 	<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('logout') }} " role="button">Logout</a></li>
-		 {% else %}
-		 	<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('logout') }} " role="button">Logout</a></li>
+	 {% if request.user.is_authenticated %}<!--If conditional: Checks if the user is currently logged in-->
+		 {% if request.user.is_superuser %}<!--If conditional: Checks if the user is logged in as a superuser-->
+		 	<li class="menu-item"><a class="btn btn-outline-success" href="/administration/" role="button">Administration</a></li> <!-- On click will take a superuser to the administration homepage-->
+		 	<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('logout') }} " role="button">Logout</a></li> <!--On click will sign out the current user-->
+		 {% else %} <!--Else Conditional: In the case that the user is not signed in as a superuser-->
+		 	<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('logout') }} " role="button">Logout</a></li><!--On click will sign out the current user-->
 		 {% endif %}
- 	{%else%}
- 		<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('login') }} " role="button">Administration Login</a></li>
+ 	{%else%} <!--Else Conditional: In the case that the user is currently not logged in-->
+ 		<li class="menu-item"><a class="btn btn-outline-success" href="{{ url('login') }} " role="button">Administration Login</a></li><!--On click will an admin to sign in with the credentials they were provided-->
  	{%endif%}
  	</ul>
 
@@ -36,7 +36,7 @@
 
 </nav>
 
-<!--Start menu -->
+<!--Student Navigation Bar for Superusers-->
 {% if request.user.is_superuser %}
 	<br>
 	<nav>
@@ -59,7 +59,7 @@
 		</ul>
 	</nav>
 	<br>
-<!--Start menu -->
+<!--Student Navigation Bar for regular users -->
 {% else %}
 	<br>
 	<nav>
