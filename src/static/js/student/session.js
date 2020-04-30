@@ -645,8 +645,8 @@ $(document).ready(function() {
 				$("#transcript-result-alert").removeClass("d-none");
 				 // show form and scroll course fields into view
 				 $('html, body').animate({
-					 scrollTop: $("#edit-course-update-btn").offset().top -20,
-					 scrollLeft: $("#edit-course-update-btn").offset().left -20
+					 scrollTop: $("#transcript-result-alert").offset().top -20,
+					 scrollLeft: $("#transcript-result-alert").offset().left -20
 				 });
 				 return;
 			};
