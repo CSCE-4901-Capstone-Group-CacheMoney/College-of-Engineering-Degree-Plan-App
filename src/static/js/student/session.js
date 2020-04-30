@@ -632,16 +632,11 @@ $(document).ready(function() {
    		function(data,status) {
    			$("#timeline-loading-alert").remove(); // remove loading gif to display results to the user
 
-   			// check if the degree timeline was successful
-   			if(data.success.toLowerCase().indexOf("false") != -1){
-   				$("#transcript-results").append('<div id="add-degree-submit-alert" class="alert mt-2 alert-danger text-center" role="alert">'+data.message+'</div>');
-   				return;
-   			}
-
    			for(var i = 1; i <= Math.ceil(data.numSemesters/2); i++){
    				var html = '<div class="row academic-year"></div>';
    				$("#transcript-results").append(html);
 			}
+
 			//if received a fail, output the message sent to us as to why it failed.   
 			if(data.success.toLowerCase().indexOf("true") == -1) {
 				$("#transcript-result-alert").removeClass("alert-success");
@@ -650,10 +645,16 @@ $(document).ready(function() {
 				$("#transcript-result-alert").removeClass("d-none");
 				 // show form and scroll course fields into view
 				 $('html, body').animate({
-					 scrollTop: $("#edit-course-update-btn").offset().top -20,
-					 scrollLeft: $("#edit-course-update-btn").offset().left -20
+					 scrollTop: $("#transcript-result-alert").offset().top -20,
+					 scrollLeft: $("#transcript-result-alert").offset().left -20
 				 });
+				 return;
 			};
+
+			for(var i = 1; i <= Math.ceil(data.numSemesters/2); i++){
+   				var html = '<div class="row academic-year"></div>';
+   				$("#transcript-results").append(html);
+			}
    			semesterIndex = 0;
    			numSemestersLeft = data.numSemesters;
    			$(".academic-year").each(function(acaIndex) {

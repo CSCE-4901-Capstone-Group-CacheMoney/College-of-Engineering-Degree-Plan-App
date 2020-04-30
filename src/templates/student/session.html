@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+<!--Student Session Page: Allows students to create their own custom session-->
 {% block content %}
 <div class="container">
     <div class="page-header text-center">
@@ -60,7 +60,7 @@
                 <button id="session-submit-btn" type="button" class="btn btn-outline-success btn-block mt-4">Submit</button>
                 <div id="add-degree-submit-alert" class="alert mt-2 d-none text-center" role="alert"></div>
                 <div id="message">
-                  <h2>PIN must contain the following:</h2>
+                  <h2>PIN must contain the following:</h2> <!--PIN Number Disclaimer: Will appear if field is empty or has invalid input-->
                     <p id="number" class="fa fa-times invalid">Only Numbers </p>
                     <p id="length" class="fa fa-times invalid">Minimum 4 Characters </p>
                 </div>

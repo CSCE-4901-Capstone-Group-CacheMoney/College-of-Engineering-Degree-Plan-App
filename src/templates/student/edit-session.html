@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+<!--Student Edit Session Page: Students will be able to update their PIN number, selected degree plan, starting semester, and course history-->
 {% block content %}
 <div class="container">
     <div class="page-header text-center">
@@ -57,7 +57,7 @@
                 <button id="session-update-btn" type="button" class="btn btn-outline-success btn-block mt-3">Update Session</button>
                 <div id="edit-session-update-alert" class="alert mt-2 mb-2 d-none text-center" role="alert"></div>
                 <div id="message">
-                  <h2>PIN must contain the following:</h2>
+                  <h2>PIN must contain the following:</h2> <!--PIN Number Disclaimer: Will appear if field is empty or has invalid input-->
                     <p id="number" class="fa fa-check valid">Only Numbers </p>
                     <p id="length" class="fa fa-check valid">Minimum 4 Characters </p>
                 </div>
