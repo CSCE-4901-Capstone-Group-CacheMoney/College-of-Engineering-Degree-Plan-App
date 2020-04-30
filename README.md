@@ -47,9 +47,9 @@ We are currently running our Degree Planning Service application on a server hos
 	Domain: degreeplans.unt.ad.unt.edu
 ```
 Application Location
-```
-	Currently the entire project and its batch scripts are located under Tate Mosier’s student user account, the source code for the project is located at: 	C:\Users\tcm0106\Documents\College-of-Engineering-Degree-Plan-App. 
-```
+
+- Currently the entire project and its batch scripts are located under Tate Mosier’s student user account, the source code for the project is located at: 	C:\Users\tcm0106\Documents\College-of-Engineering-Degree-Plan-App. 
+
 There are also 2 PowerShell Scripts that are currently automated on the server. One script is used to automatically start the Django server on server startup, as well another script that checks for old student sessions in our database and purges them if they are at least a year old. These PowerShell scripts are located at the root of the C drive (C:\). You can also find the automation settings for the scripts under the Windows Task Scheduler. The tasks are labeled “Start Degree Plan App” and “Degree Plan App Purge Old Sessions”.
 
 The server requires the PostgreSQL server which is managed by pgAdmin 4 install under the programs folder if you ever need to view or make direct changes to the database.
