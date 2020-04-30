@@ -759,7 +759,7 @@ def scheduler(request):
 
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
-	semesterCount = 6
+	semesterCount = 48
 	hourCount = [0] * semesterCount
 
 	plan = [([]) for semesterCount in range(semesterCount)]
@@ -827,7 +827,6 @@ def scheduler(request):
 		print(semester)
 	end = semesterCount
 	for row in reversed(range(len(plan))):
-		print("checking row",row)
 		if len(plan[row]) == 0:
 			continue
 		end = row+1
