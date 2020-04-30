@@ -644,8 +644,19 @@ $(document).ready(function() {
    			for(var i = 1; i <= Math.ceil(data.numSemesters/2); i++){
    				var html = '<div class="row academic-year"></div>';
    				$("#transcript-results").append(html);
-   			}
-
+			}
+			//if received a fail, output the message sent to us as to why it failed.   
+			if(data.success.toLowerCase().indexOf("true") == -1) {
+				$("#transcript-result-alert").removeClass("alert-success");
+				$("#transcript-result-alert").addClass("alert-danger");
+				$("#transcript-result-alert").text(data.message);
+				$("#transcript-result-alert").removeClass("d-none");
+				 // show form and scroll course fields into view
+				 $('html, body').animate({
+					 scrollTop: $("#edit-course-update-btn").offset().top -20,
+					 scrollLeft: $("#edit-course-update-btn").offset().left -20
+				 });
+			};
    			semesterIndex = 0;
    			numSemestersLeft = data.numSemesters;
    			$(".academic-year").each(function(acaIndex) {
