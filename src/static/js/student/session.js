@@ -624,22 +624,19 @@ $(document).ready(function() {
 
 	/*-----------------------view transcript js----------------------------------------- */
 	if($("#view-transcript-title").length){
-		// code for progress bar animation
-		var timelineProgress = 0;
-		var progressTimeout = setInterval(function(){
-			timelineProgress++;
-			if(timelineProgress < 100){
-				$("#transcript-progress-bar").attr('aria-valuenow', timelineProgress).css('width', timelineProgress.toString()+'%').text(timelineProgress+"%");
-			}
-		}, 100);
 		// call the back-end function which returns a json of the ordered set of classes to take
 		$.post("/administration/scheduler/js/",
    		{
 			sessionID: sanatize(getCookie("uniqueid"))
    		},
    		function(data,status) {
-   			clearInterval(progressTimeout);
    			$("#timeline-loading-alert").remove(); // remove loading gif to display results to the user
+
+   			// check if the degree timeline was successful
+   			if(data.success.toLowerCase().indexOf("false") != -1){
+   				$("#transcript-results").append('<div id="add-degree-submit-alert" class="alert mt-2 alert-danger text-center" role="alert">'+data.message+'</div>');
+   				return;
+   			}
 
    			for(var i = 1; i <= Math.ceil(data.numSemesters/2); i++){
    				var html = '<div class="row academic-year"></div>';
