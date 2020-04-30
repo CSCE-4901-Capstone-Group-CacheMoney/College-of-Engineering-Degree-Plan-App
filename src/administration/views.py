@@ -651,6 +651,8 @@ def scheduler(request):
 	classDeps = {}
 	masterDeps = {}
 	coReqList = {}
+	optionalCourses = []
+	labs = {}
 
 	#Adding courses already taken to list
 	for currentCourse in tempCoursesTaken["Categories"]["courses"]:
@@ -736,26 +738,69 @@ def scheduler(request):
 	#Adding courses in Degree Plan to list
 
 	for currentCat in degreeInfo["Categories"]:
-		i=0
-		for currentCourse in currentCat["courses"]:
-			if currentCat["coursesRequired"]==0:
+		if currentCat["coursesRequired"]==0:
+			for currentCourse in currentCat["courses"]:
 				addClassAndPreReqs(classDeps, currentCourse)
 
-			else:
-				if i < int(currentCat["coursesRequired"]):
-					addClassAndPreReqs(classDeps, currentCourse)
-					i+=1
-				else:
-					break
+		else:
+			i=0
+			counter = 1
+			catList = []
 
+			#count number of courses taken from the cat
+			for currentCourse in currentCat["courses"]:
+				catList.append(currentCourse)
+				if currentCourse in coursesTaken:
+					i = i+1
+ 
+			while i < currentCat["coursesRequired"]:
+				for currentCourse in currentCat["courses"]:
+					if i < int(currentCat["coursesRequired"]):
+						if currentCourse in coursesTaken:
+							continue
+						
+						courseObject = Course.objects.get(id=currentCourse)
+						if "lab" in str(courseObject.name).lower():
+							continue
+
+						tempDict = {}
+						addClassAndPreReqs(tempDict, currentCourse)
+
+						if int(findDepth(tempDict, currentCourse)) > int(counter):
+							continue
+						else:		
+							deps = json.loads(str(json.dumps(courseObject.preCoReq)))
+							for currDeg in deps["Categories"]:
+								if str(currDeg["DegreeName"])!=str("") and str(currDeg["DegreeName"])!=str(degreeName) and str(currDeg["DegreeYear"])!=str(degreeYear):
+									continue
+								for coReq in currDeg["CoReqs"]:
+									coReqObject = Course.objects.get(id=coReq)
+
+									if "lab" in str(coReqObject.name).lower():
+										labs.setdefault(currentCourse, coReq)
+										#print("addind lab to list -", coReq)
+
+									if coReq not in coursesTaken and coReq in catList:
+										if "lab" in str(coReqObject.name).lower():
+											i = i+1
+											#print("Adding lab",coReq,i)
+											addClassAndPreReqs(classDeps, coReq)
+							addClassAndPreReqs(classDeps, currentCourse)
+							i = i+1
+							print("Adding class",currentCourse,i)
+
+							addClassAndPreReqs(classDeps, currentCourse)
+							optionalCourses.append(currentCourse)
+							i+=1
+				counter+=1
 
 	#print dependency list
-	for x, y in classDeps.items():
-		print(x, y)
+	#for x, y in classDeps.items():
+		#print(x, y)
 
-	print("COREQ TABLE")
-	for x, y in coReqList.items():
-		print(x, y)
+	#print("COREQ TABLE")
+	#for x, y in coReqList.items():
+		#print(x, y)
 
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
@@ -770,11 +815,9 @@ def scheduler(request):
 		if selectedClass < 0:
 			print("Recursive PreReqs or CoReqs found for class", -selectedClass)
 			content["success"] = "False"
-			content["class"] = -selectedClass
+			content["message"] = "Recursive PreReq or CoReq found involving class",-selectedClass
 			return JsonResponse(content)
-		#print(selectedClass,"needs to be scheduled")
 		selectedClasses.append(selectedClass)
-		#print(selectedClasses)
 
 		del classDeps[selectedClass]
 		coursesTaken.append(selectedClass)
@@ -785,9 +828,9 @@ def scheduler(request):
 				#print("Removed an instance of", selectedClass)
 			except:
 				pass
-
+		
 		earliest = 0
-		print("Trying to slot", selectedClass)
+		#print("Trying to slot", selectedClass)
 		for preReq in masterDeps[selectedClass]:
 			for i in range(len(plan)):
 				if preReq in plan[i]:
@@ -804,14 +847,26 @@ def scheduler(request):
 		classAvailability = Course.objects.get(id=selectedClass).semester
 		classHours = Course.objects.get(id=selectedClass).hours
 
+
+
+		if selectedClass in labs.keys():
+			classHours +=1
+		if selectedClass in labs.values():
+			continue
 		for i in range(earliest, len(plan)):
-			if semesterOption != "Both":
-				if semesterOption == classAvailability:
+			if classAvailability != "Both":
+				if str(semesterOption) == str(classAvailability):
 					if i % 2 != 0:
+						continue
+				else:
+					if i % 2 == 0:
 						continue
 			if hourCount[i] + classHours <= maxHours:
 				hourCount[i]+=classHours
 				plan[i].append(selectedClass)
+				if selectedClass in labs.keys():
+					plan[i].append(labs[selectedClass])
+
 				break
 		else:
 			content["success"] = "False"
@@ -822,7 +877,6 @@ def scheduler(request):
 			return JsonResponse(content)
 		
 	print("All Classes Processed")
-
 	for semester in plan:
 		print(semester)
 	end = semesterCount
@@ -837,19 +891,23 @@ def scheduler(request):
 		for column in range(len(plan[row])):
 			courseObject = Course.objects.get(id=plan[row][column])
 
+			result = plan[row][column] in optionalCourses
+
 			content[row+1].append({
 				"id": plan[row][column],
 				"CourseDept": courseObject.courseDept,
 				"CourseID": courseObject.courseID,
 				"Hours": courseObject.hours,
 				"Name": courseObject.name,
-				"Description": courseObject.description
+				"Description": courseObject.description,
+				"Optional": "True" if plan[row][column] in optionalCourses else "False"
 			})
 
 	content["numSemesters"] = len(content)
 	content["success"] = "True"
 
-	print(json.dumps(content))
+	#print(json.dumps(content))
+	#print(labs)
 
 	return JsonResponse(content)
 
