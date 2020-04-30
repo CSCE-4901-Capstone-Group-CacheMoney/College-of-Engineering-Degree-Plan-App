@@ -623,12 +623,14 @@ def scheduler(request):
 		degreeYear = request.POST.get('degreeYear', '')
 		degreeName = request.POST.get('degreeName', '')
 		degreeYear = request.POST.get('degreeInfo', '')
+		maxHours = 15
 
 	else:
 		sessionObject = Session.objects.get(sessionID = str(sessionid))
 		tempCoursesTaken = sessionObject.completedCourses
 		degreeID = sessionObject.degreeID
 		semesterOption = sessionObject.semesterOption
+		maxHours = sessionObject.semesterHours
 
 		degreeObject = Degree.objects.get(id = degreeID)
 		degreeInfo = degreeObject.degreeInfo
@@ -636,6 +638,7 @@ def scheduler(request):
 		degreeName = degreeObject.name
 		collegeName = degreeObject.CollegeName
 		specialty = degreeObject.specialty
+		
 
 	print("Degree: " + str(degreeName) + " - " + str(degreeID))
 
@@ -756,9 +759,10 @@ def scheduler(request):
 
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
-	classesPerSemester = 4
-	semesterCount = 12
-	plan = [([] * classesPerSemester) for semesterCount in range(semesterCount)]
+	semesterCount = 48
+	hourCount = [0] * semesterCount
+
+	plan = [([]) for semesterCount in range(semesterCount)]
 
 	while classDeps:
 		selectedClass = findCriticalStart(classDeps, 1)
@@ -792,48 +796,36 @@ def scheduler(request):
 					else:
 						earliest = max(earliest, i)
 					break
+			
+
 		#print("Earliest is", earliest)
 
 
 		classAvailability = Course.objects.get(id=selectedClass).semester
+		classHours = Course.objects.get(id=selectedClass).hours
 
 		for i in range(earliest, len(plan)):
 			if semesterOption != "Both":
 				if semesterOption == classAvailability:
 					if i % 2 != 0:
 						continue
-			if len(plan[i]) < classesPerSemester:
+			if hourCount[i] + classHours <= maxHours:
+				hourCount[i]+=classHours
 				plan[i].append(selectedClass)
 				break
+		else:
+			content["success"] = "False"
+			content["message"] = "Hours per semester too low to successfully complete degree"
+
+			print(json.dumps(content))
+
+			return JsonResponse(content)
 		
 	print("All Classes Processed")
 
 	for semester in plan:
 		print(semester)
 	
-
-#					OLD OUTPUT WAY WITH BLOCK OF ALL CLASSES
-############################################################################
-	# content["Courses"] = []
-	# for row in range(len(plan)):
-	# 	for column in range(len(plan[row])):
-	# 		courseObject = Course.objects.get(id=plan[row][column])
-
-	# 		content["Courses"].append({
-	# 			"id": plan[row][column],
-	# 			"CourseDept": courseObject.courseDept,
-	# 			"CourseID": courseObject.courseID,
-	# 			"Hours": courseObject.hours,
-	# 			"Name": courseObject.name,
-	# 			"Description": courseObject.description
-	# 		})
-###############################################################################
-
-
-
-
-#					NEW INPUT WITH CLASSES DIVIDED BY SEMESTER
-###################################################################################
 	for row in range(len(plan)):
 		if len(plan[row]) != 0:
 			content[row+1] = []
@@ -848,7 +840,7 @@ def scheduler(request):
 					"Name": courseObject.name,
 					"Description": courseObject.description
 				})
-#####################################################################################
+	
 	content["numSemesters"] = len(content)
 	content["success"] = "True"
 
