@@ -759,7 +759,7 @@ def scheduler(request):
 
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
-	semesterCount = 48
+	semesterCount = 6
 	hourCount = [0] * semesterCount
 
 	plan = [([]) for semesterCount in range(semesterCount)]
@@ -825,22 +825,28 @@ def scheduler(request):
 
 	for semester in plan:
 		print(semester)
-	
-	for row in range(len(plan)):
-		if len(plan[row]) != 0:
-			content[row+1] = []
-			for column in range(len(plan[row])):
-				courseObject = Course.objects.get(id=plan[row][column])
+	end = semesterCount
+	for row in reversed(range(len(plan))):
+		print("checking row",row)
+		if len(plan[row]) == 0:
+			continue
+		end = row+1
+		break
 
-				content[row+1].append({
-					"id": plan[row][column],
-					"CourseDept": courseObject.courseDept,
-					"CourseID": courseObject.courseID,
-					"Hours": courseObject.hours,
-					"Name": courseObject.name,
-					"Description": courseObject.description
-				})
-	
+	for row in range(end):
+		content[row+1] = []
+		for column in range(len(plan[row])):
+			courseObject = Course.objects.get(id=plan[row][column])
+
+			content[row+1].append({
+				"id": plan[row][column],
+				"CourseDept": courseObject.courseDept,
+				"CourseID": courseObject.courseID,
+				"Hours": courseObject.hours,
+				"Name": courseObject.name,
+				"Description": courseObject.description
+			})
+
 	content["numSemesters"] = len(content)
 	content["success"] = "True"
 
