@@ -43,6 +43,7 @@ def studentCreateSession(request):
 	sessionDegreeID = request.POST.get('sessionDegreeID', '')
 	completed 	= json.loads(request.POST.get('sessionInfo', ''))
 	semesterOption = request.POST.get('semesterOption', '')
+	semesterHours = request.POST.get('semesterHours', '')
 	# degreeSearchText = degreeSearchText.replace(' ','')
 	print ('Received:', sessionid, pin, sessionDegreeID)
 	# content={}
@@ -53,6 +54,7 @@ def studentCreateSession(request):
 		degreeID   = int(sessionDegreeID),
 		completedCourses =  completed,
 	    semesterOption = str(semesterOption),
+		semesterHours = int(semesterHours),
 		)
 	jsResponse = {
 		'success': 'True',
@@ -119,7 +121,8 @@ def getSessionData(request):
 			# "degreeName"	: str(data.degreeName),
 			# "degreeYear"	: data.degreeYear,
 			"degreeID"		: data.degreeID,
-			"semesterOption": str(data.semesterOption)
+			"semesterOption": str(data.semesterOption),
+			"semesterHours": int(data.semesterHours)
 		}	
 
 		courseList = json.dumps(data.completedCourses)
@@ -156,6 +159,7 @@ def updateSessionData(request):
 	pin 		= request.POST.get('pin', '')
 	semesterOption = request.POST.get('semesterOption', '')
 	sessionInfo = json.loads(request.POST.get('sessionInfo', ''))
+	semesterHours = request.POST.get('semesterHours', '')
 
 	print('Received sessionid: ',sessionid, ' and pin: ', pin, '\nsessionInfo:', sessionInfo)
 	print(Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin)))
@@ -163,6 +167,7 @@ def updateSessionData(request):
 	#check User Existence
 	s = Session.objects.filter(sessionID= str(sessionid), sessionPIN = str(pin))
 	s.update(semesterOption = str(semesterOption)) #add this to sessionInfo as cookie?
+	s.update(semesterHours = str(semesterHours))
 	status = s.count()
 	if status == 0:
 		jsResponse = { 	

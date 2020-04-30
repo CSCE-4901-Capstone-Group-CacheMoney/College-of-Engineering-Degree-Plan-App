@@ -43,6 +43,12 @@
                     </div>
                   </div>
                 </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" style="padding-right: 2.5em;" id="inputGroup-sizing-default-2">Hours Per Semester</span>
+                  </div>
+                  <input id="edit-semester-hours" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default-2" autocomplete="off">
+                </div>
                 <h4 class="text-center text-light pt-1 pb-1" style="background-color: green;">Completed Courses</h4>
                 <div id="completed-courses"></div>
   
@@ -50,6 +56,11 @@
 
                 <button id="session-update-btn" type="button" class="btn btn-outline-success btn-block mt-3">Update Session</button>
                 <div id="edit-session-update-alert" class="alert mt-2 mb-2 d-none text-center" role="alert"></div>
+                <div id="message">
+                  <h2>PIN must contain the following:</h2>
+                    <p id="number" class="fa fa-check valid">Only Numbers </p>
+                    <p id="length" class="fa fa-check valid">Minimum 4 Characters </p>
+                </div>
               </div>
               </div>
           </div>

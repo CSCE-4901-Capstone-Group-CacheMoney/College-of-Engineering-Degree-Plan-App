@@ -32,7 +32,105 @@ $(document).ready(function() {
 		return dest;
 	}
 	// wrapping this in an if statement so it does not break js on other pages
-	if($("#create-session-title").length){sessionCreate(8);}
+	if($("#create-session-title").length){
+		sessionCreate(8);
+		$('#search-degree').val('');
+        document.getElementById("radio-spring").checked = false;
+        document.getElementById("radio-fall").checked = false; //ensure that all fields are deleted on page refresh
+        $('#session-submit-btn').prop('disabled', true);; //by default, disable the submit button
+        var myInput = document.getElementById("create-session-pin");
+        var mySearch = document.getElementById("search-degree");
+        var myHours = document.getElementById("create-semester-hours");
+        var isSearchSatisfied = false;
+        var isPinFilled = false;
+        var isPinSatisfied = false;
+        var isSemesterSatisfied = false;
+        var isHoursSatisfied = false;
+        //when the user clicks off the input for colleges, display field required if left empty AND disable the button
+        //TODO: have backend check if the college the user enters actually exists
+        mySearch.onkeyup = function() {
+            $(mySearch).each(function() {  
+                if($(this).val().trim().length == 0){
+                    $(this).attr("placeholder", "Field Required");
+                    isSearchSatisfied = false;
+                }
+                else{
+                    isSearchSatisfied= true;
+                }
+            })
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+        }
+        // when the user clicks on the password field, show the message
+        myInput.onfocus = function() {
+          document.getElementById("message").style.display = "block";
+        }
+        
+        // when the user clicks outside of the password field, hide the message. if it is empty, display field requried AND disable the button
+        myInput.onblur = function() {
+            document.getElementById("message").style.display = "none";
+            $(myInput).each(function() {  
+                if($(this).val().trim().length == 0){
+                    $(this).attr("placeholder", "Field Required");
+                    isPinFilled = false;
+                }
+            })
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+        }
+        myInput.onkeyup = function() {
+            // validate length
+            if(myInput.value.length == 4) {
+                $("#length").removeClass("fa fa-times invalid");
+                $("#length").addClass("fa fa-check valid");
+                isPinFilled = true;
+            } 
+            else{
+                $("#length").removeClass("fa fa-check valid");
+                $("#length").addClass("fa fa-times invalid");
+                isPinFilled = false;
+            }   
+            // validate numbers
+            if(myInput.value.match(/^[0-9]+$/) != null) { //checks at all points if the entire string has no alphas, will fail if alphas are included
+                $("#number").removeClass("fa fa-times invalid");
+                $("#number").addClass("fa fa-check valid");
+                isPinSatisfied = true;
+            } 
+            else {
+                $("#number").removeClass("fa fa-check valid");
+                $("#number").addClass("fa fa-times invalid");
+                isPinSatisfied = false;
+            }
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+        }
+        $('#radio-spring, #radio-fall').click(function () { //if a user clicks a button, the restriction for the statment is lifted
+            isSemesterSatisfied = true;
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+        })
+        myHours.onkeyup = function() {
+            $(myHours).each(function() {  
+                if($(this).val().trim().length == 0){
+                    $(this).attr("placeholder", "Field Required");
+                    isHoursSatisfied = false;
+                }
+                else{
+                    isHoursSatisfied= true;
+                }
+            })
+            check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+        }
+        function check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied) //a non-elegant way of checking the conditions every user action
+        {
+            if((isPinSatisfied && isPinFilled && isSearchSatisfied && isSemesterSatisfied && isHoursSatisfied) == true){
+                $('#session-submit-btn').prop('disabled', false);
+            }
+            else{
+                $('#session-submit-btn').prop('disabled', true);
+            }
+            //console.log("pinsat " + isPinSatisfied)
+            //console.log("pinfilled " + isPinFilled)
+            //onsole.log("search " + isSearchSatisfied)
+            //console.log("radio " + isSemesterSatisfied)
+        }
+	}
 	 
 	$("#degreeaddinputGroupSelect-3").on('keyup', function(){
 		$(this).val(sanatize($(this).val().replace(/[a-z]/gi,'')));
@@ -181,14 +279,6 @@ $(document).ready(function() {
 			jsonResponse["Categories"]["courses"][catIndex] = parseInt(sanatize($(this).children(".add-course-input").attr("course-id").trim()));
 		});
 
-		var hi = document.getElementById("create-session-id").value;
-
-		hi = document.getElementById("create-session-pin").value;
-
-		hi = document.getElementById("search-degree").value;
-
-		hi = JSON.stringify(jsonResponse);
-
     	// send request to the back-end...
 		$.post("/session/studentCreateSession/",
    		{
@@ -197,6 +287,7 @@ $(document).ready(function() {
 			sessionDegreeID: parseInt(sanatize($("#search-degree").attr("degree-id"))),
 			sessionInfo: JSON.stringify(jsonResponse),
 			semesterOption: sanatize($("input[name='inlineRadioOptions2']:checked").val()),
+			semesterHours: sanatize($("#create-semester-hours").val().trim()),
 		},   
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("true") != -1) {
@@ -277,7 +368,8 @@ $(document).ready(function() {
 			},   
 	   		function(data,status) {
 	   			$("#edit-session-id").val(sanatize(getCookie("uniqueid")));
-	   			$("#edit-session-pin").val(sanatize(getCookie("uniquepin")));
+				$("#edit-session-pin").val(sanatize(getCookie("uniquepin")));
+				create_cookie("degreeid",data.degreeID);
 	   			// grab degree specific data
 	   			$.post("/administration/view-degree/js/",
 		   		{
@@ -288,11 +380,106 @@ $(document).ready(function() {
 		   		});
 
 	   			$("#search-degree").attr("degree-id", parseInt(sanatize(getCookie("degreeid"))));
-	   			create_cookie("degreeid", $("#search-degree").attr("degree-id"));
+				create_cookie("degreeid", $("#search-degree").attr("degree-id"));   
 				if(data.semesterOption.toLowerCase().trim().indexOf("spring") != -1)
 					$("#radio-spring").attr('checked', true);
 				else if (data.semesterOption.toLowerCase().trim().indexOf("fall") != -1)
 					$("#radio-fall").attr('checked', true);
+				$("#edit-semester-hours").val(data.semesterHours);
+				/*--check inputs--*/
+				var myInput = document.getElementById("edit-session-pin");
+				var mySearch = document.getElementById("search-degree");
+				var myHours = document.getElementById("edit-semester-hours");
+				var isSearchSatisfied = true;
+				var isPinFilled = true;
+				var isPinSatisfied = true;
+				var isSemesterSatisfied = true;
+				var isHoursSatisfied = true;
+				//when the user clicks off the input for colleges, display field required if left empty AND disable the button
+				//TODO: have backend check if the college the user enters actually exists
+				mySearch.onkeyup = function() {
+					$(mySearch).each(function() {  
+						if($(this).val().trim().length == 0){
+							$(this).attr("placeholder", "Field Required");
+							isSearchSatisfied = false;
+						}
+						else{
+							isSearchSatisfied= true;
+						}
+					})
+					check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+				}
+				// when the user clicks on the password field, show the message
+				myInput.onfocus = function() {
+				  document.getElementById("message").style.display = "block";
+				}
+				
+				// when the user clicks outside of the password field, hide the message. if it is empty, display field requried AND disable the button
+				myInput.onblur = function() {
+					document.getElementById("message").style.display = "none";
+					$(myInput).each(function() {  
+						if($(this).val().trim().length == 0){
+							$(this).attr("placeholder", "Field Required");
+							isPinFilled = false;
+						}
+					})
+					check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+				}
+				myInput.onkeyup = function() {
+					// validate length
+					if(myInput.value.length == 4) {
+						$("#length").removeClass("fa fa-times invalid");
+						$("#length").addClass("fa fa-check valid");
+						isPinFilled = true;
+					} 
+					else{
+						$("#length").removeClass("fa fa-check valid");
+						$("#length").addClass("fa fa-times invalid");
+						isPinFilled = false;
+					}   
+					// validate numbers
+					if(myInput.value.match(/^[0-9]+$/) != null) { //checks at all points if the entire string has no alphas, will fail if alphas are included
+						$("#number").removeClass("fa fa-times invalid");
+						$("#number").addClass("fa fa-check valid");
+						isPinSatisfied = true;
+					} 
+					else {
+						$("#number").removeClass("fa fa-check valid");
+						$("#number").addClass("fa fa-times invalid");
+						isPinSatisfied = false;
+					}
+					check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+				}
+				$('#radio-spring, #radio-fall').click(function () { //if a user clicks a button, the restriction for the statment is lifted
+					isSemesterSatisfied = true;
+					check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+				})
+				myHours.onkeyup = function() {
+					$(myHours).each(function() {  
+						if($(this).val().trim().length == 0){
+							$(this).attr("placeholder", "Field Required");
+							isHoursSatisfied = false;
+						}
+						else{
+							isHoursSatisfied= true;
+						}
+					})
+					check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied)
+				}
+				function check(isPinSatisfied,isPinFilled,isSearchSatisfied,isSemesterSatisfied,isHoursSatisfied) //a non-elegant way of checking the conditions every user action
+				{
+					if((isPinSatisfied && isPinFilled && isSearchSatisfied && isSemesterSatisfied && isHoursSatisfied) == true){
+						$('#session-update-btn').prop('disabled', false);
+					}
+					else{
+						$('#session-update-btn').prop('disabled', true);
+					}
+					//console.log("pinsat " + isPinSatisfied)
+					//console.log("pinfilled " + isPinFilled)
+					//onsole.log("search " + isSearchSatisfied)
+					//console.log("radio " + isSemesterSatisfied)
+				}
+
 	   			for (var i = 0; i < data.Categories.courses.length; i++){
 					var html = '<tr>'+
 	    	           '<td>' +
@@ -328,6 +515,7 @@ $(document).ready(function() {
    			pin: sanatize(getCookie("uniquepin")),
 			sessionInfo: JSON.stringify(jsonResponse),
 			semesterOption: sanatize($("input[name='inlineRadioOptions2']:checked").val().trim()),
+			semesterHours: sanatize($("#edit-semester-hours").val().trim()),
 		},   
    		function(data,status) {
    			if(data.success.toLowerCase().indexOf("true") != -1) {
