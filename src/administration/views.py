@@ -770,6 +770,7 @@ def scheduler(request):
 
 			#check if any classes have been taken before
 			for currentCourse in currentCat["courses"]:
+				optionalCourses.append(currentCourse)
 				catList.append(currentCourse)
 				if currentCourse in coursesTaken:
 					counter += 1
