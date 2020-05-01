@@ -651,10 +651,6 @@ $(document).ready(function() {
 				 return;
 			};
 
-			for(var i = 1; i <= Math.ceil(data.numSemesters/2); i++){
-   				var html = '<div class="row academic-year"></div>';
-   				$("#transcript-results").append(html);
-			}
    			semesterIndex = 0;
    			numSemestersLeft = data.numSemesters;
    			$(".academic-year").each(function(acaIndex) {
@@ -671,8 +667,8 @@ $(document).ready(function() {
 	   						'<tbody>';
 
 	   				for(var i = 0; i < data[semesterIndex].length; i++){
-						html += '<tr>'+
-								'<td>'+data[semesterIndex][i].CourseDept+' '+data[semesterIndex][i].CourseID+'</td>'+
+	   					data[semesterIndex][i].Optional.toLowerCase().indexOf("true") != -1? html += '<tr style="background-color: #336699;">' : html += '<tr>';
+						html += '<td>'+data[semesterIndex][i].CourseDept+' '+data[semesterIndex][i].CourseID+'</td>'+
 								'<td>'+data[semesterIndex][i].Name+'</td>'+
 								'<td>'+data[semesterIndex][i].Hours+'</td>'+
 								'</tr>';
@@ -698,8 +694,8 @@ $(document).ready(function() {
 	   						'<tbody>';
 
 		   				for(var i = 0; i < data[semesterIndex].length; i++){
-							html += '<tr>'+
-									'<td>'+data[semesterIndex][i].CourseDept+' '+data[semesterIndex][i].CourseID+'</td>'+
+		   					data[semesterIndex][i].Optional.toLowerCase().indexOf("true") != -1? html += '<tr style="background-color: #336699;">' : html += '<tr>';
+							html += '<td>'+data[semesterIndex][i].CourseDept+' '+data[semesterIndex][i].CourseID+'</td>'+
 									'<td>'+data[semesterIndex][i].Name+'</td>'+
 									'<td>'+data[semesterIndex][i].Hours+'</td>'+
 									'</tr>';

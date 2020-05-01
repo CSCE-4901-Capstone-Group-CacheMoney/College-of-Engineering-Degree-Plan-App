@@ -28,6 +28,14 @@ nav li {display:inline-block;}
 	left: 2em;
 }
 
+.degree-timeline-square {
+  height: 20px;
+  width: 20px;
+  background-color: #336699;
+  display: inline-block;
+  border: 1px solid black;
+}
+
 .displayCourseInfo {
 	display: inline;
 	white-space: pre-wrap;
