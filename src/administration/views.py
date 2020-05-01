@@ -735,64 +735,90 @@ def scheduler(request):
 		
 		return findCriticalStart(tempDict, 1)
 
-	#Adding courses in Degree Plan to list
 
+
+	#Adding courses in Degree Plan to list
 	for currentCat in degreeInfo["Categories"]:
-		if currentCat["coursesRequired"]==0:
+		desiredCourses = currentCat["coursesRequired"]
+
+		#Look for labs with their classes
+		for currentCourse in currentCat["courses"]:
+			if currentCourse not in coursesTaken:
+				courseObject = Course.objects.get(id=currentCourse)
+				deps = json.loads(str(json.dumps(courseObject.preCoReq)))
+				for currDeg in deps["Categories"]:
+					if str(currDeg["DegreeName"])!=str("") and str(currDeg["DegreeName"])!=str(degreeName) and str(currDeg["DegreeYear"])!=str(degreeYear):
+						continue
+					else:
+						for coReq in currDeg["CoReqs"]:
+							coReqObject = Course.objects.get(id=coReq)
+							if coReq not in coursesTaken:
+								if "lab" in str(coReqObject.name).lower() and coReqObject.hours == 1:
+									labs.setdefault(currentCourse, coReq)
+									#print("Adding lab dep", currentCourse, coReq)
+
+		#If all classes needed
+		if desiredCourses == 0:
 			for currentCourse in currentCat["courses"]:
 				addClassAndPreReqs(classDeps, currentCourse)
 
+		#If specific number of classes needed
 		else:
-			i=0
-			counter = 1
+			counter = 0
 			catList = []
+			searchingDepth = 1
 
-			#count number of courses taken from the cat
+			#check if any classes have been taken before
 			for currentCourse in currentCat["courses"]:
 				catList.append(currentCourse)
 				if currentCourse in coursesTaken:
-					i = i+1
- 
-			while i < currentCat["coursesRequired"]:
+					counter += 1
+
+			#If required courses is not valid
+			if len(catList) < desiredCourses:
+				print("Desired Courses exceeds amount of courses in that category")
+				content["success"] = "False"
+				content["message"] = "Desired Courses exceeds amount of courses in that category"
+				return JsonResponse(content)
+
+			print("LABS")
+			for x, y in labs.items():
+				print(x, y)
+			#while classes still need to be added
+			while counter < desiredCourses:
 				for currentCourse in currentCat["courses"]:
-					if i < int(currentCat["coursesRequired"]):
-						if currentCourse in coursesTaken:
-							continue
-						
+					if currentCourse not in coursesTaken:
 						courseObject = Course.objects.get(id=currentCourse)
-						if "lab" in str(courseObject.name).lower():
+
+						#if class is a lab, skip
+						if currentCourse in labs.values():
+							#print("Found lab - ",courseObject.name)
 							continue
 
 						tempDict = {}
 						addClassAndPreReqs(tempDict, currentCourse)
 
-						if int(findDepth(tempDict, currentCourse)) > int(counter):
+						#if class has too great of a depth
+						if int(findDepth(tempDict, currentCourse)) > int(searchingDepth):
+							#print("skipping for depth",courseObject.name, findDepth(tempDict, currentCourse), searchingDepth)
 							continue
-						else:		
-							deps = json.loads(str(json.dumps(courseObject.preCoReq)))
-							for currDeg in deps["Categories"]:
-								if str(currDeg["DegreeName"])!=str("") and str(currDeg["DegreeName"])!=str(degreeName) and str(currDeg["DegreeYear"])!=str(degreeYear):
-									continue
-								for coReq in currDeg["CoReqs"]:
-									coReqObject = Course.objects.get(id=coReq)
 
-									if "lab" in str(coReqObject.name).lower():
-										labs.setdefault(currentCourse, coReq)
-										#print("addind lab to list -", coReq)
-
-									if coReq not in coursesTaken and coReq in catList:
-										if "lab" in str(coReqObject.name).lower():
-											i = i+1
-											#print("Adding lab",coReq,i)
-											addClassAndPreReqs(classDeps, coReq)
+						#if class is  tied to a lab
+						if currentCourse in labs.keys():
 							addClassAndPreReqs(classDeps, currentCourse)
-							i = i+1
-							print("Adding class",currentCourse,i)
+							if labs[currentCourse] in catList:
+								counter += 2
+							else:
+								counter +=1
+							pass
 
+						#class not tied to any lab
+						else:
 							addClassAndPreReqs(classDeps, currentCourse)
-							optionalCourses.append(currentCourse)
-							i+=1
-				counter+=1
+							counter += 1
+
+				#increase maximum depth of class
+				searchingDepth += 1
 
 	#print dependency list
 	#for x, y in classDeps.items():
