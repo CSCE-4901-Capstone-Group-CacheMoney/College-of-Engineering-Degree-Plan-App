@@ -1,6 +1,6 @@
 # OptimizePrime
 
-NOTES
+### Installation
 - You may download a specific python version from https://www.python.org/downloads/
 	- pip will be installed along with the python download
 - If you have multiple versions of python installed on your system, replace `python` with `python3`.
@@ -37,16 +37,16 @@ NOTES
 7. Lastly, you can launch the server using the line\
       `python manage.py runserver`
 
-Degree Planning Service Server Deployment and Maintenance
+### Degree Planning Service Server Deployment and Maintenance
 
-Introduction
+#### Introduction
 We are currently running our Degree Planning Service application on a server hosted by UNT.
 ```
 	OS: Windows Server 2016
 	IP: 129.120.151.225
 	Domain: degreeplans.unt.ad.unt.edu
 ```
-Application Location
+#### Application Location
 
 - Currently the entire project and its batch scripts are located under Tate Mosier’s student user account, the source code for the project is located at: 	C:\Users\tcm0106\Documents\College-of-Engineering-Degree-Plan-App. 
 
@@ -55,3 +55,9 @@ There are also 2 PowerShell Scripts that are currently automated on the server. 
 The server requires the PostgreSQL server which is managed by pgAdmin 4 install under the programs folder if you ever need to view or make direct changes to the database.
 
 In order to use our program make sure that you have Python 3.7.2 installed. Our team used pip 19.0.2 as our package manager and the following instruction will use pip commands.
+
+#### Extra Information
+- If needed, testing a local database is possible. Install PostgreSQL at https://www.postgresql.org/download/
+* in `src\degreePlan\settings.py`, you may:
+  * Change `DEBUG = False` to `DEBUG = True` should debug be needed on pages, instead of a generic 404 error
+  * Change `DATABASES = {...}` to change database hooking locations, or the type of database engine in general
