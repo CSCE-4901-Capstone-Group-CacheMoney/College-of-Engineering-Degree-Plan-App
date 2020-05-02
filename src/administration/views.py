@@ -40,7 +40,6 @@ def administrationRemoveDegree(request):
 @csrf_exempt
 def administrationViewDegreeJS(request):
 	degreeSearchText = request.POST.get('degreeSearchText', '')
-	#degreeSearchText = degreeSearchText.replace(' ','')
 	print (degreeSearchText)
 	content={}
 	for d in Degree.objects.filter(id__istartswith=str(degreeSearchText)):
@@ -74,7 +73,6 @@ def autoSearchDegreeJS(request):
 @csrf_exempt
 def administrationViewDegreeDetailedJS(request):
 	degreeSearchText = request.POST.get('degreeSearchText', '')
-	#degreeSearchText = degreeSearchText.replace(' ','')
 	print (degreeSearchText)
 	content={}
 	courseList=""
@@ -163,12 +161,8 @@ def administrationViewCourseJS(request):
 			content["CourseAvailability"] = str(c.semester)
 			content["PreCoreq"] = str(json.dumps(c.preCoReq))
 			content["ID"] = str(c.id)
-
 			break
-			#result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
-					#   "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
-					#   "CoreqCount": str(c.coreqCount)}
-			# content.append(dict(result)) 
+
 	else:
 		if len(str(courseSearchText)) > 4:		#search course names
 			for c in Course.objects.filter(name__istartswith=str(courseSearchText)):
@@ -181,7 +175,6 @@ def administrationViewCourseJS(request):
 				content["CourseAvailability"] = str(c.semester)
 				content["PreCoreq"] = str(json.dumps(c.preCoReq))
 				content["ID"] = str(c.id)
-
 				break
 
 		else:
@@ -195,13 +188,7 @@ def administrationViewCourseJS(request):
 				content["CourseAvailability"] = str(c.semester)
 				content["PreCoreq"] = str(json.dumps(c.preCoReq))
 				content["ID"] = str(c.id)
-
 				break
-				# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
-				# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
-				# 		  "CoreqCount": str(c.coreqCount)}
-				# content.append(dict(result)) 
-		#print (content)
 
 	return JsonResponse(content)
 
@@ -257,11 +244,6 @@ def autoSearchCourseJS(request):
 					"ID"		: str(c.id),
 				}
 				content.append(result) 
-				# result = {"CourseCode": str(c.courseDept) + ' ' +str(c.courseID),"CourseName": str(c.name), "Description": str(c.description),
-				# 		  "Category": str(c.category), "Hours": str(c.hours), "CourseAvailability": str(c.semester), "PrereqCount": str(c.prereqCount),
-				# 		  "CoreqCount": str(c.coreqCount)}
-				# content.append(dict(result)) 
-		#print (content)
 
 	return JsonResponse(content, safe=False)
 
@@ -289,7 +271,6 @@ def administrationViewCourseDetailedJS(request):
 			content["CourseAvailability"] = str(c.semester)
 			preCoreq = json.dumps(c.preCoReq)
 			content["ID"] = str(c.id)
-
 			break
 
 	else:
@@ -304,7 +285,6 @@ def administrationViewCourseDetailedJS(request):
 				content["CourseAvailability"] = str(c.semester)
 				preCoreq = json.dumps(c.preCoReq)
 				content["ID"] = str(c.id)
-
 				break
 
 		else:
@@ -318,7 +298,6 @@ def administrationViewCourseDetailedJS(request):
 				content["CourseAvailability"] = str(c.semester)
 				preCoreq = json.dumps(c.preCoReq)
 				content["ID"] = str(c.id)
-
 				break
 
 	#if course wasn't found in the database, retrn empty json
@@ -449,12 +428,6 @@ def administrationAddCourseJS(request):
 		c = Course.objects.filter(courseDept__istartswith=str(nCourseDept).upper(), courseID__startswith=nCourseID)
 		#print(c)			
 		if not c:
-			# if nCourseAvail == "0":
-			# 	nCourseAvail = "Spring"
-			# elif nCourseAvail == "1":
-			# 	nCourseAvail = "Fall"
-			# else:
-			# 	nCourseAvail = "Both"
 			print ('W/o if stmts: ',nCourseAvail)
 			Course.objects.create(
 			name = str(nCourseName),
@@ -502,8 +475,6 @@ def administrationAddDegreeJS(request):
 	if nspecialty=='':
 		nspecialty='None'
 
-	#print(json.loads(ndegreeInfo))
-
 	value = Degree.objects.filter(name__istartswith=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty))
 	#print(c)			
 	if not value:
@@ -546,7 +517,6 @@ def administrationRemoveCourseJS(request):
 			jsResponse = {
 				'success': 'True',
 				'message': 'Successful removing course '+  str(res[0]) + '!'
-
 			}
 
 			#remove from degree
@@ -564,7 +534,6 @@ def administrationRemoveCourseJS(request):
 
 						Degree.objects.filter(id=nDegreeID).update(degreeInfo=ndegreeInfo)
 						print("Removed from a degree")
-
 
 			#remove from prereqs and coreqs of other courses
 			for c in Course.objects.all():
@@ -591,11 +560,7 @@ def administrationRemoveCourseJS(request):
 					completed["Categories"]["courses"].remove(CoursePID)
 					nSessionID = sessionObject.id
 					Session.objects.filter(id=nSessionID).update(completedCourses=completed)
-					print("Removed from a degree")
-
-
-
-					
+					print("Removed from a degree")					
 		else: 	
 			jsResponse = {
 				'success': 'False',
@@ -609,7 +574,6 @@ def administrationRemoveCourseJS(request):
 		}
 		
 	return JsonResponse(jsResponse)
-
 
 @csrf_exempt	
 def administrationRemoveDegreeJS(request):
@@ -639,8 +603,6 @@ def administrationRemoveDegreeJS(request):
 		}
 	return JsonResponse(jsResponse)
 
-
-
 @csrf_exempt	
 def administrationEditDegreeJS(request):
 	nDegreeName = request.POST.get('nDegreeName', '')
@@ -652,7 +614,6 @@ def administrationEditDegreeJS(request):
 		nspecialty='None'
 
 	NbrOfRow = Degree.objects.filter(name=str(nDegreeName), catalogYear__startswith=ncatalogYear, CollegeName__istartswith=str(nCollegeName), specialty__istartswith=str(nspecialty)).update(degreeInfo=json.loads(ndegreeInfo))
-	#print(c)			
 	if NbrOfRow==1:
 		jsResponse = {
 			'success': 'True',
@@ -664,10 +625,6 @@ def administrationEditDegreeJS(request):
 			'message': 'Error unable to update ' + str(nDegreeName) + ' degree plan for year ' + str(ncatalogYear) +' !'
 		}
 	return JsonResponse(jsResponse)
-
-
-
-
 
 @csrf_exempt
 def scheduler(request):
@@ -697,7 +654,6 @@ def scheduler(request):
 		collegeName = degreeObject.CollegeName
 		specialty = degreeObject.specialty
 		
-
 	print("Degree: " + str(degreeName) + " - " + str(degreeID))
 
 	content={}
@@ -708,9 +664,6 @@ def scheduler(request):
 	coReqList = {}
 	optionalCourses = []
 	labs = {}
-
-	
-
 
 	#Add a course and recursively add its prereqs
 	def addClassAndPreReqs(courseDict, currentClass):
@@ -790,8 +743,6 @@ def scheduler(request):
 			for key in tempDict.keys():
 				coursesTaken.append(key)
 	print("Taken courses: " + str(coursesTaken))
-
-
 
 	#Adding courses in Degree Plan to list
 	for currentCat in degreeInfo["Categories"]:
@@ -949,7 +900,6 @@ def scheduler(request):
 			content["message"] = "Hours per semester too low to successfully complete degree"
 
 			print(json.dumps(content))
-
 			return JsonResponse(content)
 
 	print("All Classes Processed")
