@@ -204,6 +204,7 @@ def administrationViewCourseJS(request):
 		#print (content)
 
 	return JsonResponse(content)
+
 @csrf_exempt
 ## Function that gives CourseDept, CourseID, and pkid of matching courses for Auto Search front-end
 def autoSearchCourseJS(request):
@@ -431,6 +432,12 @@ def administrationAddCourseJS(request):
 			'success': 'False',
 			'message': 'Error adding course. Course Department and Number must be 4 characters!'
 		}
+	
+	elif int(nCourseID) < 1000:
+		jsResponse = {
+			'success': 'False',
+			'message': 'Error adding course. Course number must be at least 1000!'
+		}
 
 	elif len(str(nCourseHours)) == 0:
 		jsResponse = {
@@ -528,58 +535,67 @@ def administrationRemoveCourseJS(request):
 
 	if(len(res[0]) == 4 and len(res[1]) == 4):						#check if dept and id are 4 chars
 
-		#Get result from a search of above
-		#save the ID
-		#find the ID number of the course
-		#deletes from the course table
+		#Get PID
 		courseObject = Course.objects.get(courseDept__istartswith=str(res[0]), courseID__startswith=res[1])
 		CoursePID = courseObject.id
 		print(CoursePID)
-		#status = Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]).delete()
-		
-		#for d in Degree.objects.filter()
-		#content={}
-		 #= Degree.objects.filter()
-		#Loop through all degrees and look for the CoursePID in degreeInfo and delete the course from it. 
-		#create degree object like in line 535
-		#degreeTemp = Degree.objects.filter()
-		#create 5 variable similar to editdegree. like on 536
-		#open degreeInfo variable and parse json to find CoursePID 
-		#if coursePID found, edit degreeinfo variable to remove the course 
-		#content = {}
-		#fill content using example in junk
-		##call the administrationEditDegreeJS function.
 
-		#if status[0] == 1:	
-		if True:#if successful
+		status = courseObject.delete()
+
+		if status[0] == 1:	
 			jsResponse = {
 				'success': 'True',
 				'message': 'Successful removing course '+  str(res[0]) + '!'
 
 			}
-			
+
+			#remove from degree
 			for d in Degree.objects.all():
-				jsonTemp = d.degreeInfo
-					#Adding courses in Degree Plan to list
-				for currentCat in jsonTemp["Categories"]:
+				ndegreeInfo = d.degreeInfo
+				#Adding courses in Degree Plan to list
+				for currentCat in ndegreeInfo["Categories"]:
+					found = 0
+					if CoursePID in currentCat["courses"]:
+						currentCat["courses"].remove(CoursePID)
+						found = 1
 
-					#Look for labs with their classes
-					for currentCourse in currentCat["courses"]:
-						if(currentCourse == int(CoursePID)):
-							print(currentCourse)
-							
+					if found == 1:
+						nDegreeID = d.id
+
+						Degree.objects.filter(id=nDegreeID).update(degreeInfo=ndegreeInfo)
+						print("Removed from a degree")
+
+
+			#remove from prereqs and coreqs of other courses
+			for c in Course.objects.all():
+				deps = json.loads(str(json.dumps(c.preCoReq)))
+				toggle = 0
+				for currDeg in deps["Categories"]:
+					if CoursePID in currDeg["PreReqs"]:
+						currDeg["PreReqs"].remove(CoursePID)
+						print("Found as PreReqs")
+						toggle = 1
+					if CoursePID in currDeg["CoReqs"]:
+						currDeg["CoReqs"].remove(CoursePID)
+						print("Found as CoReq")
+						toggle = 1
+				if toggle == 1:
+					courseID = c.id
+					Course.objects.filter(id=courseID).update(preCoReq=deps)
+					print("Removed as Pre/Co Req of a course")
+
+			#remove course from sessions
+			for sessionObject in Session.objects.all():
+				completed = sessionObject.completedCourses
+				if CoursePID in completed["Categories"]["courses"]:
+					completed["Categories"]["courses"].remove(CoursePID)
+					nSessionID = sessionObject.id
+					Session.objects.filter(id=nSessionID).update(completedCourses=completed)
+					print("Removed from a degree")
+
+
+
 					
-
-
-			#Loop through all degrees and look for the CoursePID in degreeInfo and delete the course from it. 
-			#create degree object like in line 535
-			degreeTemp = Degree.objects.filter()
-			#create 5 variable similar to editdegree. like on 536
-			#open degreeInfo variable and parse json to find CoursePID 
-			#if coursePID found, edit degreeinfo variable to remove the course 
-			#content = {}
-			#fill content using example in junk
-			##call the administrationEditDegreeJS function.
 		else: 	
 			jsResponse = {
 				'success': 'False',
@@ -750,9 +766,7 @@ def scheduler(request):
 			depthChart.setdefault(key, findDepth(courseDict, key))
 			if depthChart[key] < 0:
 				return -key
-			#if type(depthChart[key]) != int:
-			#	return depthChart[key]
-			
+		
 			if target == 1:
 				if depthChart[key] > targetDepth:
 					targetDepth = depthChart[key]
@@ -761,7 +775,6 @@ def scheduler(request):
 				if depthChart[key] < targetDepth:
 					targetDepth = depthChart[key]
 					targetClass = key
-		#print (str(targetClass) + "(" + str(depthChart[targetClass]) + ")", "needs to be scheduled")
 
 		if targetDepth == 1:
 			return targetClass
