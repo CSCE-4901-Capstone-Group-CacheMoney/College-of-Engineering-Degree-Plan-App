@@ -34,7 +34,9 @@
 	python manage.py makemigrations
 	python manage.py migrate
 ```
-7. Lastly, you can launch the server using the line\
+7. (Optional) Creating superusers can be done by invoking the following command below and following the in-prompt instructions\
+		`python manage.py createsuperuser`
+8. Lastly, you can launch the server using the line\
       `python manage.py runserver`
 
 ### Degree Planning Service Server Deployment and Maintenance
@@ -61,3 +63,6 @@ In order to use our program make sure that you have Python 3.7.2 installed. Our 
 * in `src\degreePlan\settings.py`, you may:
   * Change `DEBUG = False` to `DEBUG = True` should debug be needed on pages, instead of a generic 404 error
   * Change `DATABASES = {...}` to change database hooking locations, or the type of database engine in general
+* If there are errors related to the database such as an existing column, deleting migrations/pycache files may help
+  * However, under no circumstances should files named "__init.py__" are to be deleted!
+- A new superuser (administrator) created from `python manage.py createsuperuser` can be found in the "user_student" table. Passwords are hashed.

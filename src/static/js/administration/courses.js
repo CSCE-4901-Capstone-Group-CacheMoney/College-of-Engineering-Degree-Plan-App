@@ -880,30 +880,39 @@ $(document).ready(function() {
 
 
     $(document).on("click", "#remove-course-submit-btn", function(e) {
-    	// send request to the back-end...
-		$.post("/administration/remove-course/js/",
-   		{
-   			courseSearchText: sanatize($("#remove-course-deparment-id").val().trim() + 
-   			" " + $("#remove-course-number").val().trim())
-   		},
-   		function(data,status) {
-   			if(data.success.toLowerCase().indexOf("success") != -1) {
-   				$("#remove-course-submit-alert").removeClass("alert-danger");
-				$("#remove-course-submit-alert").addClass("alert-success");
-				$("#remove-course-submit-alert").text(data.message);
-				$("#remove-course-submit-alert").removeClass("d-none");
-				// show form and scroll course fields into view
-				$('html, body').animate({
-				    scrollTop: $("#remove-course-submit-btn").offset().top -20,
-				    scrollLeft: $("#remove-course-submit-btn").offset().left -20
-				});
-   			} else {
-   				$("#remove-course-submit-alert").removeClass("alert-success");
-				$("#remove-course-submit-alert").addClass("alert-danger");
-				$("#remove-course-submit-alert").text(data.message);
-				$("#remove-course-submit-alert").removeClass("d-none");
-   			}
-   		});
+		// send request to the back-end...
+		$("#removeCourseDisclaimer").modal();
+		$("#removeCourseDisclaimerAccept").click(function(e){
+			$("#removeCourseDisclaimer").modal("toggle");
+			$.post("/administration/remove-course/js/",
+			{
+				courseSearchText: sanatize($("#remove-course-deparment-id").val().trim() + 
+				" " + $("#remove-course-number").val().trim())
+			},
+			function(data,status) {
+				if(data.success.toLowerCase().indexOf("success") != -1) {
+					$("#remove-course-submit-alert").removeClass("alert-danger");
+					$("#remove-course-submit-alert").addClass("alert-success");
+					$("#remove-course-submit-alert").text(data.message);
+					$("#remove-course-submit-alert").removeClass("d-none");
+					// show form and scroll course fields into view
+					$('html, body').animate({
+						scrollTop: $("#remove-course-submit-btn").offset().top -20,
+						scrollLeft: $("#remove-course-submit-btn").offset().left -20
+					});
+					setTimeout(function() {
+						window.location.reload(); //will not work due to popup window
+					}, 1200);
+				} else {
+					$("#remove-course-submit-alert").removeClass("alert-success");
+					$("#remove-course-submit-alert").addClass("alert-danger");
+					$("#remove-course-submit-alert").text(data.message);
+					$("#remove-course-submit-alert").removeClass("d-none");
+				}
+			});
+		})	
+		$("#removeCourseDisclaimerDeny").click(function(e){
+			$("#removeCourseDisclaimer").modal("toggle");
+		})
     });
-
 });
