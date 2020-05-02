@@ -736,11 +736,8 @@ def scheduler(request):
 						courseDict.setdefault(currentClass, []).append(coReq)
 						coReqList.setdefault(currentClass, []).append(coReq)
 						addClassAndPreReqs(courseDict, coReq)
-					#else:
-						#print("Coreq of " + str(preReq) + " not needed")
-		#else:
-			#print("Course was already taken - " + str(currentClass))
 
+	#Fund the chain of prereqs under it and return the number of classes that need to be taken before this
 	def findDepth(courseDict, currentClass):
 		total = 0
 		for preReq in courseDict[currentClass]:
@@ -753,6 +750,7 @@ def scheduler(request):
 				return -1
 		return total + 1
 	
+	#find the critical path and return the first class in the path
 	def findCriticalStart(courseDict, target):
 		tempDict = {}
 		depthChart = {}
@@ -841,9 +839,6 @@ def scheduler(request):
 				content["message"] = "Desired Courses exceeds amount of courses in that category"
 				return JsonResponse(content)
 
-			#print("LABS")
-			#for x, y in labs.items():
-			#	print(x, y)
 			#while classes still need to be added
 			while counter < desiredCourses:
 				for currentCourse in currentCat["courses"]:
@@ -884,14 +879,6 @@ def scheduler(request):
 				#increase maximum depth of class
 				searchingDepth += 1
 
-	#print dependency list
-	#for x, y in classDeps.items():
-		#print(x, y)
-
-	#print("COREQ TABLE")
-	#for x, y in coReqList.items():
-		#print(x, y)
-
 	masterDeps = copy.deepcopy(classDeps)
 	selectedClasses = []
 	semesterCount = 48
@@ -899,9 +886,11 @@ def scheduler(request):
 
 	plan = [([]) for semesterCount in range(semesterCount)]
 
+	#while classes still need to be slotted
 	while classDeps:
 		selectedClass = findCriticalStart(classDeps, 1)
 
+		#if recursive path found
 		if selectedClass < 0:
 			print("Recursive PreReqs or CoReqs found for class", -selectedClass)
 			content["success"] = "False"
@@ -915,12 +904,11 @@ def scheduler(request):
 		for value in classDeps.values():
 			try:
 				value.remove(selectedClass)
-				#print("Removed an instance of", selectedClass)
 			except:
 				pass
 		
+		#find the earliest semester class can be scheduled
 		earliest = 0
-		#print("Trying to slot", selectedClass)
 		for preReq in masterDeps[selectedClass]:
 			for i in range(len(plan)):
 				if preReq in plan[i]:
@@ -929,20 +917,16 @@ def scheduler(request):
 					else:
 						earliest = max(earliest, i)
 					break
-			
-
-		#print("Earliest is", earliest)
-
 
 		classAvailability = Course.objects.get(id=selectedClass).semester
 		classHours = Course.objects.get(id=selectedClass).hours
-
-
 
 		if selectedClass in labs.keys():
 			classHours +=1
 		if selectedClass in labs.values():
 			continue
+
+		#find open semester slot and insert class
 		for i in range(earliest, len(plan)):
 			if classAvailability != "Both":
 				if str(semesterOption) == str(classAvailability):
@@ -958,6 +942,8 @@ def scheduler(request):
 					plan[i].append(labs[selectedClass])
 
 				break
+
+		#if slotting not possible
 		else:
 			content["success"] = "False"
 			content["message"] = "Hours per semester too low to successfully complete degree"
@@ -965,7 +951,7 @@ def scheduler(request):
 			print(json.dumps(content))
 
 			return JsonResponse(content)
-		
+
 	print("All Classes Processed")
 	for semester in plan:
 		print(semester)
@@ -976,6 +962,7 @@ def scheduler(request):
 		end = row+1
 		break
 
+	#return semester lists
 	for row in range(end):
 		content[row+1] = []
 		for column in range(len(plan[row])):
@@ -995,9 +982,6 @@ def scheduler(request):
 
 	content["numSemesters"] = len(content)
 	content["success"] = "True"
-
-	#print(json.dumps(content))
-	#print(labs)
 
 	return JsonResponse(content)
 
