@@ -643,9 +643,6 @@ def scheduler(request):
 	print("Degree: " + str(degreeName) + " - " + str(degreeID))
 
 	content={}
-	
-
-	
 
 	coursesTaken = []
 	classDeps = {}
@@ -654,10 +651,7 @@ def scheduler(request):
 	optionalCourses = []
 	labs = {}
 
-	#Adding courses already taken to list
-	for currentCourse in tempCoursesTaken["Categories"]["courses"]:
-		coursesTaken.append(currentCourse)
-	print("Taken courses: " + str(coursesTaken))
+	
 
 
 	#Add a course and recursively add its prereqs
@@ -735,11 +729,21 @@ def scheduler(request):
 		
 		return findCriticalStart(tempDict, 1)
 
+	#Adding courses already taken to list
+	for currentCourse in tempCoursesTaken["Categories"]["courses"]:
+		if currentCourse not in coursesTaken:
+			tempDict = {}
+			addClassAndPreReqs(tempDict, currentCourse)
+			for key in tempDict.keys():
+				coursesTaken.append(key)
+	print("Taken courses: " + str(coursesTaken))
+
 
 
 	#Adding courses in Degree Plan to list
 	for currentCat in degreeInfo["Categories"]:
 		desiredCourses = currentCat["coursesRequired"]
+		print("Desired Courses -",desiredCourses)
 
 		#Look for labs with their classes
 		for currentCourse in currentCat["courses"]:
@@ -753,7 +757,7 @@ def scheduler(request):
 						for coReq in currDeg["CoReqs"]:
 							coReqObject = Course.objects.get(id=coReq)
 							if coReq not in coursesTaken:
-								if "lab" in str(coReqObject.name).lower() and coReqObject.hours == 1:
+								if "lab" in str(coReqObject.name).lower() and coReqObject.hours < 3:
 									labs.setdefault(currentCourse, coReq)
 									#print("Adding lab dep", currentCourse, coReq)
 
@@ -782,12 +786,15 @@ def scheduler(request):
 				content["message"] = "Desired Courses exceeds amount of courses in that category"
 				return JsonResponse(content)
 
-			print("LABS")
-			for x, y in labs.items():
-				print(x, y)
+			#print("LABS")
+			#for x, y in labs.items():
+			#	print(x, y)
 			#while classes still need to be added
 			while counter < desiredCourses:
 				for currentCourse in currentCat["courses"]:
+					if counter == desiredCourses:
+						break
+					
 					if currentCourse not in coursesTaken:
 						courseObject = Course.objects.get(id=currentCourse)
 
@@ -811,12 +818,13 @@ def scheduler(request):
 								counter += 2
 							else:
 								counter +=1
-							pass
+							print("Added class and counter is now at",counter,desiredCourses)
 
 						#class not tied to any lab
 						else:
 							addClassAndPreReqs(classDeps, currentCourse)
 							counter += 1
+							print("Added class and counter is now at",counter,desiredCourses)
 
 				#increase maximum depth of class
 				searchingDepth += 1
