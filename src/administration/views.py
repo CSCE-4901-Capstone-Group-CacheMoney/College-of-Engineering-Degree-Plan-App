@@ -936,6 +936,7 @@ def scheduler(request):
 	return JsonResponse(content)
 
 
+
 # TODO back-end code for resources
 def administrationViewResource(request):
 	content = {} # when ready to send to front-end add db values to this dictionary
