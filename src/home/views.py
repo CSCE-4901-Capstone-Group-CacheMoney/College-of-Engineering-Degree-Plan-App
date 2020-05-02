@@ -22,3 +22,6 @@ def resourcesView(request):
     # Don't think it needs context so just pass an empty object
 
     return render(request, 'student/resources.html', {})
+
+def creditsView(request):
+    return render(request, 'credits.html', {})

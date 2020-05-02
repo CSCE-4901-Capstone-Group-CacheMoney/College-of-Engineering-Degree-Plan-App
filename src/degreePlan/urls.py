@@ -19,7 +19,7 @@ from django.urls import path, include
 #here is where we import the urls that we have created
 from degrees.views import allDegreesView, degreeClassesView, degreeTimeline, addADegree, editDegree, session, timelineTest
 from transferCredits.views import transferCreditView, addTransferCredit
-from home.views import homeView, resourcesView
+from home.views import homeView, resourcesView, creditsView
 from administration.views import administrationHomeView
 from session.views import sessionHomeView
 
@@ -27,6 +27,7 @@ from session.views import sessionHomeView
 #**** don't forget the comma !!!
 urlpatterns = [
     path('', homeView),
+    path('credits/', creditsView),
     path('admin/', admin.site.urls),
     path('degrees/', allDegreesView, name='degrees'),
     path('degree/', degreeClassesView, name='degreePlan'),
