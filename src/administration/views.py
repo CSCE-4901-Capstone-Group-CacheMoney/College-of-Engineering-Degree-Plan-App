@@ -530,14 +530,56 @@ def administrationRemoveCourseJS(request):
 
 		#Get result from a search of above
 		#save the ID
-		status = Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]).delete()
-		#Delete from degree plans
+		#find the ID number of the course
+		#deletes from the course table
+		courseObject = Course.objects.get(courseDept__istartswith=str(res[0]), courseID__startswith=res[1])
+		CoursePID = courseObject.id
+		print(CoursePID)
+		#status = Course.objects.filter(courseDept__istartswith=str(res[0]), courseID__startswith=res[1]).delete()
+		
+		#for d in Degree.objects.filter()
+		#content={}
+		 #= Degree.objects.filter()
+		#Loop through all degrees and look for the CoursePID in degreeInfo and delete the course from it. 
+		#create degree object like in line 535
+		#degreeTemp = Degree.objects.filter()
+		#create 5 variable similar to editdegree. like on 536
+		#open degreeInfo variable and parse json to find CoursePID 
+		#if coursePID found, edit degreeinfo variable to remove the course 
+		#content = {}
+		#fill content using example in junk
+		##call the administrationEditDegreeJS function.
 
-		if status[0] == 1:											#if successful
+		#if status[0] == 1:	
+		if True:#if successful
 			jsResponse = {
 				'success': 'True',
 				'message': 'Successful removing course '+  str(res[0]) + '!'
+
 			}
+			
+			for d in Degree.objects.all():
+				jsonTemp = d.degreeInfo
+					#Adding courses in Degree Plan to list
+				for currentCat in jsonTemp["Categories"]:
+
+					#Look for labs with their classes
+					for currentCourse in currentCat["courses"]:
+						if(currentCourse == int(CoursePID)):
+							print(currentCourse)
+							
+					
+
+
+			#Loop through all degrees and look for the CoursePID in degreeInfo and delete the course from it. 
+			#create degree object like in line 535
+			degreeTemp = Degree.objects.filter()
+			#create 5 variable similar to editdegree. like on 536
+			#open degreeInfo variable and parse json to find CoursePID 
+			#if coursePID found, edit degreeinfo variable to remove the course 
+			#content = {}
+			#fill content using example in junk
+			##call the administrationEditDegreeJS function.
 		else: 	
 			jsResponse = {
 				'success': 'False',
